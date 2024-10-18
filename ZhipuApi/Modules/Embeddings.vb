@@ -18,10 +18,15 @@ Namespace ZhipuApi.Modules
 
 		' Token: 0x06000012 RID: 18 RVA: 0x00002398 File Offset: 0x00000598
 		Private Iterator Function ProcessBase(requestBody As EmbeddingRequestBase) As IEnumerable(Of String)
-			Dim json As String = JsonSerializer.Serialize(Of EmbeddingRequestBase)(requestBody, Nothing)
+			Dim json As String = JsonSerializer.Serialize(Of EmbeddingRequestBase)(requestBody)
 			Dim data As StringContent = New StringContent(json, Encoding.UTF8, "application/json")
 			Dim api_key As String = AuthenticationUtils.GenerateToken(Me._apiKey, Embeddings.API_TOKEN_TTL_SECONDS)
-			Dim request As HttpRequestMessage = New HttpRequestMessage() With { .Method = HttpMethod.Post, .RequestUri = New Uri("https://open.bigmodel.cn/api/paas/v4/embeddings"), .Content = data, .Headers = { { "Authorization", api_key } } }
+			Dim request As HttpRequestMessage = New HttpRequestMessage() With {
+				.Method = HttpMethod.Post,
+				.RequestUri = New Uri("https://open.bigmodel.cn/api/paas/v4/embeddings"),
+				.Content = data
+			}
+			request.Headers.Add("Authorization", api_key)
 			Dim response As HttpResponseMessage = Embeddings.client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).Result
 			Dim stream As Stream = response.Content.ReadAsStreamAsync().Result
 			Dim buffer As Byte() = New Byte(8191) {}
@@ -30,7 +35,7 @@ Namespace ZhipuApi.Modules
 				Dim num2 As Integer = num
 				Dim bytesRead As Integer = num
 				If num2 <= 0 Then
-					Exit For
+					Exit While
 				End If
 				Yield Encoding.UTF8.GetString(buffer, 0, bytesRead)
 			End While

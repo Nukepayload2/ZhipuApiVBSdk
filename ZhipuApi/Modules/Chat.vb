@@ -11,6 +11,7 @@ Imports ZhipuApi.Models.RequestModels
 Imports ZhipuApi.Models.ResponseModels
 Imports ZhipuApi.Utils
 Imports ZhipuApi.Utils.JsonResolver
+Imports JsonSerializer = System.Text.Json.JsonSerializer
 
 Namespace ZhipuApi.Modules
 	' Token: 0x02000006 RID: 6
@@ -26,7 +27,12 @@ Namespace ZhipuApi.Modules
 			Dim json As String = JsonConvert.SerializeObject(textRequestBody, settings)
 			Dim data As StringContent = New StringContent(json, Encoding.UTF8, "application/json")
 			Dim api_key As String = AuthenticationUtils.GenerateToken(Me._apiKey, Chat.API_TOKEN_TTL_SECONDS)
-			Dim request As HttpRequestMessage = New HttpRequestMessage() With { .Method = HttpMethod.Post, .RequestUri = New Uri("https://open.bigmodel.cn/api/paas/v4/chat/completions"), .Content = data, .Headers = { { "Authorization", api_key } } }
+			Dim request As New HttpRequestMessage() With {
+				.Method = HttpMethod.Post,
+				.RequestUri = New Uri("https://open.bigmodel.cn/api/paas/v4/chat/completions"),
+				.Content = data
+			}
+			request.Headers.Add("Authorization", api_key)
 			Dim httpResponseMessage As HttpResponseMessage = Await Chat.client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken)
 			Dim response As HttpResponseMessage = httpResponseMessage
 			httpResponseMessage = Nothing
@@ -39,7 +45,7 @@ Namespace ZhipuApi.Modules
 				Dim num2 As Integer = num
 				Dim bytesRead As Integer = num2
 				If num2 <= 0 Then
-					Exit For
+					Exit While
 				End If
 				cancellationToken.ThrowIfCancellationRequested()
 				yieldCallback(buffer.AsMemory(0, bytesRead))
@@ -55,7 +61,7 @@ Namespace ZhipuApi.Modules
 				ms.Write(str.Span)
 			End Sub, cancellationToken)
 			ms.Position = 0L
-			Return JsonSerializer.Deserialize(Of ResponseBase)(ms, Nothing)
+			Return JsonSerializer.Deserialize(Of ResponseBase)(ms)
 		End Function
 
 		' Token: 0x0600000F RID: 15 RVA: 0x00002308 File Offset: 0x00000508
@@ -68,19 +74,19 @@ Namespace ZhipuApi.Modules
 					Dim startPos As Integer = buffer.IndexOf("data: ", StringComparison.Ordinal)
 					Dim flag As Boolean = startPos = -1
 					If flag Then
-						Exit For
-					End If
+																	  Exit While
+																  End If
 					Dim endPos As Integer = buffer.IndexOf(vbLf & vbLf, startPos, StringComparison.Ordinal)
 					Dim flag2 As Boolean = endPos = -1
 					If flag2 Then
-						Exit For
-					End If
+																	  Exit While
+																  End If
 					startPos += "data: ".Length
 					Dim jsonString As String = buffer.Substring(startPos, endPos - startPos)
 					Dim flag3 As Boolean = jsonString.Equals("[DONE]")
 					If flag3 Then
-						Exit For
-					End If
+																	  Exit While
+																  End If
 					Dim response As ResponseBase = ResponseBase.FromJson(jsonString)
 					Dim flag4 As Boolean = response IsNot Nothing
 					If flag4 Then

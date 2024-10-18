@@ -18,10 +18,15 @@ Namespace ZhipuApi.Modules
 
 		' Token: 0x06000016 RID: 22 RVA: 0x00002443 File Offset: 0x00000643
 		Private Iterator Function GenerateBase(requestBody As ImageRequestBase) As IEnumerable(Of String)
-			Dim json As String = JsonSerializer.Serialize(Of ImageRequestBase)(requestBody, Nothing)
+			Dim json As String = JsonSerializer.Serialize(Of ImageRequestBase)(requestBody)
 			Dim data As StringContent = New StringContent(json, Encoding.UTF8, "application/json")
 			Dim api_key As String = AuthenticationUtils.GenerateToken(Me._apiKey, Images.API_TOKEN_TTL_SECONDS)
-			Dim request As HttpRequestMessage = New HttpRequestMessage() With { .Method = HttpMethod.Post, .RequestUri = New Uri("https://open.bigmodel.cn/api/paas/v4/images/generations"), .Content = data, .Headers = { { "Authorization", api_key } } }
+			Dim request As New HttpRequestMessage() With {
+				.Method = HttpMethod.Post,
+				.RequestUri = New Uri("https://open.bigmodel.cn/api/paas/v4/images/generations"),
+				.Content = data
+			}
+			request.Headers.Add("Authorization", api_key)
 			Dim response As HttpResponseMessage = Images.client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).Result
 			Dim stream As Stream = response.Content.ReadAsStreamAsync().Result
 			Dim buffer As Byte() = New Byte(8191) {}
@@ -30,7 +35,7 @@ Namespace ZhipuApi.Modules
 				Dim num2 As Integer = num
 				Dim bytesRead As Integer = num
 				If num2 <= 0 Then
-					Exit For
+					Exit While
 				End If
 				Yield Encoding.UTF8.GetString(buffer, 0, bytesRead)
 			End While

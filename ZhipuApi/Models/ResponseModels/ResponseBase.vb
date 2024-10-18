@@ -44,7 +44,7 @@ Namespace ZhipuApi.Models.ResponseModels
 		Public Shared Function FromJson(json As String) As ResponseBase
 			Dim responseBase As ResponseBase
 			Try
-				responseBase = JsonSerializer.Deserialize(Of ResponseBase)(json, Nothing)
+				responseBase = JsonSerializer.Deserialize(Of ResponseBase)(json)
 			Catch ex As JsonException
 				responseBase = Nothing
 			End Try

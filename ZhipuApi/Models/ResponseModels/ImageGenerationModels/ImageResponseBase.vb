@@ -22,7 +22,7 @@ Namespace ZhipuApi.Models.ResponseModels.ImageGenerationModels
 
 		' Token: 0x0600004D RID: 77 RVA: 0x000026C8 File Offset: 0x000008C8
 		Public Shared Function FromJson(json As String) As ImageResponseBase
-			Return JsonSerializer.Deserialize(Of ImageResponseBase)(json, Nothing)
+			Return JsonSerializer.Deserialize(Of ImageResponseBase)(json)
 		End Function
 	End Class
 End Namespace

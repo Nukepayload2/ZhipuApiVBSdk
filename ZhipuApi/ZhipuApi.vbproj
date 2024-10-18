@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>ZhipuApi</RootNamespace>
+    <RootNamespace></RootNamespace>
     <AssemblyName>ZhipuApi</AssemblyName>
     <TargetFramework>net8.0</TargetFramework>
     <NoWarn></NoWarn>

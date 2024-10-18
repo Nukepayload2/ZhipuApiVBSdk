@@ -32,7 +32,7 @@ Namespace ZhipuApi.Models.ResponseModels.EmbeddingModels
 
 		' Token: 0x06000063 RID: 99 RVA: 0x00002798 File Offset: 0x00000998
 		Public Shared Function FromJson(json As String) As EmbeddingResponseBase
-			Return JsonSerializer.Deserialize(Of EmbeddingResponseBase)(json, Nothing)
+			Return JsonSerializer.Deserialize(Of EmbeddingResponseBase)(json)
 		End Function
 	End Class
 End Namespace
