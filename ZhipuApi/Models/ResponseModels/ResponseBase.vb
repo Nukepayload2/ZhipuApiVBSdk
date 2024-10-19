@@ -1,54 +1,270 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Text.Json
+﻿Imports System.IO
+Imports Newtonsoft.Json
+Imports ZhipuApi.Models.ResponseModels.ToolModels
 
 Namespace ZhipuApi.Models.ResponseModels
-	' Token: 0x02000009 RID: 9
-	Public Class ResponseBase
-		' Token: 0x17000004 RID: 4
-		' (get) Token: 0x06000019 RID: 25 RVA: 0x000024DE File Offset: 0x000006DE
-		' (set) Token: 0x0600001A RID: 26 RVA: 0x000024E6 File Offset: 0x000006E6
-		Public Property id As String
+    Public Class ResponseBase
+        Public Property id As String
 
-		' Token: 0x17000005 RID: 5
-		' (get) Token: 0x0600001B RID: 27 RVA: 0x000024EF File Offset: 0x000006EF
-		' (set) Token: 0x0600001C RID: 28 RVA: 0x000024F7 File Offset: 0x000006F7
-		Public Property request_id As String
+        Public Property request_id As String
 
-		' Token: 0x17000006 RID: 6
-		' (get) Token: 0x0600001D RID: 29 RVA: 0x00002500 File Offset: 0x00000700
-		' (set) Token: 0x0600001E RID: 30 RVA: 0x00002508 File Offset: 0x00000708
-		Public Property created As Long
+        Public Property created As Long
 
-		' Token: 0x17000007 RID: 7
-		' (get) Token: 0x0600001F RID: 31 RVA: 0x00002511 File Offset: 0x00000711
-		' (set) Token: 0x06000020 RID: 32 RVA: 0x00002519 File Offset: 0x00000719
-		Public Property model As String
+        Public Property model As String
 
-		' Token: 0x17000008 RID: 8
-		' (get) Token: 0x06000021 RID: 33 RVA: 0x00002522 File Offset: 0x00000722
-		' (set) Token: 0x06000022 RID: 34 RVA: 0x0000252A File Offset: 0x0000072A
-		Public Property usage As Dictionary(Of String, Integer)
+        Public Property usage As Dictionary(Of String, Integer)
 
-		' Token: 0x17000009 RID: 9
-		' (get) Token: 0x06000023 RID: 35 RVA: 0x00002533 File Offset: 0x00000733
-		' (set) Token: 0x06000024 RID: 36 RVA: 0x0000253B File Offset: 0x0000073B
-		Public Property choices As ResponseChoiceItem()
+        Public Property choices As ResponseChoiceItem()
 
-		' Token: 0x1700000A RID: 10
-		' (get) Token: 0x06000025 RID: 37 RVA: 0x00002544 File Offset: 0x00000744
-		' (set) Token: 0x06000026 RID: 38 RVA: 0x0000254C File Offset: 0x0000074C
-		Public Property [error] As Dictionary(Of String, String)
+        Public Property [error] As Dictionary(Of String, String)
 
-		' Token: 0x06000027 RID: 39 RVA: 0x00002558 File Offset: 0x00000758
-		Public Shared Function FromJson(json As String) As ResponseBase
-			Dim responseBase As ResponseBase
-			Try
-				responseBase = JsonSerializer.Deserialize(Of ResponseBase)(json)
-			Catch ex As JsonException
-				responseBase = Nothing
-			End Try
-			Return responseBase
-		End Function
-	End Class
+        ' AI 写的，检查了一半。到时候加一些单元测试。
+        Public Shared Function FromJson(json As String) As ResponseBase
+            Dim jsonReader As New JsonTextReader(New StringReader(json))
+            Dim response As New ResponseBase
+            jsonReader.Read()
+
+            If jsonReader.TokenType = JsonToken.StartObject Then
+                While jsonReader.Read()
+                    If jsonReader.TokenType = JsonToken.PropertyName Then
+                        Dim propertyName As String = jsonReader.Value.ToString()
+
+                        jsonReader.Read()
+
+                        Select Case jsonReader.TokenType
+                            Case JsonToken.String
+                                Select Case propertyName
+                                    Case "id"
+                                        response.id = jsonReader.Value.ToString()
+                                    Case "request_id"
+                                        response.request_id = jsonReader.Value.ToString()
+                                    Case "model"
+                                        response.model = jsonReader.Value.ToString()
+                                    Case Else
+                                        Throw New InvalidDataException($"Unexpected property: {propertyName}")
+                                End Select
+                            Case JsonToken.Integer
+                                Select Case propertyName
+                                    Case "created"
+                                        response.created = CLng(jsonReader.Value)
+                                    Case Else
+                                        Throw New InvalidDataException($"Unexpected property: {propertyName}")
+                                End Select
+                            Case JsonToken.StartObject
+                                Select Case propertyName
+                                    Case "usage"
+                                        response.usage = DeserializeStringIntegerDictionary(jsonReader)
+                                    Case "error"
+                                        response.error = DeserializeStringDictionary(jsonReader)
+                                    Case Else
+                                        Throw New InvalidDataException($"Unexpected property: {propertyName}")
+                                End Select
+                            Case JsonToken.StartArray
+                                Select Case propertyName
+                                    Case "choices"
+                                        response.choices = DeserializeChoices(jsonReader)
+                                    Case Else
+                                        Throw New InvalidDataException($"Unexpected property: {propertyName}")
+                                End Select
+                            Case Else
+                                Throw New InvalidDataException($"Unexpected token type")
+                        End Select
+                    Else
+                        Throw New InvalidDataException($"Unexpected token type")
+                    End If
+                End While
+            Else
+                Throw New InvalidDataException($"Unexpected token type")
+            End If
+
+            Return response
+        End Function
+
+        Private Shared Function DeserializeStringDictionary(jsonReader As JsonTextReader) As Dictionary(Of String, String)
+            Dim dict As New Dictionary(Of String, String)
+
+            While jsonReader.Read()
+                If jsonReader.TokenType = JsonToken.EndObject Then
+                    Exit While
+                End If
+
+                If jsonReader.TokenType = JsonToken.PropertyName Then
+                    Dim key As String = jsonReader.Value.ToString()
+
+                    jsonReader.Read()
+                    If jsonReader.TokenType = JsonToken.String Then
+                        dict.Add(key, jsonReader.Value.ToString())
+                    Else
+                        Throw New InvalidDataException("Expected string value")
+                    End If
+                End If
+            End While
+
+            Return dict
+        End Function
+
+        Private Shared Function DeserializeStringIntegerDictionary(jsonReader As JsonTextReader) As Dictionary(Of String, Integer)
+            Dim dict As New Dictionary(Of String, Integer)()
+
+            While jsonReader.Read()
+                If jsonReader.TokenType = JsonToken.EndObject Then
+                    Exit While
+                End If
+
+                If jsonReader.TokenType = JsonToken.PropertyName Then
+                    Dim key As String = jsonReader.Value.ToString()
+
+                    jsonReader.Read()
+                    If jsonReader.TokenType = JsonToken.Integer Then
+                        dict.Add(key, CInt(jsonReader.Value))
+                    Else
+                        Throw New InvalidDataException("Expected integer value")
+                    End If
+                End If
+            End While
+
+            Return dict
+        End Function
+        Private Shared Function DeserializeChoices(jsonReader As JsonTextReader) As ResponseChoiceItem()
+            Dim choices As New List(Of ResponseChoiceItem)()
+
+            While jsonReader.Read()
+                If jsonReader.TokenType = JsonToken.EndArray Then
+                    Exit While
+                End If
+
+                If jsonReader.TokenType = JsonToken.StartObject Then
+                    Dim choice As New ResponseChoiceItem()
+
+                    While jsonReader.Read()
+                        If jsonReader.TokenType = JsonToken.EndObject Then
+                            Exit While
+                        End If
+
+                        If jsonReader.TokenType = JsonToken.PropertyName Then
+                            Dim propertyName As String = jsonReader.Value.ToString()
+
+                            jsonReader.Read()
+
+                            Select Case propertyName
+                                Case "finish_reason"
+                                    choice.finish_reason = jsonReader.Value.ToString()
+                                Case "index"
+                                    choice.index = CInt(jsonReader.Value)
+                                Case "message"
+                                    choice.message = DeserializeResponseChoiceDelta(jsonReader)
+                                Case "delta"
+                                    choice.delta = DeserializeResponseChoiceDelta(jsonReader)
+                                Case Else
+                                    Throw New InvalidDataException($"Unexpected property: {propertyName}")
+                            End Select
+                        End If
+                    End While
+
+                    choices.Add(choice)
+                End If
+            End While
+
+            Return choices.ToArray()
+        End Function
+
+        Private Shared Function DeserializeResponseChoiceDelta(jsonReader As JsonTextReader) As ResponseChoiceDelta
+            Dim delta As New ResponseChoiceDelta()
+
+            While jsonReader.Read()
+                If jsonReader.TokenType = JsonToken.EndObject Then
+                    Exit While
+                End If
+
+                If jsonReader.TokenType = JsonToken.PropertyName Then
+                    Dim propertyName As String = jsonReader.Value.ToString()
+
+                    jsonReader.Read()
+
+                    Select Case propertyName
+                        Case "role"
+                            delta.role = jsonReader.Value.ToString()
+                        Case "content"
+                            delta.content = jsonReader.Value.ToString()
+                        Case "tool_calls"
+                            delta.tool_calls = DeserializeToolCalls(jsonReader)
+                        Case Else
+                            Throw New InvalidDataException($"Unexpected property: {propertyName}")
+                    End Select
+                End If
+            End While
+
+            Return delta
+        End Function
+
+        Private Shared Function DeserializeToolCalls(jsonReader As JsonTextReader) As ToolCallItem()
+            Dim toolCalls As New List(Of ToolCallItem)()
+
+            While jsonReader.Read()
+                If jsonReader.TokenType = JsonToken.EndArray Then
+                    Exit While
+                End If
+
+                If jsonReader.TokenType = JsonToken.StartObject Then
+                    Dim toolCall As New ToolCallItem()
+
+                    While jsonReader.Read()
+                        If jsonReader.TokenType = JsonToken.EndObject Then
+                            Exit While
+                        End If
+
+                        If jsonReader.TokenType = JsonToken.PropertyName Then
+                            Dim propertyName As String = jsonReader.Value.ToString()
+
+                            jsonReader.Read()
+
+                            Select Case propertyName
+                                Case "id"
+                                    toolCall.id = jsonReader.Value.ToString()
+                                Case "function"
+                                    toolCall.[function] = DeserializeFunctionDescriptor(jsonReader)
+                                Case "index"
+                                    toolCall.index = CInt(jsonReader.Value)
+                                Case "type"
+                                    toolCall.type = jsonReader.Value.ToString()
+                                Case Else
+                                    Throw New InvalidDataException($"Unexpected property: {propertyName}")
+                            End Select
+                        End If
+                    End While
+
+                    toolCalls.Add(toolCall)
+                End If
+            End While
+
+            Return toolCalls.ToArray()
+        End Function
+
+        Private Shared Function DeserializeFunctionDescriptor(jsonReader As JsonTextReader) As FunctionDescriptor
+            Dim functionDescriptor As New FunctionDescriptor
+
+            While jsonReader.Read()
+                If jsonReader.TokenType = JsonToken.EndObject Then
+                    Exit While
+                End If
+
+                If jsonReader.TokenType = JsonToken.PropertyName Then
+                    Dim propertyName As String = jsonReader.Value.ToString()
+
+                    jsonReader.Read()
+
+                    Select Case propertyName
+                        Case "name"
+                            functionDescriptor.name = jsonReader.Value.ToString()
+                        Case "arguments"
+                            functionDescriptor.arguments = jsonReader.Value.ToString()
+                        Case Else
+                            Throw New InvalidDataException($"Unexpected property: {propertyName}")
+                    End Select
+                End If
+            End While
+
+            Return functionDescriptor
+        End Function
+    End Class
 End Namespace
