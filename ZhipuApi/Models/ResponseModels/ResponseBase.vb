@@ -97,6 +97,8 @@ Namespace ZhipuApi.Models.ResponseModels
                     Else
                         Throw New InvalidDataException("Expected string value")
                     End If
+                Else
+                    Throw New InvalidDataException($"Unexpected tonen: {jsonReader.TokenType}")
                 End If
             End While
 
@@ -120,6 +122,8 @@ Namespace ZhipuApi.Models.ResponseModels
                     Else
                         Throw New InvalidDataException("Expected integer value")
                     End If
+                Else
+                    Throw New InvalidDataException($"Unexpected tonen: {jsonReader.TokenType}")
                 End If
             End While
 
@@ -158,10 +162,14 @@ Namespace ZhipuApi.Models.ResponseModels
                                 Case Else
                                     Throw New InvalidDataException($"Unexpected property: {propertyName}")
                             End Select
+                        Else
+                            Throw New InvalidDataException($"Unexpected tonen: {jsonReader.TokenType}")
                         End If
                     End While
 
                     choices.Add(choice)
+                Else
+                    Throw New InvalidDataException($"Unexpected tonen: {jsonReader.TokenType}")
                 End If
             End While
 
@@ -191,6 +199,8 @@ Namespace ZhipuApi.Models.ResponseModels
                         Case Else
                             Throw New InvalidDataException($"Unexpected property: {propertyName}")
                     End Select
+                Else
+                    Throw New InvalidDataException($"Unexpected tonen: {jsonReader.TokenType}")
                 End If
             End While
 
@@ -230,10 +240,14 @@ Namespace ZhipuApi.Models.ResponseModels
                                 Case Else
                                     Throw New InvalidDataException($"Unexpected property: {propertyName}")
                             End Select
+                        Else
+                            Throw New InvalidDataException($"Unexpected tonen: {jsonReader.TokenType}")
                         End If
                     End While
 
                     toolCalls.Add(toolCall)
+                Else
+                    Throw New InvalidDataException($"Unexpected tonen: {jsonReader.TokenType}")
                 End If
             End While
 
@@ -261,6 +275,8 @@ Namespace ZhipuApi.Models.ResponseModels
                         Case Else
                             Throw New InvalidDataException($"Unexpected property: {propertyName}")
                     End Select
+                Else
+                    Throw New InvalidDataException($"Unexpected tonen: {jsonReader.TokenType}")
                 End If
             End While
 

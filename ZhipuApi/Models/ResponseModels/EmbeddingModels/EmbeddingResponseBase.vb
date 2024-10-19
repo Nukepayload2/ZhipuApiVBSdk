@@ -1,38 +1,175 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Text.Json
+﻿Imports Newtonsoft.Json
+Imports System.IO
 
 Namespace ZhipuApi.Models.ResponseModels.EmbeddingModels
-	' Token: 0x02000011 RID: 17
 	Public Class EmbeddingResponseBase
-		' Token: 0x1700001F RID: 31
-		' (get) Token: 0x0600005A RID: 90 RVA: 0x00002749 File Offset: 0x00000949
-		' (set) Token: 0x06000059 RID: 89 RVA: 0x00002740 File Offset: 0x00000940
 		Public Property model As String
-
-		' Token: 0x17000020 RID: 32
-		' (get) Token: 0x0600005C RID: 92 RVA: 0x0000275A File Offset: 0x0000095A
-		' (set) Token: 0x0600005B RID: 91 RVA: 0x00002751 File Offset: 0x00000951
 		Public Property _object As String
 
-		' Token: 0x17000021 RID: 33
-		' (get) Token: 0x0600005E RID: 94 RVA: 0x0000276B File Offset: 0x0000096B
-		' (set) Token: 0x0600005D RID: 93 RVA: 0x00002762 File Offset: 0x00000962
 		Public Property usage As Dictionary(Of String, Integer)
 
-		' Token: 0x17000022 RID: 34
-		' (get) Token: 0x0600005F RID: 95 RVA: 0x00002773 File Offset: 0x00000973
-		' (set) Token: 0x06000060 RID: 96 RVA: 0x0000277B File Offset: 0x0000097B
 		Public Property data As EmbeddingDataItem()
 
-		' Token: 0x17000023 RID: 35
-		' (get) Token: 0x06000061 RID: 97 RVA: 0x00002784 File Offset: 0x00000984
-		' (set) Token: 0x06000062 RID: 98 RVA: 0x0000278C File Offset: 0x0000098C
-		Public Property [error] As Dictionary(Of String, String)
+        Public Property [error] As Dictionary(Of String, String)
 
-		' Token: 0x06000063 RID: 99 RVA: 0x00002798 File Offset: 0x00000998
-		Public Shared Function FromJson(json As String) As EmbeddingResponseBase
-			Return JsonSerializer.Deserialize(Of EmbeddingResponseBase)(json)
+        Public Shared Function FromJson(json As String) As EmbeddingResponseBase
+			Using reader As New JsonTextReader(New StringReader(json))
+				Return ReadEmbeddingResponseBase(reader)
+			End Using
 		End Function
-	End Class
+
+        Private Shared Function ReadEmbeddingResponseBase(reader As JsonTextReader) As EmbeddingResponseBase
+            Dim response As New EmbeddingResponseBase
+
+            While reader.Read()
+                If reader.TokenType = JsonToken.StartObject Then
+                    While reader.Read()
+                        If reader.TokenType = JsonToken.EndObject Then
+                            Exit While
+                        End If
+
+                        If reader.TokenType = JsonToken.PropertyName Then
+                            Dim propertyName As String = reader.Value.ToString()
+
+                            reader.Read()
+
+                            Select Case propertyName
+                                Case "model"
+                                    response.model = reader.Value.ToString()
+                                Case "object"
+                                    response._object = reader.Value.ToString()
+                                Case "usage"
+                                    response.usage = ReadUsageDictionary(reader)
+                                Case "data"
+                                    response.data = ReadEmbeddingDataItems(reader)
+                                Case "error"
+                                    response.error = ReadErrorDictionary(reader)
+                                Case Else
+                                    Throw New InvalidDataException($"Unexpected property: {propertyName}")
+                            End Select
+                        Else
+                            Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
+                        End If
+                    End While
+                Else
+                    Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
+                End If
+            End While
+
+            Return response
+        End Function
+
+        Private Shared Function ReadUsageDictionary(reader As JsonTextReader) As Dictionary(Of String, Integer)
+            Dim usageDict As New Dictionary(Of String, Integer)
+
+            While reader.Read()
+                If reader.TokenType = JsonToken.EndObject Then
+                    Exit While
+                End If
+
+                If reader.TokenType = JsonToken.PropertyName Then
+                    Dim propertyName As String = reader.Value.ToString()
+
+                    reader.Read()
+
+                    usageDict.Add(propertyName, CInt(reader.Value))
+                Else
+                    Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
+                End If
+            End While
+
+            Return usageDict
+        End Function
+
+        Private Shared Function ReadEmbeddingDataItems(reader As JsonTextReader) As EmbeddingDataItem()
+            Dim dataItems As New List(Of EmbeddingDataItem)
+
+            While reader.Read()
+                If reader.TokenType = JsonToken.StartObject Then
+                    dataItems.Add(ReadEmbeddingDataItem(reader))
+                ElseIf reader.TokenType = JsonToken.EndArray Then
+                    Exit While
+                Else
+                    Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
+                End If
+            End While
+
+            Return dataItems.ToArray()
+        End Function
+
+        Private Shared Function ReadEmbeddingDataItem(reader As JsonTextReader) As EmbeddingDataItem
+            Dim dataItem As New EmbeddingDataItem
+
+            While reader.Read()
+                If reader.TokenType = JsonToken.EndObject Then
+                    Exit While
+                End If
+
+                If reader.TokenType = JsonToken.PropertyName Then
+                    Dim propertyName As String = reader.Value.ToString()
+
+                    reader.Read()
+
+                    Select Case propertyName
+                        Case "index"
+                            dataItem.index = CInt(reader.Value)
+                        Case "object"
+                            dataItem._object = reader.Value.ToString()
+                        Case "embedding"
+                            dataItem.embedding = ReadEmbeddingArray(reader)
+                        Case Else
+                            Throw New InvalidDataException($"Unexpected property: {propertyName}")
+                    End Select
+                Else
+                    Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
+                End If
+            End While
+
+            Return dataItem
+        End Function
+
+        Private Shared Function ReadEmbeddingArray(reader As JsonTextReader) As Double()
+            Dim embeddingArray As New List(Of Double)
+
+            While reader.Read()
+                If reader.TokenType = JsonToken.StartArray Then
+                    While reader.Read()
+                        If reader.TokenType = JsonToken.EndArray Then
+                            Exit While
+                        End If
+
+                        embeddingArray.Add(CDbl(reader.Value))
+                    End While
+                ElseIf reader.TokenType = JsonToken.EndObject Then
+                    Exit While
+                Else
+                    Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
+                End If
+            End While
+
+            Return embeddingArray.ToArray()
+        End Function
+
+        Private Shared Function ReadErrorDictionary(reader As JsonTextReader) As Dictionary(Of String, String)
+            Dim errorDict As New Dictionary(Of String, String)
+
+            While reader.Read()
+                If reader.TokenType = JsonToken.EndObject Then
+                    Exit While
+                End If
+
+                If reader.TokenType = JsonToken.PropertyName Then
+                    Dim propertyName As String = reader.Value.ToString()
+
+                    reader.Read()
+
+                    errorDict.Add(propertyName, reader.Value.ToString())
+                Else
+                    Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
+                End If
+            End While
+
+            Return errorDict
+        End Function
+    End Class
 End Namespace
