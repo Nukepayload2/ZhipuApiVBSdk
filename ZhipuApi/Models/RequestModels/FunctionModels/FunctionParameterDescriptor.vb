@@ -6,8 +6,6 @@ Namespace ZhipuApi.Models.RequestModels.FunctionModels
 		Public Property description As String
 
 		Private Shared Function ToTypeString(type As ParameterType) As String
-			If Not True Then
-			End If
 			Dim text As String
 			If type <> ParameterType.[String] Then
 				If type <> ParameterType.[Integer] Then

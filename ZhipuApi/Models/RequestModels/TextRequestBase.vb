@@ -83,10 +83,36 @@ Namespace ZhipuApi.Models.RequestModels
                                     jsonWriter.WriteValue(kv.Value.StringValue)
                                 ElseIf kv.Value.ObjectValue IsNot Nothing Then
                                     jsonWriter.WriteStartObject()
-                                    For Each param In kv.Value.ObjectValue.properties
-                                        jsonWriter.WritePropertyName(param.Key)
-                                        jsonWriter.WriteValue(param.Value.description)
-                                    Next
+                                    If kv.Value.ObjectValue.type IsNot Nothing Then
+                                        jsonWriter.WritePropertyName("type")
+                                        jsonWriter.WriteValue(kv.Value.ObjectValue.type)
+                                    End If
+                                    If kv.Value.ObjectValue.required IsNot Nothing Then
+                                        jsonWriter.WritePropertyName("required")
+                                        jsonWriter.WriteStartArray()
+                                        For Each req In kv.Value.ObjectValue.required
+                                            jsonWriter.WriteValue(req)
+                                        Next
+                                        jsonWriter.WriteEndArray()
+                                    End If
+                                    If kv.Value.ObjectValue.properties IsNot Nothing Then
+                                        jsonWriter.WritePropertyName("properties")
+                                        jsonWriter.WriteStartObject()
+                                        For Each param In kv.Value.ObjectValue.properties
+                                            jsonWriter.WritePropertyName(param.Key)
+                                            jsonWriter.WriteStartObject()
+                                            If param.Value.type IsNot Nothing Then
+                                                jsonWriter.WritePropertyName("type")
+                                                jsonWriter.WriteValue(param.Value.type)
+                                            End If
+                                            If param.Value.description IsNot Nothing Then
+                                                jsonWriter.WritePropertyName("description")
+                                                jsonWriter.WriteValue(param.Value.description)
+                                            End If
+                                            jsonWriter.WriteEndObject()
+                                        Next
+                                        jsonWriter.WriteEndObject()
+                                    End If
                                     jsonWriter.WriteEndObject()
                                 End If
                             Next
