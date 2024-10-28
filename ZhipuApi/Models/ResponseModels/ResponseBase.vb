@@ -18,10 +18,21 @@ Namespace ZhipuApi.Models.ResponseModels
 
         Public Property [error] As Dictionary(Of String, String)
 
-        ' AI 写的，检查了一半。到时候加一些单元测试。
+        Public Shared Function FromJson(json As Stream) As ResponseBase
+            Dim jsonReader As New JsonTextReader(New StreamReader(json))
+            Dim response As New ResponseBase
+            response = ReadResponse(jsonReader, response)
+            Return response
+        End Function
+
         Public Shared Function FromJson(json As String) As ResponseBase
             Dim jsonReader As New JsonTextReader(New StringReader(json))
             Dim response As New ResponseBase
+            response = ReadResponse(jsonReader, response)
+            Return response
+        End Function
+
+        Private Shared Function ReadResponse(jsonReader As JsonTextReader, response As ResponseBase) As ResponseBase
             jsonReader.Read()
 
             If jsonReader.TokenType = JsonToken.StartObject Then

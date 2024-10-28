@@ -1,24 +1,18 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.IO
+﻿Imports System.IO
 Imports System.Net.Http
 Imports System.Text
-Imports System.Text.Json
 Imports ZhipuApi.Models.RequestModels
 Imports ZhipuApi.Models.ResponseModels.ImageGenerationModels
 Imports ZhipuApi.Utils
 
 Namespace ZhipuApi.Modules
-	' Token: 0x02000008 RID: 8
 	Public Class Images
-		' Token: 0x06000015 RID: 21 RVA: 0x00002432 File Offset: 0x00000632
 		Public Sub New(apiKey As String)
 			Me._apiKey = apiKey
 		End Sub
 
-		' Token: 0x06000016 RID: 22 RVA: 0x00002443 File Offset: 0x00000643
 		Private Iterator Function GenerateBase(requestBody As ImageRequestBase) As IEnumerable(Of String)
-			Dim json As String = JsonSerializer.Serialize(Of ImageRequestBase)(requestBody)
+			Dim json As String = requestBody?.ToJson()
 			Dim data As StringContent = New StringContent(json, Encoding.UTF8, "application/json")
 			Dim api_key As String = AuthenticationUtils.GenerateToken(Me._apiKey, Images.API_TOKEN_TTL_SECONDS)
 			Dim request As New HttpRequestMessage() With {
@@ -42,7 +36,6 @@ Namespace ZhipuApi.Modules
 			Return
 		End Function
 
-		' Token: 0x06000017 RID: 23 RVA: 0x0000245C File Offset: 0x0000065C
 		Public Function Generation(requestBody As ImageRequestBase) As ImageResponseBase
 			Dim sb As StringBuilder = New StringBuilder()
 			For Each str As String In Me.GenerateBase(requestBody)
@@ -51,13 +44,10 @@ Namespace ZhipuApi.Modules
 			Return ImageResponseBase.FromJson(sb.ToString())
 		End Function
 
-		' Token: 0x0400000F RID: 15
 		Private _apiKey As String
 
-		' Token: 0x04000010 RID: 16
 		Private Shared API_TOKEN_TTL_SECONDS As Integer = 300
 
-		' Token: 0x04000011 RID: 17
-		Private Shared client As HttpClient = New HttpClient()
+		Private Shared client As New HttpClient
 	End Class
 End Namespace
