@@ -82,22 +82,25 @@ Namespace ZhipuApi.Models.ResponseModels.EmbeddingModels
         End Function
 
         Private Shared Function ReadEmbeddingDataItems(reader As JsonTextReader) As EmbeddingDataItem()
-            Dim dataItems As New List(Of EmbeddingDataItem)
-
-            While reader.Read()
+            If reader.TokenType <> JsonToken.StartArray Then
+                Throw New JsonReaderException($"Unexpected token type {reader.TokenType} at start array")
+            End If
+            Dim array As New List(Of EmbeddingDataItem)
+            While reader.Read() AndAlso reader.TokenType <> JsonToken.EndArray
                 If reader.TokenType = JsonToken.StartObject Then
-                    dataItems.Add(ReadEmbeddingDataItem(reader))
-                ElseIf reader.TokenType = JsonToken.EndArray Then
-                    Exit While
+                    array.Add(ReadEmbeddingDataItem(reader))
                 Else
-                    Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
+                    Throw New JsonReaderException("Expected double value")
                 End If
             End While
-
-            Return dataItems.ToArray()
+            Return array.ToArray()
         End Function
 
         Private Shared Function ReadEmbeddingDataItem(reader As JsonTextReader) As EmbeddingDataItem
+            If reader.TokenType <> JsonToken.StartObject Then
+                Throw New JsonReaderException($"Unexpected token type {reader.TokenType} at start object")
+            End If
+
             Dim dataItem As New EmbeddingDataItem
 
             While reader.Read()
@@ -129,25 +132,18 @@ Namespace ZhipuApi.Models.ResponseModels.EmbeddingModels
         End Function
 
         Private Shared Function ReadEmbeddingArray(reader As JsonTextReader) As Double()
-            Dim embeddingArray As New List(Of Double)
-
-            While reader.Read()
-                If reader.TokenType = JsonToken.StartArray Then
-                    While reader.Read()
-                        If reader.TokenType = JsonToken.EndArray Then
-                            Exit While
-                        End If
-
-                        embeddingArray.Add(CDbl(reader.Value))
-                    End While
-                ElseIf reader.TokenType = JsonToken.EndObject Then
-                    Exit While
+            If reader.TokenType <> JsonToken.StartArray Then
+                Throw New JsonReaderException($"Unexpected token type {reader.TokenType} at start array")
+            End If
+            Dim array As New List(Of Double)
+            While reader.Read() AndAlso reader.TokenType <> JsonToken.EndArray
+                If reader.TokenType = JsonToken.Float OrElse reader.TokenType = JsonToken.Integer Then
+                    array.Add(CDbl(reader.Value))
                 Else
-                    Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
+                    Throw New JsonReaderException("Expected double value")
                 End If
             End While
-
-            Return embeddingArray.ToArray()
+            Return array.ToArray()
         End Function
 
         Private Shared Function ReadErrorDictionary(reader As JsonTextReader) As Dictionary(Of String, String)
@@ -163,7 +159,7 @@ Namespace ZhipuApi.Models.ResponseModels.EmbeddingModels
 
                     reader.Read()
 
-                    errorDict.Add(propertyName, reader.Value.ToString())
+                    errorDict.Add(propertyName, reader.Value?.ToString())
                 Else
                     Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
                 End If
