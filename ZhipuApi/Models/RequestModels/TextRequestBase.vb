@@ -53,7 +53,25 @@ Namespace ZhipuApi.Models.RequestModels
                             ElseIf message.content.ArrayValue IsNot Nothing Then
                                 jsonWriter.WriteStartArray()
                                 For Each item In message.content.ArrayValue
-                                    jsonWriter.WriteValue(item)
+                                    If item IsNot Nothing Then
+                                        jsonWriter.WriteStartObject()
+                                        If item.type IsNot Nothing Then
+                                            jsonWriter.WriteValue(item.type)
+                                        End If
+                                        If item.text IsNot Nothing Then
+                                            jsonWriter.WriteValue(item.text)
+                                        End If
+                                        If item.image_url IsNot Nothing Then
+                                            jsonWriter.WriteStartObject()
+                                            If item.image_url.url IsNot Nothing Then
+                                                jsonWriter.WriteValue(item.image_url.url)
+                                            End If
+                                            jsonWriter.WriteEndObject()
+                                        End If
+                                        jsonWriter.WriteEndObject()
+                                    Else
+                                        jsonWriter.WriteNull()
+                                    End If
                                 Next
                                 jsonWriter.WriteEndArray()
                             End If
