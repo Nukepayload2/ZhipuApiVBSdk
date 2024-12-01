@@ -7,6 +7,10 @@
     <Version>1.0.0-beta1</Version>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)'=='net8.0'">
+    <IsAotCompatible>True</IsAotCompatible>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
