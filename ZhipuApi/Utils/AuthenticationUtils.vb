@@ -5,7 +5,7 @@ Imports Microsoft.IdentityModel.Tokens
 Namespace ZhipuApi.Utils
 	Public Class AuthenticationUtils
 		Public Shared Function GenerateToken(apiKey As String, expSeconds As Integer) As String
-			Dim parts As String() = apiKey.Split("."c, StringSplitOptions.None)
+			Dim parts As String() = apiKey.Split({"."c}, StringSplitOptions.None)
 			Dim flag As Boolean = parts.Length <> 2
 			If flag Then
 				Throw New ArgumentException("Invalid API key format.")

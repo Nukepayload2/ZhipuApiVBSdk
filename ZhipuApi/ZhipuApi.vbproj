@@ -2,8 +2,9 @@
   <PropertyGroup>
     <RootNamespace></RootNamespace>
     <AssemblyName>ZhipuApi</AssemblyName>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
     <NoWarn></NoWarn>
+    <Version>1.0.0-beta1</Version>
   </PropertyGroup>
 
   <ItemGroup>
