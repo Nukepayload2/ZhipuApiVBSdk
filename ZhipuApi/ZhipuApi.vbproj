@@ -15,6 +15,7 @@
     <Deterministic>True</Deterministic>
     <Copyright>Copyright 2024 Nukepayload2</Copyright>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <Authors>Nukepayload2</Authors>
     <PackageReleaseNotes>The initial public test version. All text generation features have been tested internally.</PackageReleaseNotes>
   </PropertyGroup>
 
