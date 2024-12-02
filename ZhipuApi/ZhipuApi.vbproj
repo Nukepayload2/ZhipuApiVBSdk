@@ -5,7 +5,7 @@
     <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
     <Version>1.0.0-beta4</Version>
     <PackageId>$(AssemblyName)</PackageId>
-    <Description>AI service provider of ZhipuApi v4. It's part of the Nukepayload2 VB AI SDK.</Description>
+    <Description>VB-friendly .NET bindings for the ZhipuApi v4. It's part of the Nukepayload2 VB AI SDK as a model provider.</Description>
     <PackageProjectUrl>https://github.com/Nukepayload2/ZhipuApiVBSdk</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Nukepayload2/ZhipuApiVBSdk.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
