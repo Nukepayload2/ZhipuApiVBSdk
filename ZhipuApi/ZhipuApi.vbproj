@@ -12,6 +12,9 @@
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageTags>zhipu ZhipuApi AI</PackageTags>
     <OptionStrict>On</OptionStrict>
+    <Deterministic>True</Deterministic>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageReleaseNotes>The initial public test version. All text generation features have been tested internally.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net8.0'">
@@ -21,6 +24,12 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="..\readme.md">
+      <PackagePath>readme.md</PackagePath>
+    </Content>
   </ItemGroup>
 
 </Project>

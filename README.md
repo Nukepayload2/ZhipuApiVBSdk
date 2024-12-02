@@ -6,6 +6,8 @@ A VB friendly variant of https://github.com/MetaGLM/zhipuai-sdk-csharp-v4
 - [x] No reflection required. Support AOT compilation on .NET 8 or later.
 - [x] VB flavor of API usage
 
+Code examples: [CodeExamples.vb](https://github.com/Nukepayload2/ZhipuApiVBSdk/blob/master/ZhipuApiExamples/CodeExamples.vb)
+
 ## Target Frameworks
 - .NET Standard 2.0
 - .NET 8 or later
