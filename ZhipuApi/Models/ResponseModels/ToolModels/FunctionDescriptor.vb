@@ -1,5 +1,4 @@
-﻿
-Namespace ZhipuApi.Models.ResponseModels.ToolModels
+﻿Namespace Models
 	Public Class FunctionDescriptor
 		Public Property Name As String
 

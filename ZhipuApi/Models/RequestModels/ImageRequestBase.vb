@@ -1,7 +1,7 @@
 ﻿Imports Newtonsoft.Json
 Imports System.IO
 
-Namespace ZhipuApi.Models.RequestModels
+Namespace Models
     Public Class ImageRequestBase
         Public Property Model As String
 

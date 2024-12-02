@@ -1,4 +1,4 @@
-﻿Namespace ZhipuApi.Models.RequestModels.FunctionModels
+﻿Namespace Models
 	Public Enum ParameterType
 		[String]
 		[Integer]

@@ -1,6 +1,4 @@
-﻿Imports ZhipuApi.Models.ResponseModels.ToolModels
-
-Namespace ZhipuApi.Models.ResponseModels
+﻿Namespace Models
 	Public Class ResponseChoiceDelta
 		Public Property Role As String
 

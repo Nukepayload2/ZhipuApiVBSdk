@@ -1,8 +1,8 @@
 ﻿Imports Newtonsoft.Json
 Imports System.IO
 
-Namespace ZhipuApi.Models.ResponseModels.ImageGenerationModels
-	Public Class ImageResponseBase
+Namespace Models
+    Public Class ImageResponseBase
         Public Property Created As Long
 
         Public Property Data As List(Of ImageResponseDataItem)

@@ -1,4 +1,4 @@
-﻿Namespace ZhipuApi.Models.ResponseModels.EmbeddingModels
+﻿Namespace Models
 	Public Class EmbeddingDataItem
 		Public Property Index As Integer
 

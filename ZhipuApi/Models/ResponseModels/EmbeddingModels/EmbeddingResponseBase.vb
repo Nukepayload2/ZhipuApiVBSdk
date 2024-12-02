@@ -1,7 +1,7 @@
 ﻿Imports Newtonsoft.Json
 Imports System.IO
 
-Namespace ZhipuApi.Models.ResponseModels.EmbeddingModels
+Namespace Models
     Public Class EmbeddingResponseBase
         Public Property Model As String
         Public Property [Object] As String

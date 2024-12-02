@@ -1,6 +1,4 @@
-﻿Imports ZhipuApi.Models.RequestModels.ImageToTextModels
-
-Namespace ZhipuApi.Models.RequestModels
+﻿Namespace Models
     Public Class MessageItem
         Public Property Role As String
 

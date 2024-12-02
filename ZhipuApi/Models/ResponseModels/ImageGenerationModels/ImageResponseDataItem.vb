@@ -1,4 +1,4 @@
-﻿Namespace ZhipuApi.Models.ResponseModels.ImageGenerationModels
+﻿Namespace Models
 	Public Class ImageResponseDataItem
 		Public Property Url As String
 	End Class

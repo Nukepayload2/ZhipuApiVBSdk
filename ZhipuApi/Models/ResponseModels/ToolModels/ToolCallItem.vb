@@ -1,5 +1,4 @@
-﻿
-Namespace ZhipuApi.Models.ResponseModels.ToolModels
+﻿Namespace Models
 	Public Class ToolCallItem
 		Public Property Id As String
 

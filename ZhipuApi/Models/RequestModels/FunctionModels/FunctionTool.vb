@@ -1,4 +1,4 @@
-﻿Namespace ZhipuApi.Models.RequestModels.FunctionModels
+﻿Namespace Models
 	Public Class FunctionTool
 		Public Property Type As String = "function"
 

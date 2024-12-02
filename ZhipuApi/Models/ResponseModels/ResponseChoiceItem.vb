@@ -1,4 +1,4 @@
-﻿Namespace ZhipuApi.Models.ResponseModels
+﻿Namespace Models
 	Public Class ResponseChoiceItem
 		Public Property FinishReason As String
 

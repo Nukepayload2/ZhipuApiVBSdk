@@ -1,8 +1,7 @@
 ﻿Imports System.IO
 Imports Newtonsoft.Json
-Imports ZhipuApi.Models.ResponseModels.ToolModels
 
-Namespace ZhipuApi.Models.ResponseModels
+Namespace Models
     Public Class ResponseBase
         Public Property Id As String
 

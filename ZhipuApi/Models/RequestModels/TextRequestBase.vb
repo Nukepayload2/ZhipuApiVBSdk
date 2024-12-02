@@ -1,8 +1,7 @@
 ﻿Imports Newtonsoft.Json
 Imports System.IO
-Imports ZhipuApi.Models.RequestModels.FunctionModels
 
-Namespace ZhipuApi.Models.RequestModels
+Namespace Models
     Public Class TextRequestBase
         Public Property RequestId As String
 

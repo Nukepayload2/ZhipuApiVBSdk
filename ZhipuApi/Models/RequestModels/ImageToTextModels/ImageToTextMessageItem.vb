@@ -1,9 +1,9 @@
-﻿Namespace ZhipuApi.Models.RequestModels.ImageToTextModels
-	Public Class ImageToTextMessageItem
-		Inherits MessageItem
+﻿Namespace Models
+    Public Class ImageToTextMessageItem
+        Inherits MessageItem
 
-		Public Sub New(role As String)
-			MyBase.New(role, Nothing)
+        Public Sub New(role As String)
+            MyBase.New(role, Nothing)
             Content = New StringOrArray(Of ContentType) With {.ArrayValue = New ContentType(1) {}}
         End Sub
 

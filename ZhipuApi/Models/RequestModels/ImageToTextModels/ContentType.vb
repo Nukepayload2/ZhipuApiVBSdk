@@ -1,4 +1,4 @@
-﻿Namespace ZhipuApi.Models.RequestModels.ImageToTextModels
+﻿Namespace Models
 	Public Class ContentType
 		Public Property Type As String
 

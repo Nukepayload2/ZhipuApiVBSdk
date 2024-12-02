@@ -1,4 +1,4 @@
-﻿Namespace ZhipuApi.Models.RequestModels.ImageToTextModels
+﻿Namespace Models
 	Public Class ImageUrlType
 		Public Property Url As String
 		Sub New()

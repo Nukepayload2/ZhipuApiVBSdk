@@ -1,4 +1,4 @@
-﻿Namespace ZhipuApi.Modules
+﻿Namespace Modules
 	Public Enum ModelPortal
 		Regular
 		Character
