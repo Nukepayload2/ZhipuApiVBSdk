@@ -1,168 +1,182 @@
 ﻿Imports Newtonsoft.Json
 Imports System.IO
 Imports ZhipuApi.Models.RequestModels.FunctionModels
+
 Namespace ZhipuApi.Models.RequestModels
     Public Class TextRequestBase
-        Public Property request_id As String
-        Public Property model As String
+        Public Property RequestId As String
 
-        Public Property messages As MessageItem()
+        Public Property Model As String
 
-		Public Property tools As FunctionTool()
+        Public Property Messages As MessageItem()
 
-		Public Property tool_choice As String
+        Public Property Tools As FunctionTool()
 
-        Public Property top_p As Double?
+        Public Property ToolChoice As String
 
-        Public Property temperature As Double?
+        Public Property TopP As Double?
 
-        Public Property stream As Boolean = True
+        Public Property Temperature As Double?
 
-		Public Function ToJson() As String
-            Dim stringWriter = New StringWriter
-            Dim jsonWriter = New JsonTextWriter(stringWriter) With {
-                .Formatting = Formatting.None,
-                .Indentation = 0
-            }
-            jsonWriter.WriteStartObject()
+        Public Property Stream As Boolean = True
 
-            If request_id IsNot Nothing Then
-                jsonWriter.WritePropertyName("request_id")
-                jsonWriter.WriteValue(request_id)
-            End If
+        Public Function ToJson() As String
+            Using stringWriter = New StringWriter, jsonWriter = New JsonTextWriter(stringWriter)
+                jsonWriter.WriteStartObject()
 
-            If model IsNot Nothing Then
-                jsonWriter.WritePropertyName("model")
-                jsonWriter.WriteValue(model)
-            End If
+                If RequestId IsNot Nothing Then
+                    jsonWriter.WritePropertyName("request_id")
+                    jsonWriter.WriteValue(RequestId)
+                End If
 
-            If messages IsNot Nothing Then
-                jsonWriter.WritePropertyName("messages")
-                jsonWriter.WriteStartArray()
-                For Each message In messages
-                    If message IsNot Nothing Then
-                        jsonWriter.WriteStartObject()
-                        If message.role IsNot Nothing Then
-                            jsonWriter.WritePropertyName("role")
-                            jsonWriter.WriteValue(message.role)
-                        End If
-                        If message.content IsNot Nothing Then
-                            jsonWriter.WritePropertyName("content")
-                            If message.content.StringValue IsNot Nothing Then
-                                jsonWriter.WriteValue(message.content.StringValue)
-                            ElseIf message.content.ArrayValue IsNot Nothing Then
-                                jsonWriter.WriteStartArray()
-                                For Each item In message.content.ArrayValue
-                                    If item IsNot Nothing Then
-                                        jsonWriter.WriteStartObject()
-                                        If item.type IsNot Nothing Then
-                                            jsonWriter.WriteValue(item.type)
-                                        End If
-                                        If item.text IsNot Nothing Then
-                                            jsonWriter.WriteValue(item.text)
-                                        End If
-                                        If item.image_url IsNot Nothing Then
-                                            jsonWriter.WriteStartObject()
-                                            If item.image_url.url IsNot Nothing Then
-                                                jsonWriter.WriteValue(item.image_url.url)
-                                            End If
-                                            jsonWriter.WriteEndObject()
-                                        End If
-                                        jsonWriter.WriteEndObject()
-                                    Else
-                                        jsonWriter.WriteNull()
-                                    End If
-                                Next
-                                jsonWriter.WriteEndArray()
-                            End If
-                        End If
-                        jsonWriter.WriteEndObject()
-                    End If
-                Next
-                jsonWriter.WriteEndArray()
-            End If
+                If Model IsNot Nothing Then
+                    jsonWriter.WritePropertyName("model")
+                    jsonWriter.WriteValue(Model)
+                End If
 
-            If tools IsNot Nothing Then
-                jsonWriter.WritePropertyName("tools")
-                jsonWriter.WriteStartArray()
-                For Each tool In tools
-                    If tool IsNot Nothing Then
-                        jsonWriter.WriteStartObject()
-                        If tool.type IsNot Nothing Then
-                            jsonWriter.WritePropertyName("type")
-                            jsonWriter.WriteValue(tool.type)
-                        End If
-                        If tool.[function] IsNot Nothing Then
-                            jsonWriter.WritePropertyName("function")
+                If Messages IsNot Nothing Then
+                    jsonWriter.WritePropertyName("messages")
+                    jsonWriter.WriteStartArray()
+                    For Each message In Messages
+                        WriteMessage(jsonWriter, message)
+                    Next
+                    jsonWriter.WriteEndArray()
+                End If
+
+                If Tools IsNot Nothing Then
+                    jsonWriter.WritePropertyName("tools")
+                    jsonWriter.WriteStartArray()
+                    For Each tool In Tools
+                        If tool IsNot Nothing Then
                             jsonWriter.WriteStartObject()
-                            For Each kv In tool.[function]
-                                jsonWriter.WritePropertyName(kv.Key)
-                                If kv.Value.StringValue IsNot Nothing Then
-                                    jsonWriter.WriteValue(kv.Value.StringValue)
-                                ElseIf kv.Value.ObjectValue IsNot Nothing Then
-                                    jsonWriter.WriteStartObject()
-                                    If kv.Value.ObjectValue.type IsNot Nothing Then
-                                        jsonWriter.WritePropertyName("type")
-                                        jsonWriter.WriteValue(kv.Value.ObjectValue.type)
-                                    End If
-                                    If kv.Value.ObjectValue.required IsNot Nothing Then
-                                        jsonWriter.WritePropertyName("required")
-                                        jsonWriter.WriteStartArray()
-                                        For Each req In kv.Value.ObjectValue.required
-                                            jsonWriter.WriteValue(req)
-                                        Next
-                                        jsonWriter.WriteEndArray()
-                                    End If
-                                    If kv.Value.ObjectValue.properties IsNot Nothing Then
-                                        jsonWriter.WritePropertyName("properties")
-                                        jsonWriter.WriteStartObject()
-                                        For Each param In kv.Value.ObjectValue.properties
-                                            jsonWriter.WritePropertyName(param.Key)
-                                            jsonWriter.WriteStartObject()
-                                            If param.Value.type IsNot Nothing Then
-                                                jsonWriter.WritePropertyName("type")
-                                                jsonWriter.WriteValue(param.Value.type)
-                                            End If
-                                            If param.Value.description IsNot Nothing Then
-                                                jsonWriter.WritePropertyName("description")
-                                                jsonWriter.WriteValue(param.Value.description)
-                                            End If
-                                            jsonWriter.WriteEndObject()
-                                        Next
-                                        jsonWriter.WriteEndObject()
-                                    End If
-                                    jsonWriter.WriteEndObject()
-                                End If
-                            Next
+                            WriteTool(jsonWriter, tool)
                             jsonWriter.WriteEndObject()
                         End If
-                        jsonWriter.WriteEndObject()
-                    End If
-                Next
-                jsonWriter.WriteEndArray()
-            End If
+                    Next
+                    jsonWriter.WriteEndArray()
+                End If
 
-            If tool_choice IsNot Nothing Then
-                jsonWriter.WritePropertyName("tool_choice")
-                jsonWriter.WriteValue(tool_choice)
-            End If
+                If ToolChoice IsNot Nothing Then
+                    jsonWriter.WritePropertyName("tool_choice")
+                    jsonWriter.WriteValue(ToolChoice)
+                End If
 
-            If top_p.HasValue Then
-                jsonWriter.WritePropertyName("top_p")
-                jsonWriter.WriteValue(top_p)
-            End If
+                If TopP IsNot Nothing Then
+                    jsonWriter.WritePropertyName("top_p")
+                    jsonWriter.WriteValue(TopP)
+                End If
 
-            If temperature.HasValue Then
-                jsonWriter.WritePropertyName("temperature")
-                jsonWriter.WriteValue(temperature)
-            End If
+                If Temperature IsNot Nothing Then
+                    jsonWriter.WritePropertyName("temperature")
+                    jsonWriter.WriteValue(Temperature)
+                End If
 
-            jsonWriter.WritePropertyName("stream")
-            jsonWriter.WriteValue(stream)
+                jsonWriter.WritePropertyName("stream")
+                jsonWriter.WriteValue(Stream)
 
-            jsonWriter.WriteEndObject()
+                jsonWriter.WriteEndObject()
 
-            Return stringWriter.ToString()
+                Return stringWriter.ToString()
+            End Using
         End Function
-	End Class
+
+        Private Shared Sub WriteTool(jsonWriter As JsonTextWriter, tool As FunctionTool)
+            If tool.Type IsNot Nothing Then
+                jsonWriter.WritePropertyName("type")
+                jsonWriter.WriteValue(tool.Type)
+            End If
+            If tool.Function Is Nothing Then Return
+            jsonWriter.WritePropertyName("function")
+            jsonWriter.WriteStartObject()
+            For Each kv In tool.Function
+                jsonWriter.WritePropertyName(kv.Key)
+                If kv.Value.StringValue IsNot Nothing Then
+                    jsonWriter.WriteValue(kv.Value.StringValue)
+                ElseIf kv.Value.ObjectValue IsNot Nothing Then
+                    jsonWriter.WriteStartObject()
+                    If kv.Value.ObjectValue.Type IsNot Nothing Then
+                        jsonWriter.WritePropertyName("type")
+                        jsonWriter.WriteValue(kv.Value.ObjectValue.Type)
+                    End If
+                    If kv.Value.ObjectValue.Required IsNot Nothing Then
+                        jsonWriter.WritePropertyName("required")
+                        jsonWriter.WriteStartArray()
+                        For Each req In kv.Value.ObjectValue.Required
+                            jsonWriter.WriteValue(req)
+                        Next
+                        jsonWriter.WriteEndArray()
+                    End If
+                    If kv.Value.ObjectValue.Properties IsNot Nothing Then
+                        WriteFuncProps(jsonWriter, kv)
+                    End If
+                    jsonWriter.WriteEndObject()
+                End If
+            Next
+            jsonWriter.WriteEndObject()
+        End Sub
+
+        Private Shared Sub WriteFuncProps(jsonWriter As JsonTextWriter, kv As KeyValuePair(Of String, StringOrObject(Of FunctionParameters)))
+            jsonWriter.WritePropertyName("properties")
+            jsonWriter.WriteStartObject()
+            For Each param In kv.Value.ObjectValue.Properties
+                jsonWriter.WritePropertyName(param.Key)
+                Dim funcValue = param.Value
+                If funcValue Is Nothing Then
+                    jsonWriter.WriteNull()
+                Else
+                    jsonWriter.WriteStartObject()
+                    If funcValue.Type IsNot Nothing Then
+                        jsonWriter.WritePropertyName("type")
+                        jsonWriter.WriteValue(funcValue.Type)
+                    End If
+                    If funcValue.Description IsNot Nothing Then
+                        jsonWriter.WritePropertyName("description")
+                        jsonWriter.WriteValue(funcValue.Description)
+                    End If
+                    jsonWriter.WriteEndObject()
+                End If
+            Next
+            jsonWriter.WriteEndObject()
+        End Sub
+
+        Private Shared Sub WriteMessage(jsonWriter As JsonTextWriter, message As MessageItem)
+            If message Is Nothing Then Return
+            jsonWriter.WriteStartObject()
+            If message.Role IsNot Nothing Then
+                jsonWriter.WritePropertyName("role")
+                jsonWriter.WriteValue(message.Role)
+            End If
+            If message.Content IsNot Nothing Then
+                jsonWriter.WritePropertyName("content")
+                If message.Content.StringValue IsNot Nothing Then
+                    jsonWriter.WriteValue(message.Content.StringValue)
+                ElseIf message.Content.ArrayValue IsNot Nothing Then
+                    jsonWriter.WriteStartArray()
+                    For Each item In message.Content.ArrayValue
+                        If item IsNot Nothing Then
+                            jsonWriter.WriteStartObject()
+                            If item.Type IsNot Nothing Then
+                                jsonWriter.WriteValue(item.Type)
+                            End If
+                            If item.Text IsNot Nothing Then
+                                jsonWriter.WriteValue(item.Text)
+                            End If
+                            If item.ImageUrl IsNot Nothing Then
+                                jsonWriter.WriteStartObject()
+                                If item.ImageUrl.Url IsNot Nothing Then
+                                    jsonWriter.WriteValue(item.ImageUrl.Url)
+                                End If
+                                jsonWriter.WriteEndObject()
+                            End If
+                            jsonWriter.WriteEndObject()
+                        Else
+                            jsonWriter.WriteNull()
+                        End If
+                    Next
+                    jsonWriter.WriteEndArray()
+                End If
+            End If
+            jsonWriter.WriteEndObject()
+        End Sub
+    End Class
 End Namespace

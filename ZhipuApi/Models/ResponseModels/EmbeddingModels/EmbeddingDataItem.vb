@@ -1,10 +1,9 @@
-﻿
-Namespace ZhipuApi.Models.ResponseModels.EmbeddingModels
+﻿Namespace ZhipuApi.Models.ResponseModels.EmbeddingModels
 	Public Class EmbeddingDataItem
-		Public Property index As Integer
+		Public Property Index As Integer
 
-		Public Property _object As String
+		Public Property [Object] As String
 
-		Public Property embedding As Double()
+		Public Property Embedding As Double()
 	End Class
 End Namespace

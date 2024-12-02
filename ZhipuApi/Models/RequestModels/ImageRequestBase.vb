@@ -1,25 +1,24 @@
 ﻿Imports Newtonsoft.Json
 Imports System.IO
+
 Namespace ZhipuApi.Models.RequestModels
     Public Class ImageRequestBase
-        Public Property model As String
+        Public Property Model As String
 
-        Public Property prompt As String
+        Public Property Prompt As String
 
         Public Function ToJson() As String
-            Using sw As New StringWriter
-                Dim jsonWriter As New JsonTextWriter(sw)
-
+            Using sw As New StringWriter, jsonWriter As New JsonTextWriter(sw)
                 jsonWriter.WriteStartObject()
 
-                If model IsNot Nothing Then
+                If Model IsNot Nothing Then
                     jsonWriter.WritePropertyName("model")
-                    jsonWriter.WriteValue(model)
+                    jsonWriter.WriteValue(Model)
                 End If
 
-                If prompt IsNot Nothing Then
+                If Prompt IsNot Nothing Then
                     jsonWriter.WritePropertyName("prompt")
-                    jsonWriter.WriteValue(prompt)
+                    jsonWriter.WriteValue(Prompt)
                 End If
 
                 jsonWriter.WriteEndObject()

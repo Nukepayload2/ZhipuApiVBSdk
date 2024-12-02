@@ -1,23 +1,22 @@
-﻿Imports System.Diagnostics.Eventing
-Imports System.IO
+﻿Imports System.IO
 Imports Newtonsoft.Json
 Imports ZhipuApi.Models.ResponseModels.ToolModels
 
 Namespace ZhipuApi.Models.ResponseModels
     Public Class ResponseBase
-        Public Property id As String
+        Public Property Id As String
 
-        Public Property request_id As String
+        Public Property RequestId As String
 
-        Public Property created As Long
+        Public Property Created As Long
 
-        Public Property model As String
+        Public Property Model As String
 
-        Public Property usage As Dictionary(Of String, Integer)
+        Public Property Usage As Dictionary(Of String, Integer)
 
-        Public Property choices As ResponseChoiceItem()
+        Public Property Choices As ResponseChoiceItem()
 
-        Public Property [error] As Dictionary(Of String, String)
+        Public Property [Error] As Dictionary(Of String, String)
 
         Public Shared Function FromJson(json As Stream) As ResponseBase
             Dim jsonReader As New JsonTextReader(New StreamReader(json))
@@ -49,34 +48,34 @@ Namespace ZhipuApi.Models.ResponseModels
                             Case JsonToken.String
                                 Select Case propertyName
                                     Case "id"
-                                        response.id = jsonReader.Value.ToString()
+                                        response.Id = jsonReader.Value.ToString()
                                     Case "request_id"
-                                        response.request_id = jsonReader.Value.ToString()
+                                        response.RequestId = jsonReader.Value.ToString()
                                     Case "model"
-                                        response.model = jsonReader.Value.ToString()
+                                        response.Model = jsonReader.Value.ToString()
                                     Case Else
                                         Throw New InvalidDataException($"Unexpected property: {propertyName}")
                                 End Select
                             Case JsonToken.Integer
                                 Select Case propertyName
                                     Case "created"
-                                        response.created = CLng(jsonReader.Value)
+                                        response.Created = CLng(jsonReader.Value)
                                     Case Else
                                         Throw New InvalidDataException($"Unexpected property: {propertyName}")
                                 End Select
                             Case JsonToken.StartObject
                                 Select Case propertyName
                                     Case "usage"
-                                        response.usage = DeserializeStringIntegerDictionary(jsonReader)
+                                        response.Usage = DeserializeStringIntegerDictionary(jsonReader)
                                     Case "error"
-                                        response.error = DeserializeStringDictionary(jsonReader)
+                                        response.Error = DeserializeStringDictionary(jsonReader)
                                     Case Else
                                         Throw New InvalidDataException($"Unexpected property: {propertyName}")
                                 End Select
                             Case JsonToken.StartArray
                                 Select Case propertyName
                                     Case "choices"
-                                        response.choices = DeserializeChoices(jsonReader)
+                                        response.Choices = DeserializeChoices(jsonReader)
                                     Case Else
                                         Throw New InvalidDataException($"Unexpected property: {propertyName}")
                                 End Select
@@ -168,13 +167,13 @@ Namespace ZhipuApi.Models.ResponseModels
 
                             Select Case propertyName
                                 Case "finish_reason"
-                                    choice.finish_reason = jsonReader.Value.ToString()
+                                    choice.FinishReason = jsonReader.Value.ToString()
                                 Case "index"
-                                    choice.index = CInt(jsonReader.Value)
+                                    choice.Index = CInt(jsonReader.Value)
                                 Case "message"
-                                    choice.message = DeserializeResponseChoiceDelta(jsonReader)
+                                    choice.Message = DeserializeResponseChoiceDelta(jsonReader)
                                 Case "delta"
-                                    choice.delta = DeserializeResponseChoiceDelta(jsonReader)
+                                    choice.Delta = DeserializeResponseChoiceDelta(jsonReader)
                                 Case Else
                                     Throw New InvalidDataException($"Unexpected property: {propertyName}")
                             End Select
@@ -207,11 +206,11 @@ Namespace ZhipuApi.Models.ResponseModels
 
                     Select Case propertyName
                         Case "role"
-                            delta.role = jsonReader.Value.ToString()
+                            delta.Role = jsonReader.Value.ToString()
                         Case "content"
-                            delta.content = jsonReader.Value.ToString()
+                            delta.Content = jsonReader.Value.ToString()
                         Case "tool_calls"
-                            delta.tool_calls = DeserializeToolCalls(jsonReader)
+                            delta.ToolCalls = DeserializeToolCalls(jsonReader)
                         Case Else
                             Throw New InvalidDataException($"Unexpected property: {propertyName}")
                     End Select
@@ -246,13 +245,13 @@ Namespace ZhipuApi.Models.ResponseModels
 
                             Select Case propertyName
                                 Case "id"
-                                    toolCall.id = jsonReader.Value.ToString()
+                                    toolCall.Id = jsonReader.Value.ToString()
                                 Case "function"
-                                    toolCall.[function] = DeserializeFunctionDescriptor(jsonReader)
+                                    toolCall.Function = DeserializeFunctionDescriptor(jsonReader)
                                 Case "index"
-                                    toolCall.index = CInt(jsonReader.Value)
+                                    toolCall.Index = CInt(jsonReader.Value)
                                 Case "type"
-                                    toolCall.type = jsonReader.Value.ToString()
+                                    toolCall.Type = jsonReader.Value.ToString()
                                 Case Else
                                     Throw New InvalidDataException($"Unexpected property: {propertyName}")
                             End Select
@@ -284,9 +283,9 @@ Namespace ZhipuApi.Models.ResponseModels
 
                     Select Case propertyName
                         Case "name"
-                            functionDescriptor.name = jsonReader.Value.ToString()
+                            functionDescriptor.Name = jsonReader.Value.ToString()
                         Case "arguments"
-                            functionDescriptor.arguments = jsonReader.Value.ToString()
+                            functionDescriptor.Arguments = jsonReader.Value.ToString()
                         Case Else
                             Throw New InvalidDataException($"Unexpected property: {propertyName}")
                     End Select

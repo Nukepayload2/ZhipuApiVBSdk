@@ -7,14 +7,18 @@ Imports ZhipuApi.Utils
 
 Namespace ZhipuApi.Modules
 	Public Class Embeddings
+		Private Const API_TOKEN_TTL_SECONDS = 300
+		Private Shared ReadOnly client As New HttpClient
+		Private ReadOnly _apiKey As String
+
 		Public Sub New(apiKey As String)
-			Me._apiKey = apiKey
+			_apiKey = apiKey
 		End Sub
 
 		Private Iterator Function ProcessBase(requestBody As EmbeddingRequestBase) As IEnumerable(Of String)
 			Dim json As String = requestBody?.ToJson
 			Dim data As StringContent = New StringContent(json, Encoding.UTF8, "application/json")
-			Dim api_key As String = AuthenticationUtils.GenerateToken(Me._apiKey, Embeddings.API_TOKEN_TTL_SECONDS)
+			Dim api_key As String = AuthenticationUtils.GenerateToken(_apiKey, Embeddings.API_TOKEN_TTL_SECONDS)
 			Dim request As New HttpRequestMessage() With {
 				.Method = HttpMethod.Post,
 				.RequestUri = New Uri("https://open.bigmodel.cn/api/paas/v4/embeddings"),
@@ -38,16 +42,11 @@ Namespace ZhipuApi.Modules
 
 		Public Function Process(requestBody As EmbeddingRequestBase) As EmbeddingResponseBase
 			Dim sb As StringBuilder = New StringBuilder()
-			For Each str As String In Me.ProcessBase(requestBody)
+			For Each str As String In ProcessBase(requestBody)
 				sb.Append(str)
 			Next
 			Return EmbeddingResponseBase.FromJson(sb.ToString())
 		End Function
 
-		Private _apiKey As String
-
-		Private Shared API_TOKEN_TTL_SECONDS As Integer = 300
-
-		Private Shared client As New HttpClient
 	End Class
 End Namespace

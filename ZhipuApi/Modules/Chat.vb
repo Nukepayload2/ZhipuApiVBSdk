@@ -8,6 +8,12 @@ Imports ZhipuApi.Utils
 
 Namespace ZhipuApi.Modules
 	Public Class Chat
+		Private Const API_TOKEN_TTL_SECONDS = 300
+
+		Private Shared ReadOnly client As New HttpClient()
+
+		Private ReadOnly _apiKey As String
+
 		Public Sub New(apiKey As String)
 			_apiKey = apiKey
 		End Sub
@@ -46,7 +52,7 @@ Namespace ZhipuApi.Modules
 		End Function
 
 		Public Async Function CompletionAsync(textRequestBody As TextRequestBase, Optional cancellationToken As CancellationToken = Nothing) As Task(Of ResponseBase)
-			textRequestBody.stream = False
+			textRequestBody.Stream = False
 			Dim ms As New MemoryStream
 			Await CompletionUtf8Async(textRequestBody,
 				Sub(str As ReadOnlyMemory(Of Byte))
@@ -62,7 +68,7 @@ Namespace ZhipuApi.Modules
 		End Function
 
 		Public Async Function Stream(textRequestBody As TextRequestBase, yieldCallback As Action(Of ResponseBase)) As Task
-			textRequestBody.stream = True
+			textRequestBody.Stream = True
 			' 原版 SDK 就写成这样了，字符串这样拼也是醉了
 			Dim buffer As String = String.Empty
 			Dim bufferBuilder As New StringBuilder
@@ -103,14 +109,5 @@ Namespace ZhipuApi.Modules
 			End If
 		End Function
 
-		Private _apiKey As String
-
-		Private Shared API_TOKEN_TTL_SECONDS As Integer = 300
-
-		Private Shared client As New HttpClient()
-
-		Private Shared PORTAL_URLS As New Dictionary(Of ModelPortal, String)() From {
-			{ModelPortal.Regular, "https://open.bigmodel.cn/api/paas/v4/chat/completions"}
-		}
 	End Class
 End Namespace

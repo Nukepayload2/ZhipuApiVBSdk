@@ -1,9 +1,8 @@
-﻿
-Namespace ZhipuApi.Models.RequestModels.FunctionModels
+﻿Namespace ZhipuApi.Models.RequestModels.FunctionModels
 	Public Class FunctionParameterDescriptor
-		Public Property type As String
+		Public Property Type As String
 
-		Public Property description As String
+		Public Property Description As String
 
 		Private Shared Function ToTypeString(type As ParameterType) As String
 			Dim text As String
@@ -18,12 +17,14 @@ Namespace ZhipuApi.Models.RequestModels.FunctionModels
 			End If
 			Return text
 		End Function
+
 		Sub New()
 
 		End Sub
-		Public Sub New(type As ParameterType, description As String)
-			Me.type = FunctionParameterDescriptor.ToTypeString(type)
-			Me.description = description
+
+		Sub New(type As ParameterType, description As String)
+			Me.Type = ToTypeString(type)
+			Me.Description = description
 		End Sub
 	End Class
 End Namespace

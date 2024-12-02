@@ -1,11 +1,11 @@
 ﻿Namespace ZhipuApi.Models.ResponseModels
 	Public Class ResponseChoiceItem
-		Public Property finish_reason As String
+		Public Property FinishReason As String
 
-		Public Property index As Integer
+		Public Property Index As Integer
 
-		Public Property message As ResponseChoiceDelta
+		Public Property Message As ResponseChoiceDelta
 
-		Public Property delta As ResponseChoiceDelta
+		Public Property Delta As ResponseChoiceDelta
 	End Class
 End Namespace

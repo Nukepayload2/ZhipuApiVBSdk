@@ -1,11 +1,16 @@
 ﻿Namespace ZhipuApi.Models.RequestModels.ImageToTextModels
 	Public Class ImageUrlType
-		Public Property url As String
+		Public Property Url As String
 		Sub New()
 
 		End Sub
-		Public Sub New(url As String)
-			Me.url = url
+
+		Sub New(url As String)
+			Me.Url = url
 		End Sub
+
+		Public Shared Widening Operator CType(url As String) As ImageUrlType
+			Return New ImageUrlType(url)
+		End Operator
 	End Class
 End Namespace

@@ -2,10 +2,10 @@
 
 Namespace ZhipuApi.Models.ResponseModels
 	Public Class ResponseChoiceDelta
-		Public Property role As String
+		Public Property Role As String
 
-		Public Property content As String
+		Public Property Content As String
 
-		Public Property tool_calls As ToolCallItem()
+		Public Property ToolCalls As ToolCallItem()
 	End Class
 End Namespace

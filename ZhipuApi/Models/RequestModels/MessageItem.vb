@@ -2,14 +2,18 @@
 
 Namespace ZhipuApi.Models.RequestModels
     Public Class MessageItem
-        Public Property role As String
+        Public Property Role As String
 
         ' If JToken is String, then use StringValue. If JToken is array, use ArrayValue.
-        Public Property content As StringOrArray(Of ContentType)
+        Public Property Content As StringOrArray(Of ContentType)
 
-        Public Sub New(role As String, content As String)
-            Me.role = role
-            Me.content = New StringOrArray(Of ContentType) With {.StringValue = content}
+        Sub New()
+
+        End Sub
+
+        Sub New(role As String, content As String)
+            Me.Role = role
+            Me.Content = New StringOrArray(Of ContentType) With {.StringValue = content}
         End Sub
     End Class
 

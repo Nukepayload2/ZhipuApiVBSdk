@@ -3,17 +3,17 @@ Imports System.IO
 
 Namespace ZhipuApi.Models.ResponseModels.ImageGenerationModels
 	Public Class ImageResponseBase
-		Public Property created As Long
+        Public Property Created As Long
 
-		Public Property data As List(Of ImageResponseDataItem)
+        Public Property Data As List(Of ImageResponseDataItem)
 
-        Public Property [error] As Dictionary(Of String, String)
+        Public Property [Error] As Dictionary(Of String, String)
 
         Public Shared Function FromJson(json As String) As ImageResponseBase
-			Using reader As New JsonTextReader(New StringReader(json))
-				Return ReadImageResponseBase(reader)
-			End Using
-		End Function
+            Using reader As New JsonTextReader(New StringReader(json))
+                Return ReadImageResponseBase(reader)
+            End Using
+        End Function
 
         Private Shared Function ReadImageResponseBase(reader As JsonTextReader) As ImageResponseBase
             Dim response As New ImageResponseBase
@@ -34,11 +34,11 @@ Namespace ZhipuApi.Models.ResponseModels.ImageGenerationModels
 
                         Select Case propertyName
                             Case "created"
-                                response.created = CLng(reader.Value)
+                                response.Created = CLng(reader.Value)
                             Case "data"
-                                response.data = ReadImageDataList(reader)
+                                response.Data = ReadImageDataList(reader)
                             Case "error"
-                                response.error = ReadErrorDictionary(reader)
+                                response.Error = ReadErrorDictionary(reader)
                             Case Else
                                 Throw New InvalidDataException($"Unexpected property: {propertyName}")
                         End Select
@@ -84,7 +84,7 @@ Namespace ZhipuApi.Models.ResponseModels.ImageGenerationModels
 
                     Select Case propertyName
                         Case "url"
-                            dataItem.url = reader.Value.ToString()
+                            dataItem.Url = reader.Value.ToString()
                         Case Else
                             Throw New InvalidDataException($"Unexpected property: {propertyName}")
                     End Select

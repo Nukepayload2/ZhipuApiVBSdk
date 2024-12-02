@@ -3,14 +3,14 @@ Imports System.IO
 
 Namespace ZhipuApi.Models.ResponseModels.EmbeddingModels
     Public Class EmbeddingResponseBase
-        Public Property model As String
-        Public Property _object As String
+        Public Property Model As String
+        Public Property [Object] As String
 
-        Public Property usage As Dictionary(Of String, Integer)
+        Public Property Usage As Dictionary(Of String, Integer)
 
-        Public Property data As EmbeddingDataItem()
+        Public Property Data As EmbeddingDataItem()
 
-        Public Property [error] As Dictionary(Of String, String)
+        Public Property [Error] As Dictionary(Of String, String)
 
         Public Shared Function FromJson(json As String) As EmbeddingResponseBase
             Using reader As New JsonTextReader(New StringReader(json))
@@ -37,15 +37,15 @@ Namespace ZhipuApi.Models.ResponseModels.EmbeddingModels
 
                         Select Case propertyName
                             Case "model"
-                                response.model = reader.Value.ToString()
+                                response.Model = reader.Value.ToString()
                             Case "object"
-                                response._object = reader.Value.ToString()
+                                response.Object = reader.Value.ToString()
                             Case "usage"
-                                response.usage = ReadUsageDictionary(reader)
+                                response.Usage = ReadUsageDictionary(reader)
                             Case "data"
-                                response.data = ReadEmbeddingDataItems(reader)
+                                response.Data = ReadEmbeddingDataItems(reader)
                             Case "error"
-                                response.error = ReadErrorDictionary(reader)
+                                response.Error = ReadErrorDictionary(reader)
                             Case Else
                                 Throw New InvalidDataException($"Unexpected property: {propertyName}")
                         End Select
@@ -116,11 +116,11 @@ Namespace ZhipuApi.Models.ResponseModels.EmbeddingModels
 
                     Select Case propertyName
                         Case "index"
-                            dataItem.index = CInt(reader.Value)
+                            dataItem.Index = CInt(reader.Value)
                         Case "object"
-                            dataItem._object = reader.Value.ToString()
+                            dataItem.Object = reader.Value.ToString()
                         Case "embedding"
-                            dataItem.embedding = ReadEmbeddingArray(reader)
+                            dataItem.Embedding = ReadEmbeddingArray(reader)
                         Case Else
                             Throw New InvalidDataException($"Unexpected property: {propertyName}")
                     End Select

@@ -1,12 +1,12 @@
 ﻿
 Namespace ZhipuApi.Models.ResponseModels.ToolModels
 	Public Class ToolCallItem
-		Public Property id As String
+		Public Property Id As String
 
-		Public Property [function] As FunctionDescriptor
+		Public Property [Function] As FunctionDescriptor
 
-		Public Property index As Integer
+		Public Property Index As Integer
 
-		Public Property type As String
+		Public Property Type As String
 	End Class
 End Namespace

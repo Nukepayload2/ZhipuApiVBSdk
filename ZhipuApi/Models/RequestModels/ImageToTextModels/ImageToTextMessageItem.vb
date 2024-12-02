@@ -4,17 +4,28 @@
 
 		Public Sub New(role As String)
 			MyBase.New(role, Nothing)
-			content = New StringOrArray(Of ContentType) With {.ArrayValue = New ContentType(1) {}}
-		End Sub
+            Content = New StringOrArray(Of ContentType) With {.ArrayValue = New ContentType(1) {}}
+        End Sub
 
-		Public Function setText(text As String) As ImageToTextMessageItem
-			content.ArrayValue(0) = New ContentType With {.text = text, .type = "text"}
-			Return Me
-		End Function
+        Public Property Text As String
+            Get
+                Return Content.ArrayValue.FirstOrDefault?.Text
+            End Get
+            Set(text As String)
+                Content.ArrayValue(0) = New ContentType With {.Text = text, .Type = "text"}
+            End Set
+        End Property
 
-		Public Function setImageUrl(image_url As String) As ImageToTextMessageItem
-			content.ArrayValue(1) = New ContentType With {.type = "Image_url", .image_url = New ImageUrlType(image_url)}
-			Return Me
-		End Function
-	End Class
+        Public Property ImageUrl As String
+            Get
+                If Content.ArrayValue.Length > 1 Then
+                    Return Content.ArrayValue(1)?.ImageUrl?.Url
+                End If
+                Return Nothing
+            End Get
+            Set(imageUrl As String)
+                Content.ArrayValue(1) = New ContentType With {.Type = "Image_url", .ImageUrl = New ImageUrlType(imageUrl)}
+            End Set
+        End Property
+    End Class
 End Namespace
