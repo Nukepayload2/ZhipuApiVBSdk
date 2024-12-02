@@ -13,6 +13,7 @@
     <PackageTags>zhipu ZhipuApi AI</PackageTags>
     <OptionStrict>On</OptionStrict>
     <Deterministic>True</Deterministic>
+    <Copyright>Copyright 2024 Nukepayload2</Copyright>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageReleaseNotes>The initial public test version. All text generation features have been tested internally.</PackageReleaseNotes>
   </PropertyGroup>
