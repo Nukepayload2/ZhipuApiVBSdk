@@ -18,17 +18,19 @@ Namespace Models
         Public Property [Error] As Dictionary(Of String, String)
 
         Public Shared Function FromJson(json As Stream) As ResponseBase
-            Dim jsonReader As New JsonTextReader(New StreamReader(json))
-            Dim response As New ResponseBase
-            response = ReadResponse(jsonReader, response)
-            Return response
+            Using jsonReader As New JsonTextReader(New StreamReader(json))
+                Dim response As New ResponseBase
+                response = ReadResponse(jsonReader, response)
+                Return response
+            End Using
         End Function
 
         Public Shared Function FromJson(json As String) As ResponseBase
-            Dim jsonReader As New JsonTextReader(New StringReader(json))
-            Dim response As New ResponseBase
-            response = ReadResponse(jsonReader, response)
-            Return response
+            Using jsonReader As New JsonTextReader(New StringReader(json))
+                Dim response As New ResponseBase
+                response = ReadResponse(jsonReader, response)
+                Return response
+            End Using
         End Function
 
         Private Shared Function ReadResponse(jsonReader As JsonTextReader, response As ResponseBase) As ResponseBase

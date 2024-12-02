@@ -9,6 +9,12 @@ Namespace Models
 
         Public Property [Error] As Dictionary(Of String, String)
 
+        Public Shared Function FromJson(json As Stream) As ImageResponseBase
+            Using reader As New JsonTextReader(New StreamReader(json))
+                Return ReadImageResponseBase(reader)
+            End Using
+        End Function
+
         Public Shared Function FromJson(json As String) As ImageResponseBase
             Using reader As New JsonTextReader(New StringReader(json))
                 Return ReadImageResponseBase(reader)

@@ -12,6 +12,12 @@ Namespace Models
 
         Public Property [Error] As Dictionary(Of String, String)
 
+        Public Shared Function FromJson(json As Stream) As EmbeddingResponseBase
+            Using reader As New JsonTextReader(New StreamReader(json))
+                Return ReadEmbeddingResponseBase(reader)
+            End Using
+        End Function
+
         Public Shared Function FromJson(json As String) As EmbeddingResponseBase
             Using reader As New JsonTextReader(New StringReader(json))
                 Return ReadEmbeddingResponseBase(reader)
