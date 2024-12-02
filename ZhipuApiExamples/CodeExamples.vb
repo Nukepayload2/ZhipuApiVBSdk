@@ -20,7 +20,7 @@ Public Class CodeExamples
         Dim clientV4 As New ClientV4(ApiKey)
         Dim response = Await clientV4.Chat.CompleteAsync(
             New TextRequestBase With {
-                .Model = "glm-4",
+                .Model = "glm-4-flash",
                 .Messages = {New MessageItem("user", "你好，你是谁？")},
                 .Temperature = 0.7,
                 .TopP = 0.7
@@ -37,7 +37,7 @@ Public Class CodeExamples
         Dim sb As New StringBuilder
         Await clientV4.Chat.StreamAsync(
             New TextRequestBase With {
-                .Model = "glm-4",
+                .Model = "glm-4-flash",
                 .Messages = {New MessageItem("user", "1+1等于多少"),
                               New MessageItem("assistant", "1+1等于2。"),
                               New MessageItem("user", "再加2呢？")},
@@ -46,7 +46,7 @@ Public Class CodeExamples
                 .Stream = True
             },
             Sub(resp)
-                Dim respMessage = resp.Choices?.FirstOrDefault?.Message?.Content
+                Dim respMessage = resp.Choices?.FirstOrDefault?.Delta?.Content
                 If respMessage <> Nothing Then
                     sb.Append(respMessage)
                 End If
@@ -131,7 +131,7 @@ Public Class CodeExamples
                 .Stream = True
             },
             Sub(resp)
-                Dim respMessage = resp.Choices?.FirstOrDefault?.Message?.Content
+                Dim respMessage = resp.Choices?.FirstOrDefault?.Delta?.Content
                 If respMessage <> Nothing Then
                     sb.Append(respMessage)
                 End If

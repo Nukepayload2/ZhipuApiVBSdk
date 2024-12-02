@@ -17,67 +17,79 @@ Namespace Models
 
         Public Property Temperature As Double?
 
-        Public Property Stream As Boolean = True
+        Public Property Stream As Boolean
+
+        Public Function ToJsonUtf8() As MemoryStream
+            Dim ms As New MemoryStream
+            Using sw As New StreamWriter(ms, Nothing, -1, True), jsonWriter As New JsonTextWriter(sw)
+                ToJsonInternal(jsonWriter)
+            End Using
+            ms.Position = 0
+            Return ms
+        End Function
 
         Public Function ToJson() As String
             Using stringWriter = New StringWriter, jsonWriter = New JsonTextWriter(stringWriter)
-                jsonWriter.WriteStartObject()
-
-                If RequestId IsNot Nothing Then
-                    jsonWriter.WritePropertyName("request_id")
-                    jsonWriter.WriteValue(RequestId)
-                End If
-
-                If Model IsNot Nothing Then
-                    jsonWriter.WritePropertyName("model")
-                    jsonWriter.WriteValue(Model)
-                End If
-
-                If Messages IsNot Nothing Then
-                    jsonWriter.WritePropertyName("messages")
-                    jsonWriter.WriteStartArray()
-                    For Each message In Messages
-                        WriteMessage(jsonWriter, message)
-                    Next
-                    jsonWriter.WriteEndArray()
-                End If
-
-                If Tools IsNot Nothing Then
-                    jsonWriter.WritePropertyName("tools")
-                    jsonWriter.WriteStartArray()
-                    For Each tool In Tools
-                        If tool IsNot Nothing Then
-                            jsonWriter.WriteStartObject()
-                            WriteTool(jsonWriter, tool)
-                            jsonWriter.WriteEndObject()
-                        End If
-                    Next
-                    jsonWriter.WriteEndArray()
-                End If
-
-                If ToolChoice IsNot Nothing Then
-                    jsonWriter.WritePropertyName("tool_choice")
-                    jsonWriter.WriteValue(ToolChoice)
-                End If
-
-                If TopP IsNot Nothing Then
-                    jsonWriter.WritePropertyName("top_p")
-                    jsonWriter.WriteValue(TopP)
-                End If
-
-                If Temperature IsNot Nothing Then
-                    jsonWriter.WritePropertyName("temperature")
-                    jsonWriter.WriteValue(Temperature)
-                End If
-
-                jsonWriter.WritePropertyName("stream")
-                jsonWriter.WriteValue(Stream)
-
-                jsonWriter.WriteEndObject()
-
+                ToJsonInternal(jsonWriter)
                 Return stringWriter.ToString()
             End Using
         End Function
+
+        Private Sub ToJsonInternal(jsonWriter As JsonTextWriter)
+            jsonWriter.WriteStartObject()
+
+            If RequestId IsNot Nothing Then
+                jsonWriter.WritePropertyName("request_id")
+                jsonWriter.WriteValue(RequestId)
+            End If
+
+            If Model IsNot Nothing Then
+                jsonWriter.WritePropertyName("model")
+                jsonWriter.WriteValue(Model)
+            End If
+
+            If Messages IsNot Nothing Then
+                jsonWriter.WritePropertyName("messages")
+                jsonWriter.WriteStartArray()
+                For Each message In Messages
+                    WriteMessage(jsonWriter, message)
+                Next
+                jsonWriter.WriteEndArray()
+            End If
+
+            If Tools IsNot Nothing Then
+                jsonWriter.WritePropertyName("tools")
+                jsonWriter.WriteStartArray()
+                For Each tool In Tools
+                    If tool IsNot Nothing Then
+                        jsonWriter.WriteStartObject()
+                        WriteTool(jsonWriter, tool)
+                        jsonWriter.WriteEndObject()
+                    End If
+                Next
+                jsonWriter.WriteEndArray()
+            End If
+
+            If ToolChoice IsNot Nothing Then
+                jsonWriter.WritePropertyName("tool_choice")
+                jsonWriter.WriteValue(ToolChoice)
+            End If
+
+            If TopP IsNot Nothing Then
+                jsonWriter.WritePropertyName("top_p")
+                jsonWriter.WriteValue(TopP)
+            End If
+
+            If Temperature IsNot Nothing Then
+                jsonWriter.WritePropertyName("temperature")
+                jsonWriter.WriteValue(Temperature)
+            End If
+
+            jsonWriter.WritePropertyName("stream")
+            jsonWriter.WriteValue(Stream)
+
+            jsonWriter.WriteEndObject()
+        End Sub
 
         Private Shared Sub WriteTool(jsonWriter As JsonTextWriter, tool As FunctionTool)
             If tool.Type IsNot Nothing Then

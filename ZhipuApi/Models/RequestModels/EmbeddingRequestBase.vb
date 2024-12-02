@@ -7,21 +7,33 @@ Namespace Models
 
         Public Property Input As String
 
+        Public Function ToJsonUtf8() As MemoryStream
+            Dim ms As New MemoryStream
+            Using sw As New StreamWriter(ms, Nothing, -1, True), jsonWriter As New JsonTextWriter(sw)
+                ToJsonInternal(jsonWriter)
+            End Using
+            ms.Position = 0
+            Return ms
+        End Function
+
         Public Function ToJson() As String
             Using writer As New StringWriter, jsonWriter As New JsonTextWriter(writer)
-                jsonWriter.WriteStartObject()
-                If Model IsNot Nothing Then
-                    jsonWriter.WritePropertyName("model")
-                    jsonWriter.WriteValue(Model)
-                End If
-                If Input IsNot Nothing Then
-                    jsonWriter.WritePropertyName("input")
-                    jsonWriter.WriteValue(Input)
-                End If
-                jsonWriter.WriteEndObject()
-
+                ToJsonInternal(jsonWriter)
                 Return writer.ToString()
             End Using
         End Function
+
+        Private Sub ToJsonInternal(jsonWriter As JsonTextWriter)
+            jsonWriter.WriteStartObject()
+            If Model IsNot Nothing Then
+                jsonWriter.WritePropertyName("model")
+                jsonWriter.WriteValue(Model)
+            End If
+            If Input IsNot Nothing Then
+                jsonWriter.WritePropertyName("input")
+                jsonWriter.WriteValue(Input)
+            End If
+            jsonWriter.WriteEndObject()
+        End Sub
     End Class
 End Namespace
