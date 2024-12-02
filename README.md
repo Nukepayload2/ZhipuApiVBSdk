@@ -5,7 +5,7 @@ It has the same capabilities as [zhipuai-sdk-csharp-v4](https://github.com/MetaG
 
 - [x] No deadlock in synchronization context threads.
 - [x] Enumerate result asynchronously with the syntax introduced in VB 11.
-- [x] No reflection required. Support AOT compilation on .NET 8 or later.
+- [x] No reflection required. We support AOT compilation on .NET 8 or later.
 - [x] VB flavor of API design
 
 Code examples: [CodeExamples.vb](https://github.com/Nukepayload2/ZhipuApiVBSdk/blob/master/ZhipuApiExamples/CodeExamples.vb)
