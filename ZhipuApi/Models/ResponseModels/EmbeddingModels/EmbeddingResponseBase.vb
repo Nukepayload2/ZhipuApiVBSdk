@@ -2,59 +2,60 @@
 Imports System.IO
 
 Namespace ZhipuApi.Models.ResponseModels.EmbeddingModels
-	Public Class EmbeddingResponseBase
-		Public Property model As String
-		Public Property _object As String
+    Public Class EmbeddingResponseBase
+        Public Property model As String
+        Public Property _object As String
 
-		Public Property usage As Dictionary(Of String, Integer)
+        Public Property usage As Dictionary(Of String, Integer)
 
-		Public Property data As EmbeddingDataItem()
+        Public Property data As EmbeddingDataItem()
 
         Public Property [error] As Dictionary(Of String, String)
 
         Public Shared Function FromJson(json As String) As EmbeddingResponseBase
-			Using reader As New JsonTextReader(New StringReader(json))
-				Return ReadEmbeddingResponseBase(reader)
-			End Using
-		End Function
+            Using reader As New JsonTextReader(New StringReader(json))
+                Return ReadEmbeddingResponseBase(reader)
+            End Using
+        End Function
 
         Private Shared Function ReadEmbeddingResponseBase(reader As JsonTextReader) As EmbeddingResponseBase
             Dim response As New EmbeddingResponseBase
 
-            While reader.Read()
-                If reader.TokenType = JsonToken.StartObject Then
-                    While reader.Read()
-                        If reader.TokenType = JsonToken.EndObject Then
-                            Exit While
-                        End If
+            ' None -> FirstToken
+            If reader.TokenType = JsonToken.None Then reader.Read()
 
-                        If reader.TokenType = JsonToken.PropertyName Then
-                            Dim propertyName As String = reader.Value.ToString()
+            If reader.TokenType = JsonToken.StartObject Then
+                While reader.Read()
+                    If reader.TokenType = JsonToken.EndObject Then
+                        Exit While
+                    End If
 
-                            reader.Read()
+                    If reader.TokenType = JsonToken.PropertyName Then
+                        Dim propertyName As String = reader.Value.ToString()
 
-                            Select Case propertyName
-                                Case "model"
-                                    response.model = reader.Value.ToString()
-                                Case "object"
-                                    response._object = reader.Value.ToString()
-                                Case "usage"
-                                    response.usage = ReadUsageDictionary(reader)
-                                Case "data"
-                                    response.data = ReadEmbeddingDataItems(reader)
-                                Case "error"
-                                    response.error = ReadErrorDictionary(reader)
-                                Case Else
-                                    Throw New InvalidDataException($"Unexpected property: {propertyName}")
-                            End Select
-                        Else
-                            Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
-                        End If
-                    End While
-                Else
-                    Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
-                End If
-            End While
+                        reader.Read()
+
+                        Select Case propertyName
+                            Case "model"
+                                response.model = reader.Value.ToString()
+                            Case "object"
+                                response._object = reader.Value.ToString()
+                            Case "usage"
+                                response.usage = ReadUsageDictionary(reader)
+                            Case "data"
+                                response.data = ReadEmbeddingDataItems(reader)
+                            Case "error"
+                                response.error = ReadErrorDictionary(reader)
+                            Case Else
+                                Throw New InvalidDataException($"Unexpected property: {propertyName}")
+                        End Select
+                    Else
+                        Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
+                    End If
+                End While
+            Else
+                Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
+            End If
 
             Return response
         End Function

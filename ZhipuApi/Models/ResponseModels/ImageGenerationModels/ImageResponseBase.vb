@@ -18,36 +18,37 @@ Namespace ZhipuApi.Models.ResponseModels.ImageGenerationModels
         Private Shared Function ReadImageResponseBase(reader As JsonTextReader) As ImageResponseBase
             Dim response As New ImageResponseBase
 
-            While reader.Read()
-                If reader.TokenType = JsonToken.StartObject Then
-                    While reader.Read()
-                        If reader.TokenType = JsonToken.EndObject Then
-                            Exit While
-                        End If
+            ' None -> FirstToken
+            If reader.TokenType = JsonToken.None Then reader.Read()
 
-                        If reader.TokenType = JsonToken.PropertyName Then
-                            Dim propertyName As String = reader.Value.ToString()
+            If reader.TokenType = JsonToken.StartObject Then
+                While reader.Read()
+                    If reader.TokenType = JsonToken.EndObject Then
+                        Exit While
+                    End If
 
-                            reader.Read()
+                    If reader.TokenType = JsonToken.PropertyName Then
+                        Dim propertyName As String = reader.Value.ToString()
 
-                            Select Case propertyName
-                                Case "created"
-                                    response.created = CLng(reader.Value)
-                                Case "data"
-                                    response.data = ReadImageDataList(reader)
-                                Case "error"
-                                    response.error = ReadErrorDictionary(reader)
-                                Case Else
-                                    Throw New InvalidDataException($"Unexpected property: {propertyName}")
-                            End Select
-                        Else
-                            Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
-                        End If
-                    End While
-                Else
-                    Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
-                End If
-            End While
+                        reader.Read()
+
+                        Select Case propertyName
+                            Case "created"
+                                response.created = CLng(reader.Value)
+                            Case "data"
+                                response.data = ReadImageDataList(reader)
+                            Case "error"
+                                response.error = ReadErrorDictionary(reader)
+                            Case Else
+                                Throw New InvalidDataException($"Unexpected property: {propertyName}")
+                        End Select
+                    Else
+                        Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
+                    End If
+                End While
+            Else
+                Throw New InvalidDataException($"Unexpected token type: {reader.TokenType}")
+            End If
 
             Return response
         End Function

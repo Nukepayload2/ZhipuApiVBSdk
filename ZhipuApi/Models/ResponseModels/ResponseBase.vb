@@ -1,4 +1,5 @@
-﻿Imports System.IO
+﻿Imports System.Diagnostics.Eventing
+Imports System.IO
 Imports Newtonsoft.Json
 Imports ZhipuApi.Models.ResponseModels.ToolModels
 
@@ -33,7 +34,9 @@ Namespace ZhipuApi.Models.ResponseModels
         End Function
 
         Private Shared Function ReadResponse(jsonReader As JsonTextReader, response As ResponseBase) As ResponseBase
-            jsonReader.Read()
+
+            ' None -> FirstToken
+            If jsonReader.TokenType = JsonToken.None Then jsonReader.Read()
 
             If jsonReader.TokenType = JsonToken.StartObject Then
                 While jsonReader.Read()
@@ -80,6 +83,8 @@ Namespace ZhipuApi.Models.ResponseModels
                             Case Else
                                 Throw New InvalidDataException($"Unexpected token type")
                         End Select
+                    ElseIf jsonReader.TokenType = JsonToken.EndObject Then
+                        Exit While
                     Else
                         Throw New InvalidDataException($"Unexpected token type")
                     End If
@@ -255,7 +260,6 @@ Namespace ZhipuApi.Models.ResponseModels
                             Throw New InvalidDataException($"Unexpected tonen: {jsonReader.TokenType}")
                         End If
                     End While
-
                     toolCalls.Add(toolCall)
                 Else
                     Throw New InvalidDataException($"Unexpected tonen: {jsonReader.TokenType}")
