@@ -60,7 +60,7 @@ Public Class CodeExamples
         Dim clientV4 As New ClientV4(ApiKey)
         Dim response = Await clientV4.Chat.CompleteAsync(
             New TextRequestBase With {
-                .Model = "glm-4",
+                .Model = "glm-4-flash",
                 .Messages = {New MessageItem("user", "北京今天的天气如何？")},
                 .Tools = {
                     New FunctionTool With {
@@ -79,8 +79,9 @@ Public Class CodeExamples
             }
         )
 
-        Dim respMessage = response.Choices?.FirstOrDefault?.Message?.Content
-        Assert.IsNotNull(respMessage)
+        Dim respMessage = response.Choices?.FirstOrDefault?.Message?.ToolCalls?.FirstOrDefault.Function
+        Assert.AreEqual("get_weather", respMessage?.Name)
+        Assert.AreEqual("{""city"":""北京"",""days"":0}", respMessage?.Arguments)
     End Function
 
     <TestMethod>
