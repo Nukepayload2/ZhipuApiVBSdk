@@ -10,7 +10,7 @@ It has the same capabilities as [zhipuai-sdk-csharp-v4](https://github.com/MetaG
 
 Code examples: [CodeExamples.vb](https://github.com/Nukepayload2/ZhipuApiVBSdk/blob/master/ZhipuApiExamples/CodeExamples.vb)
 
-NuGet package name: `Nukepayload2.AI.Providers.Zhipu`
+Get on NuGet: [Nukepayload2.AI.Providers.Zhipu](https://www.nuget.org/packages/Nukepayload2.AI.Providers.Zhipu)
 
 ## Target Frameworks
 - .NET Standard 2.0
