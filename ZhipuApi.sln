@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ZhipuApi", "ZhipuApi\ZhipuApi.vbproj", "{6E0939CF-1E5B-473A-9661-21BB52B6628F}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ZhipuApiExamples", "ZhipuApiExamples\ZhipuApiExamples.vbproj", "{D1403B85-B8E5-4B8C-9DDD-7C8A02BE6717}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{6E0939CF-1E5B-473A-9661-21BB52B6628F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E0939CF-1E5B-473A-9661-21BB52B6628F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E0939CF-1E5B-473A-9661-21BB52B6628F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1403B85-B8E5-4B8C-9DDD-7C8A02BE6717}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1403B85-B8E5-4B8C-9DDD-7C8A02BE6717}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1403B85-B8E5-4B8C-9DDD-7C8A02BE6717}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1403B85-B8E5-4B8C-9DDD-7C8A02BE6717}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
