@@ -28,6 +28,7 @@ Public Class CodeExamples
         )
 
         Dim respMessage = response.Choices?.FirstOrDefault?.Message?.Content
+        Console.WriteLine(respMessage)
         Assert.IsNotNull(respMessage)
     End Function
 
@@ -52,6 +53,7 @@ Public Class CodeExamples
                 End If
             End Sub)
 
+        Console.WriteLine(sb.ToString)
         Assert.AreNotEqual(0, sb.Length)
     End Function
 

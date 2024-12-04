@@ -1,4 +1,5 @@
 ﻿Imports Newtonsoft.Json
+Imports Nukepayload2.AI.Providers.Zhipu.Utils
 Imports System.IO
 
 Namespace Models
@@ -21,7 +22,7 @@ Namespace Models
 
         Public Function ToJsonUtf8() As MemoryStream
             Dim ms As New MemoryStream
-            Using sw As New StreamWriter(ms, Nothing, -1, True), jsonWriter As New JsonTextWriter(sw)
+            Using sw As New StreamWriter(ms, IoUtils.UTF8NoBOM, 8192, True), jsonWriter As New JsonTextWriter(sw)
                 ToJsonInternal(jsonWriter)
             End Using
             ms.Position = 0

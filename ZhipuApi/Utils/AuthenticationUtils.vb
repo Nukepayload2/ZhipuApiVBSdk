@@ -1,5 +1,6 @@
 ﻿Imports System.IdentityModel.Tokens.Jwt
 Imports System.Text
+Imports System.Threading
 Imports Microsoft.IdentityModel.Tokens
 
 Namespace Utils
@@ -34,5 +35,21 @@ Namespace Utils
 			Dim token As New JwtSecurityToken(header, payload)
 			Return New JwtSecurityTokenHandler().WriteToken(token)
 		End Function
+	End Class
+
+	Friend Class IoUtils
+		Private Shared _UTF8NoBOM As Encoding
+
+		Public Shared ReadOnly Property UTF8NoBOM As Encoding
+			Get
+				If Volatile.Read(_UTF8NoBOM) Is Nothing Then
+					' No need for double lock - we just want to avoid extra allocations in the common case.
+					Dim noBOM As New UTF8Encoding(False, True)
+					Thread.MemoryBarrier()
+					Volatile.Write(_UTF8NoBOM, noBOM)
+				End If
+				Return Volatile.Read(_UTF8NoBOM)
+			End Get
+		End Property
 	End Class
 End Namespace
