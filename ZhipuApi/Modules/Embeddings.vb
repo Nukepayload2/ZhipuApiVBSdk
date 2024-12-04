@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports System.Net.Http
 Imports System.Threading
 Imports Nukepayload2.AI.Providers.Zhipu.Models
 
@@ -7,6 +8,10 @@ Public Class Embeddings
 
     Public Sub New(apiKey As String)
         MyBase.New(apiKey)
+    End Sub
+
+    Sub New(apiKey As String, client As HttpClient)
+        MyBase.New(apiKey, client)
     End Sub
 
     Private Async Function ProcessRawAsync(requestBody As EmbeddingRequestBase, cancellation As CancellationToken) As Task(Of MemoryStream)

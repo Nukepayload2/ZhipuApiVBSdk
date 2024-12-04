@@ -3,7 +3,7 @@
     <RootNamespace>Nukepayload2.AI.Providers.Zhipu</RootNamespace>
     <AssemblyName>Nukepayload2.AI.Providers.Zhipu</AssemblyName>
     <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
-    <Version>1.0.0-beta4</Version>
+    <Version>1.0.0-beta5</Version>
     <PackageId>$(AssemblyName)</PackageId>
     <Description>VB-friendly .NET bindings for the ZhipuApi v4. It's part of the Nukepayload2 VB AI SDK as a model provider.</Description>
     <PackageProjectUrl>https://github.com/Nukepayload2/ZhipuApiVBSdk</PackageProjectUrl>
@@ -16,7 +16,7 @@
     <Copyright>Copyright 2024 Nukepayload2</Copyright>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <Authors>Nukepayload2</Authors>
-    <PackageReleaseNotes>The initial public test version. All text generation features have been tested internally.</PackageReleaseNotes>
+    <PackageReleaseNotes>Allow to use customized HttpClient.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net8.0'">

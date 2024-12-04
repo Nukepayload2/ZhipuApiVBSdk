@@ -6,11 +6,16 @@ Imports Nukepayload2.AI.Providers.Zhipu.Utils
 Public MustInherit Class ClientFeatureBase
 
     Private Const ApiTokenTtlSeconds = 300
-    Private Shared ReadOnly s_client As New HttpClient
     Private ReadOnly _apiKey As String
+    Private ReadOnly _client As HttpClient
 
     Sub New(apiKey As String)
+        MyClass.New(apiKey, ClientV4.DefaultHttpClient)
+    End Sub
+
+    Sub New(apiKey As String, client As HttpClient)
         _apiKey = apiKey
+        _client = client
     End Sub
 
     Protected Async Function PostAsync(requestUrl As String, json As Stream, cancellation As CancellationToken) As Task(Of MemoryStream)
@@ -36,7 +41,7 @@ Public MustInherit Class ClientFeatureBase
             .Content = data
         }
         request.Headers.Add("Authorization", apiKey)
-        Dim response = Await s_client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellation)
+        Dim response = Await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellation)
         Return response
     End Function
 End Class
