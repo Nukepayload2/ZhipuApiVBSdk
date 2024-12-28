@@ -1,13 +1,21 @@
-﻿Imports System.Threading
+﻿Imports System.Runtime.CompilerServices
+Imports System.Threading
 Imports Microsoft.Extensions.AI
 Imports Nukepayload2.AI.Providers.Zhipu.Models
+
+Public Module ClientAdapterExtensions
+    <Extension>
+    Public Function AsChatClient(client As Chat, modelId As String) As IChatClient
+        Return New MicrosoftChatClientAdapter(client, modelId)
+    End Function
+End Module
 
 Public Class MicrosoftChatClientAdapter
     Implements IChatClient
 
     Private disposedValue As Boolean
 
-    Public Sub New(client As ClientV4, modelId As String)
+    Sub New(client As Chat, modelId As String)
         If client Is Nothing Then
             Throw New ArgumentNullException(NameOf(client))
         End If
@@ -21,12 +29,12 @@ Public Class MicrosoftChatClientAdapter
                     modelId)
     End Sub
 
-    Public ReadOnly Property Client As ClientV4
+    Public ReadOnly Property Client As Chat
 
     Public ReadOnly Property Metadata As ChatClientMetadata Implements IChatClient.Metadata
 
     Public Async Function CompleteAsync(chatMessages As IList(Of ChatMessage), Optional options As ChatOptions = Nothing, Optional cancellationToken As CancellationToken = Nothing) As Task(Of ChatCompletion) Implements IChatClient.CompleteAsync
-        Dim response = Await Client.Chat.CompleteAsync(
+        Dim response = Await Client.CompleteAsync(
             New TextRequestBase With {
                 .Model = Metadata.ModelId,
                 .Messages = (From msg In chatMessages
@@ -60,7 +68,11 @@ Public Class MicrosoftChatClientAdapter
         Throw New NotImplementedException()
     End Function
 
-    Public Function GetService(serviceType As Type, Optional serviceKey As Object = Nothing) As Object Implements IChatClient.GetService
+    Public Function GetService901(serviceType As Type, Optional serviceKey As Object = Nothing) As Object
+        Return Nothing
+    End Function
+
+    Public Function GetService900(Of TService As Class)(Optional key As Object = Nothing) As TService Implements IChatClient.GetService
         Return Nothing
     End Function
 
@@ -88,4 +100,5 @@ Public Class MicrosoftChatClientAdapter
         Dispose(disposing:=True)
         GC.SuppressFinalize(Me)
     End Sub
+
 End Class
