@@ -17,11 +17,38 @@ Get on NuGet: [Nukepayload2.AI.Providers.Zhipu](https://www.nuget.org/packages/N
 - .NET 8 or later
 
 ## Progress
-It's currently in beta stage. Do not use it in production environment unless you've tested it carefully.
+It's currently in beta stage. 
+We reserve the rights of making breaking changes.
+Do not use it in production environment unless you've tested it carefully.
 
-- [x] Text completion (tested)
-- [x] Text streaming (tested)
-- [x] Tool call (tested)
-- [ ] Image generation (implemented but untested)
-- [ ] Image recognition (implemented but untested)
-- [ ] Embedding (implemented but untested)
+### Implementation
+- [x] Text completion
+- [x] Text streaming
+- [x] Tool call
+- [x] Image generation
+- [x] Image recognition
+- [x] Embedding
+
+#### Microsoft.Extension.AI 9.0.0 Preview
+- [x] Chat completion
+- [x] Chat streaming
+- [ ] Tool call
+- [ ] Image generation
+- [ ] Image recognition
+- [ ] Embedding
+
+### Tested Manually
+- [x] Text completion
+- [x] Text streaming
+- [x] Tool call
+- [ ] Image generation
+- [ ] Image recognition
+- [ ] Embedding
+
+#### Microsoft.Extension.AI 9.0.0 Preview
+- [x] Chat completion
+- [x] Chat streaming
+- [ ] Tool call
+- [ ] Image generation
+- [ ] Image recognition
+- [ ] Embedding

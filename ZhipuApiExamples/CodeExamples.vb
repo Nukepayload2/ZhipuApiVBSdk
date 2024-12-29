@@ -1,4 +1,5 @@
 ﻿Imports System.Text
+Imports Microsoft.Extensions.AI
 Imports Microsoft.VisualStudio.TestTools.UnitTesting
 Imports Nukepayload2.AI.Providers.Zhipu
 Imports Nukepayload2.AI.Providers.Zhipu.Models
@@ -18,16 +19,28 @@ Public Class CodeExamples
     <TestMethod>
     Async Function TestCompletionAsync() As Task
         Dim clientV4 As New ClientV4(ApiKey)
-        Dim response = Await clientV4.Chat.CompleteAsync(
-            New TextRequestBase With {
-                .Model = "glm-4-flash",
-                .Messages = {New MessageItem("user", "你好，你是谁？")},
-                .Temperature = 0.7,
-                .TopP = 0.7
-            }
-        )
+        Dim request As New TextRequestBase With {
+            .Model = "glm-4-flash",
+            .Messages = {New MessageItem("user", "你好，你是谁？")},
+            .Temperature = 0.7,
+            .TopP = 0.7
+        }
+        Dim response = Await clientV4.Chat.CompleteAsync(request)
 
         Dim respMessage = response.Choices?.FirstOrDefault?.Message?.Content
+        Console.WriteLine(respMessage)
+        Assert.IsNotNull(respMessage)
+    End Function
+
+    <TestMethod>
+    Async Function TestMicrosoftAICompletionAsync() As Task
+        Dim clientV4 As New ClientV4(ApiKey)
+        Dim response = Await clientV4.Chat.AsChatClient("glm-4-flash").CompleteAsync(
+            {New ChatMessage(ChatRole.User, "你好，你是谁？")},
+             New ChatOptions With {.Temperature = 0.7F, .TopP = 0.7F}
+        )
+
+        Dim respMessage = response.Choices?.FirstOrDefault?.Text
         Console.WriteLine(respMessage)
         Assert.IsNotNull(respMessage)
     End Function
@@ -49,9 +62,31 @@ Public Class CodeExamples
             Sub(resp)
                 Dim respMessage = resp.Choices?.FirstOrDefault?.Delta?.Content
                 If respMessage <> Nothing Then
-                    sb.Append(respMessage)
+                    sb.AppendLine($"{Environment.TickCount}: {respMessage}")
                 End If
             End Sub)
+
+        Console.WriteLine(sb.ToString)
+        Assert.AreNotEqual(0, sb.Length)
+    End Function
+
+    <TestMethod>
+    Async Function TestMicrosoftAIStreamAsync() As Task
+        Dim clientV4 As New ClientV4(ApiKey)
+        Dim messages = {New ChatMessage(ChatRole.User, "1+1等于多少"),
+                        New ChatMessage(ChatRole.Assistant, "1+1等于2。"),
+                        New ChatMessage(ChatRole.User, "再加2呢？")}
+        Dim options As New ChatOptions With {.Temperature = 0.7F, .TopP = 0.7F}
+        Dim respAsyncEnumerate = clientV4.Chat.AsChatClient("glm-4-flash").CompleteStreamingAsync(messages, options)
+        ' 在 VB 支持简化的 IAsyncEnumerable 调用 (Await Each 语句) 之前可以用 System.Linq.Async 读取服务端回复的数据。
+        Dim sb As New StringBuilder
+        Await respAsyncEnumerate.ForEachAsync(
+        Sub(update)
+            Dim respMessage = update.Text
+            If respMessage <> Nothing Then
+                sb.AppendLine($"{Environment.TickCount}: {respMessage}")
+            End If
+        End Sub)
 
         Console.WriteLine(sb.ToString)
         Assert.AreNotEqual(0, sb.Length)

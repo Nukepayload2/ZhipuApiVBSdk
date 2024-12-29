@@ -34,17 +34,21 @@ Public Class MicrosoftChatClientAdapter
     Public ReadOnly Property Metadata As ChatClientMetadata Implements IChatClient.Metadata
 
     Public Async Function CompleteAsync(chatMessages As IList(Of ChatMessage), Optional options As ChatOptions = Nothing, Optional cancellationToken As CancellationToken = Nothing) As Task(Of ChatCompletion) Implements IChatClient.CompleteAsync
-        Dim response = Await Client.CompleteAsync(
-            New TextRequestBase With {
-                .Model = Metadata.ModelId,
-                .Messages = (From msg In chatMessages
-                             Select New MessageItem(msg.Role.Value, msg.Text)).ToArray,
-                .Temperature = options.Temperature,
-                .TopP = options.TopP,
-                .ToolChoice = ConvertToolChoice(options.ToolMode),
-                .Tools = ConvertTools(options.Tools)
-            }, cancellationToken
-        )
+        Dim request As New TextRequestBase With {
+            .Model = Metadata.ModelId,
+            .Messages = (From msg In chatMessages
+                         Select New MessageItem(msg.Role.Value, msg.Text)).ToArray,
+            .Temperature = ToDoubleWithRounding(options.Temperature),
+            .TopP = ToDoubleWithRounding(options.TopP),
+            .ToolChoice = ConvertToolChoice(options.Tools, options.ToolMode),
+            .Tools = ConvertTools(options.Tools)
+        }
+
+        Dim response = Await Client.CompleteAsync(request, cancellationToken)
+
+        If response.Error IsNot Nothing AndAlso response.Error.Count > 0 Then
+            Throw New InvalidOperationException($"错误 {If(response.Error!code, "???")}: {If(response.Error!message, "未指定的错误")}")
+        End If
 
         Return New ChatCompletion(
             (From choice In response.Choices
@@ -53,19 +57,54 @@ Public Class MicrosoftChatClientAdapter
             ).ToArray)
     End Function
 
+    Private Function ToDoubleWithRounding(value As Single?) As Double?
+        If value Is Nothing Then
+            Return Nothing
+        End If
+        Return Math.Round(CDbl(value.Value), 2)
+    End Function
+
     Private Function ConvertTools(tools As IList(Of AITool)) As FunctionTool()
         Return Nothing
     End Function
 
-    Private Function ConvertToolChoice(toolMode As ChatToolMode) As String
+    Private Function ConvertToolChoice(tools As IList(Of AITool), toolMode As ChatToolMode) As String
+        If tools Is Nothing Then
+            Return Nothing
+        End If
         If toolMode Is ChatToolMode.Auto Then
             Return "auto"
         End If
         Return Nothing
     End Function
 
-    Public Function CompleteStreamingAsync(chatMessages As IList(Of ChatMessage), Optional options As ChatOptions = Nothing, Optional cancellationToken As CancellationToken = Nothing) As IAsyncEnumerable(Of StreamingChatCompletionUpdate) Implements IChatClient.CompleteStreamingAsync
-        Throw New NotImplementedException()
+    Public Function CompleteStreamingAsync(chatMessages As IList(Of ChatMessage),
+                                           Optional options As ChatOptions = Nothing,
+                                           Optional cancellationToken As CancellationToken = Nothing
+                                           ) As IAsyncEnumerable(Of StreamingChatCompletionUpdate) Implements IChatClient.CompleteStreamingAsync
+        Dim builder As New AsyncEnumerableAdapter(Of StreamingChatCompletionUpdate).Builder With {
+            .ReturnAsync = Function(enumerator) Client.StreamAsync(
+                New TextRequestBase With {
+                    .Model = Metadata.ModelId,
+                    .Messages = (From msg In chatMessages
+                                 Select New MessageItem(msg.Role.Value, msg.Text)).ToArray,
+                    .Temperature = ToDoubleWithRounding(options.Temperature),
+                    .TopP = ToDoubleWithRounding(options.TopP),
+                    .ToolChoice = ConvertToolChoice(options.Tools, options.ToolMode),
+                    .Tools = ConvertTools(options.Tools),
+                    .Stream = True
+                },
+                Sub(resp)
+                    Dim respMessage = resp.Choices?.FirstOrDefault?.Delta?.Content
+                    If respMessage <> Nothing Then
+                        Dim converted As New StreamingChatCompletionUpdate With {.Text = respMessage}
+                        enumerator.YieldValue(converted)
+                    End If
+                End Sub,
+                cancellationToken
+            )
+        }
+        Return builder.Build()
     End Function
 
     Public Function GetService901(serviceType As Type, Optional serviceKey As Object = Nothing) As Object

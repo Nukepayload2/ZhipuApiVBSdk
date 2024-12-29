@@ -56,7 +56,9 @@ Public Class Chat
         End While
     End Function
 
-    Public Async Function StreamAsync(textRequestBody As TextRequestBase, yieldCallback As Action(Of ResponseBase)) As Task
+    Public Async Function StreamAsync(textRequestBody As TextRequestBase,
+                                      yieldCallback As Action(Of ResponseBase),
+                                      Optional cancellationToken As CancellationToken = Nothing) As Task
         If Not textRequestBody.Stream Then Throw New ArgumentException("You must set Stream to True.", NameOf(textRequestBody))
         ' 原版 SDK 就写成这样了，字符串这样拼也是醉了
         Dim buffer As String = String.Empty
@@ -90,7 +92,7 @@ Public Class Chat
                     End If
                     buffer = buffer.Substring(endPos + 2)
                 End While
-            End Sub, Nothing)
+            End Sub, cancellationToken)
         If Not buffer.StartsWith("data: [DONE]") Then
             Try
                 Dim finalResponse = ResponseBase.FromJson(buffer)
