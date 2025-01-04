@@ -45,17 +45,19 @@ Public Class MicrosoftChatClientAdapter
         }
 
         Dim response = Await Client.CompleteAsync(request, cancellationToken)
-
-        If response.Error IsNot Nothing AndAlso response.Error.Count > 0 Then
-            Throw New InvalidOperationException($"错误 {If(response.Error!code, "???")}: {If(response.Error!message, "未指定的错误")}")
-        End If
-
+        ThrowForNonSuccessResponse(response)
         Return New ChatCompletion(
             (From choice In response.Choices
              Let msg = choice.Message
              Select New ChatMessage(New ChatRole(msg.Role), msg.Content)
             ).ToArray)
     End Function
+
+    Private Shared Sub ThrowForNonSuccessResponse(response As ResponseBase)
+        If response.Error IsNot Nothing AndAlso response.Error.Count > 0 Then
+            Throw New InvalidOperationException($"错误 {If(response.Error!code, "???")}: {If(response.Error!message, "未指定的错误")}")
+        End If
+    End Sub
 
     Private Function ToDoubleWithRounding(value As Single?) As Double?
         If value Is Nothing Then
@@ -95,6 +97,7 @@ Public Class MicrosoftChatClientAdapter
                     .Stream = True
                 },
                 Sub(resp)
+                    ThrowForNonSuccessResponse(resp)
                     Dim respMessage = resp.Choices?.FirstOrDefault?.Delta?.Content
                     If respMessage <> Nothing Then
                         Dim converted As New StreamingChatCompletionUpdate With {.Text = respMessage}

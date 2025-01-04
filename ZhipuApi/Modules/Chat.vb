@@ -37,7 +37,7 @@ Public Class Chat
 #If NET6_0_OR_GREATER Then
         Dim stream = Await response.Content.ReadAsStreamAsync(cancellationToken)
 #Else
-		Dim stream = Await response.Content.ReadAsStreamAsync()
+        Dim stream = Await response.Content.ReadAsStreamAsync()
 #End If
 
         Dim buffer(8191) As Byte
@@ -45,7 +45,7 @@ Public Class Chat
 #If NET6_0_OR_GREATER Then
             Dim bytesRead = Await stream.ReadAsync(buffer, cancellationToken)
 #Else
-			Dim bytesRead = Await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)
+            Dim bytesRead = Await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken)
 #End If
 
             If bytesRead <= 0 Then
@@ -94,13 +94,10 @@ Public Class Chat
                 End While
             End Sub, cancellationToken)
         If Not buffer.StartsWith("data: [DONE]") Then
-            Try
-                Dim finalResponse = ResponseBase.FromJson(buffer)
-                If finalResponse IsNot Nothing Then
-                    yieldCallback(finalResponse)
-                End If
-            Catch ex As Exception
-            End Try
+            Dim finalResponse = ResponseBase.FromJson(buffer)
+            If finalResponse IsNot Nothing Then
+                yieldCallback(finalResponse)
+            End If
         End If
     End Function
 
