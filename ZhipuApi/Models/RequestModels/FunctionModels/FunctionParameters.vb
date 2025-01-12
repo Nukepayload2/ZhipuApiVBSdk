@@ -1,4 +1,8 @@
 ﻿Namespace Models
+
+	' 丐板的 JSchema (https://github.com/JamesNK/Newtonsoft.Json.Schema/blob/master/Src/Newtonsoft.Json.Schema/JSchema.cs)
+	' 那个类型许可证太严格了不能用。
+
 	Public Class FunctionParameters
 		Public Property Type As String = "object"
 

@@ -5,6 +5,8 @@
         ' If JToken is String, then use StringValue. If JToken is array, use ArrayValue.
         Public Property Content As StringOrArray(Of ContentType)
 
+        Public Property ToolCallId As String
+
         Sub New()
 
         End Sub

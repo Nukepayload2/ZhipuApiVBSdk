@@ -18,6 +18,10 @@ Public Class Chat
     Private Async Function CompleteRawAsync(textRequestBody As TextRequestBase, cancellation As CancellationToken) As Task(Of MemoryStream)
         Dim json = textRequestBody?.ToJsonUtf8
         Const requestUrl = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
+#If DEBUG Then
+        Debug.WriteLine("Sending chat request: ")
+        Debug.WriteLine(Encoding.UTF8.GetString(json.ToArray()))
+#End If
         Return Await PostAsync(requestUrl, json, cancellation)
     End Function
 

@@ -145,6 +145,18 @@ Namespace Models
                         jsonWriter.WritePropertyName("description")
                         jsonWriter.WriteValue(funcValue.Description)
                     End If
+                    If funcValue.Default IsNot Nothing Then
+                        jsonWriter.WritePropertyName("default")
+                        jsonWriter.WriteValue(funcValue.Default)
+                    End If
+                    If funcValue.Enum IsNot Nothing Then
+                        jsonWriter.WritePropertyName("enum")
+                        jsonWriter.WriteStartArray()
+                        For Each item In funcValue.Enum
+                            jsonWriter.WriteValue(item)
+                        Next
+                        jsonWriter.WriteEndArray()
+                    End If
                     jsonWriter.WriteEndObject()
                 End If
             Next
@@ -187,6 +199,10 @@ Namespace Models
                     Next
                     jsonWriter.WriteEndArray()
                 End If
+            End If
+            If message.ToolCallId IsNot Nothing Then
+                jsonWriter.WritePropertyName("tool_call_id")
+                jsonWriter.WriteValue(message.ToolCallId)
             End If
             jsonWriter.WriteEndObject()
         End Sub

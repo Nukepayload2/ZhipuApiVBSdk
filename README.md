@@ -24,15 +24,26 @@ Do not use it in production environment unless you've tested it carefully.
 ### Implementation
 - [x] Text completion
 - [x] Text streaming
-- [x] Tool call
+- [x] Tool call in completion
+- [x] Tool call in streaming
 - [x] Image generation
 - [x] Image recognition
 - [x] Embedding
 
+### Tested Manually
+- [x] Text completion
+- [x] Text streaming
+- [x] Tool call in completion
+- [x] Tool call in streaming
+- [ ] Image generation
+- [ ] Image recognition
+- [ ] Embedding
+
 #### Microsoft.Extension.AI 9.0.0 Preview
 - [x] Chat completion
 - [x] Chat streaming
-- [ ] Tool call
+- [x] Tool call in completion
+- [ ] Tool call in streaming
 - [ ] Image generation
 - [ ] Image recognition
 - [ ] Embedding
@@ -40,15 +51,8 @@ Do not use it in production environment unless you've tested it carefully.
 ### Tested Manually
 - [x] Text completion
 - [x] Text streaming
-- [x] Tool call
-- [ ] Image generation
-- [ ] Image recognition
-- [ ] Embedding
-
-#### Microsoft.Extension.AI 9.0.0 Preview
-- [x] Chat completion
-- [x] Chat streaming
-- [ ] Tool call
+- [x] Tool call in completion
+- [ ] Tool call in streaming
 - [ ] Image generation
 - [ ] Image recognition
 - [ ] Embedding
