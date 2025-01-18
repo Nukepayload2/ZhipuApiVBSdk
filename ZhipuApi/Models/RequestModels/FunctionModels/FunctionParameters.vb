@@ -15,9 +15,5 @@
 			Return Me
 		End Function
 
-		Public Function SetRequiredParameter(required As String()) As FunctionParameters
-			Me.Required = required
-			Return Me
-		End Function
 	End Class
 End Namespace
