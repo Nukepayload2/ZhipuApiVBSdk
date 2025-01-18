@@ -8,9 +8,9 @@ Namespace Models
 
         Public Property Model As String
 
-        Public Property Messages As MessageItem()
+        Public Property Messages As IReadOnlyList(Of MessageItem)
 
-        Public Property Tools As FunctionTool()
+        Public Property Tools As IReadOnlyList(Of FunctionTool)
 
         Public Property ToolChoice As String
 
