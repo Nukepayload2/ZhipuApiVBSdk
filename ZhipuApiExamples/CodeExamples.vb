@@ -1,4 +1,5 @@
 ﻿Imports System.Text
+Imports System.Threading
 Imports Microsoft.Extensions.AI
 Imports Microsoft.VisualStudio.TestTools.UnitTesting
 Imports Nukepayload2.AI.Providers.Zhipu
@@ -219,6 +220,74 @@ Public Class CodeExamples
         Dim days = CInt(firstCall!days)
         Assert.AreEqual("北京", city)
         Assert.AreEqual(1, days)
+    End Function
+
+    <TestMethod>
+    Async Function TestToolCallStreamingAsync() As Task
+        Dim clientV4 As New ClientV4(ApiKey)
+        Dim sb As New StringBuilder
+        Dim messages As New List(Of MessageItem) From {
+            New MessageItem("system", "不要假设或猜测传入函数的参数值。如果用户的描述不明确，请要求用户提供必要信息"),
+            New MessageItem("user", "能帮我查天气吗？"),
+            New MessageItem("assistant", "好的，请告诉我您所在的城市名称。"),
+            New MessageItem("user", "北京"),
+            New MessageItem("assistant", "您需要查询未来几天的天气呢？"),
+            New MessageItem("user", "就今天一天的")
+        }
+        Dim lastToolCall As ToolCallItem = Nothing
+        Dim onResponse =
+            Sub(resp As ResponseBase)
+                Dim toolCall = resp.Choices?.FirstOrDefault?.Delta?.ToolCalls?.FirstOrDefault
+                If toolCall IsNot Nothing Then
+                    lastToolCall = toolCall
+                    Console.WriteLine("触发工具调用")
+                    Return
+                End If
+                Dim respMessage = resp.Choices?.FirstOrDefault?.Delta?.Content
+                If respMessage <> Nothing Then
+                    sb.AppendLine($"{Environment.TickCount}: {respMessage}")
+                End If
+            End Sub
+        Dim requestParams As New TextRequestBase With {
+            .Model = "glm-4-flash",
+            .Messages = messages,
+            .Tools = {
+                New FunctionTool With {
+                    .Name = "get_weather",
+                    .Description = "根据提供的城市名称，提供未来的天气数据",
+                    .Parameters = New FunctionParameters With {
+                        .Required = {"city"}
+                    }.
+                    AddParameter("city", ParameterType.String, "搜索的城市名称").
+                    AddParameter("days", ParameterType.Integer, "要查询的未来的天数，默认为0")
+                }
+            },
+            .ToolChoice = "auto",
+            .Temperature = 0.3,
+            .TopP = 0.7,
+            .Stream = True
+        }
+
+        ' 这个模型有时候会需要多次工具调用才给你回答，这里我们重试最多十次。
+        Await clientV4.Chat.StreamAsync(requestParams, onResponse)
+        Dim retry = 0
+        Do While lastToolCall IsNot Nothing AndAlso Interlocked.Increment(retry) <= 10
+            Dim lastToolCallFunc = lastToolCall.Function
+            If lastToolCallFunc IsNot Nothing Then
+                ' 在这里返回了示例数据，实际应用中应当进行异步查询请求，并返回真实数据。
+                If lastToolCallFunc.Name = "get_weather" AndAlso lastToolCallFunc.Arguments?.Contains("北京") Then
+                    Dim callResult = "晴天，30 摄氏度。"
+                    messages.Add(New MessageItem("tool", callResult) With {.ToolCallId = lastToolCall.Id})
+                    lastToolCall = Nothing
+                    Await clientV4.Chat.StreamAsync(requestParams, onResponse)
+                End If
+            End If
+        Loop
+
+        Dim finalResult = sb.ToString
+        Console.WriteLine(finalResult)
+        Assert.IsTrue(finalResult.Contains("晴"c))
+        Assert.IsTrue(finalResult.Contains("30"))
     End Function
 
     <TestMethod>
