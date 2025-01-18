@@ -61,8 +61,27 @@ Public Class MicrosoftChatClientAdapter
         Return New ChatCompletion(
             (From choice In response.Choices
              Let msg = choice.Message
+             Where msg IsNot Nothing
              Select New ChatMessage(New ChatRole(msg.Role), msg.Content)
-            ).ToArray)
+            ).ToArray) With {.FinishReason = ConvertFinishReason(response.Choices)}
+    End Function
+
+    Private Shared Function ConvertFinishReason(choices As ResponseChoiceItem()) As ChatFinishReason?
+        Dim finishReasonText = choices.FirstOrDefault(Function(it) it.FinishReason IsNot Nothing)
+        If finishReasonText IsNot Nothing Then
+            Select Case finishReasonText.FinishReason
+                Case "stop"
+                    Return ChatFinishReason.Stop
+                Case "tool_calls"
+                    Return ChatFinishReason.ToolCalls
+                Case "length"
+                    Return ChatFinishReason.Length
+                Case "sensitive"
+                    Return ChatFinishReason.ContentFilter
+                Case Else
+                    Return Nothing
+            End Select
+        End If
     End Function
 
     Private Shared Async Function TryAddToolCallMessages(chatMessages As IList(Of ChatMessage), options As ChatOptions, toolCalls() As ToolCallItem, cancellationToken As CancellationToken) As Task(Of Boolean)
@@ -238,7 +257,10 @@ Public Class MicrosoftChatClientAdapter
                     ThrowForNonSuccessResponse(resp)
                     Dim respMessage = resp.Choices?.FirstOrDefault?.Delta?.Content
                     If respMessage <> Nothing Then
-                        Dim converted As New StreamingChatCompletionUpdate With {.Text = respMessage}
+                        Dim converted As New StreamingChatCompletionUpdate With {
+                            .Text = respMessage,
+                            .FinishReason = ConvertFinishReason(resp.Choices)
+                        }
                         enumerator.YieldValue(converted)
                     End If
                 End Sub,
