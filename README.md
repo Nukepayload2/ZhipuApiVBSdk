@@ -84,4 +84,4 @@ These methods are designed for Java. VB has `With` statement for object initiali
 Use [`With` statement](https://learn.microsoft.com/en-us/dotnet/visual-basic/programming-guide/language-features/objects-and-classes/how-to-declare-an-object-by-using-an-object-initializer) for object initialization.
 
 #### Version introduced
-1.0.0-beta2
+1.0.0-beta2 and other 1.0 beta versions
