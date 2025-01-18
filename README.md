@@ -18,7 +18,8 @@ Get on NuGet: [Nukepayload2.AI.Providers.Zhipu](https://www.nuget.org/packages/N
 
 ## Progress
 It's currently in beta stage. 
-We reserve the rights of making breaking changes.
+We reserve the rights of **making breaking changes**.
+
 Do not use it in production environment unless you've tested it carefully.
 
 ### Implementation
@@ -56,3 +57,31 @@ Do not use it in production environment unless you've tested it carefully.
 - [ ] Image generation
 - [ ] Image recognition
 - [ ] Embedding
+
+## Breaking changes of 1.0 Beta
+### `TextRequestBase` uses `IReadOnlyList(Of T)` instead of arrays
+#### Reason for this change
+Enable the use of `List(Of T)` and `T()` at the same time. `List(Of T)` is very useful when handling tool calls. But in other cases (e.g. LINQ result or hard-coded parameters), arrays are enough.
+
+#### Breaking change type
+- Binary breaking change: some property setters could not be found at runtime.
+
+#### Suggested action
+Recompile your program and components with the same version of this SDK to resolve runtime type conflicts.
+
+#### Version introduced
+1.0.0-beta9
+
+### Removed useless `SetXxx` methods
+#### Reason for this change
+These methods are designed for Java. VB has `With` statement for object initialization.
+
+#### Breaking change type
+- Binary breaking change: some `SetXxx` methods could not be found at runtime.
+- Source breaking change: some `SetXxx` methods could not be found at compile time.
+
+#### Suggested action
+Use [`With` statement](https://learn.microsoft.com/en-us/dotnet/visual-basic/programming-guide/language-features/objects-and-classes/how-to-declare-an-object-by-using-an-object-initializer) for object initialization.
+
+#### Version introduced
+1.0.0-beta2
