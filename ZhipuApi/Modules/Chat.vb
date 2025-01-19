@@ -44,7 +44,7 @@ Public Class Chat
         Dim stream = Await response.Content.ReadAsStreamAsync()
 #End If
 
-        Dim buffer(8) As Byte
+        Dim buffer(8192) As Byte
         While True
 #If NET6_0_OR_GREATER Then
             Dim bytesRead = Await stream.ReadAsync(buffer, cancellationToken)
@@ -86,7 +86,6 @@ Public Class Chat
         Dim rawBufferSize = 0
         Await StreamUtf8Async(textRequestBody,
             Async Function(chunk As ReadOnlyMemory(Of Byte))
-                Debug.WriteLine("当前 Chunk 是: " & IoUtils.UTF8NoBOM.GetString(chunk.ToArray))
                 ' 小心：Async Function 的闭包里面不能有 Span。编译之前看清楚每个变量的类型。
 
                 ' 参数检查
@@ -98,13 +97,14 @@ Public Class Chat
                     Dim newSize = Math.Max(chunk.Length + rawBuffer.Length, rawBuffer.Length * 2)
                     Array.Resize(rawBuffer, newSize)
                 End If
-                rawBufferSize = newLength
 
                 ' 把 chunk 追加到 rawBuffer
-                chunk.Span.CopyTo(rawBuffer.AsSpan(0, rawBufferSize))
+                chunk.Span.CopyTo(rawBuffer.AsSpan(rawBufferSize, chunk.Length))
+                rawBufferSize = newLength
 
                 ' 此时 rawBuffer 中可能有多条数据，一个个找。
                 Dim startPos = 0
+                Dim lastSuccessfulStartPos = 0
                 Do
                     ' 寻找一段数据起始位置
                     Dim nextStartPos = rawBuffer.AsSpan(startPos, rawBufferSize - startPos).IndexOf(s_streamStartUtf8)
@@ -114,6 +114,7 @@ Public Class Chat
                     End If
 
                     ' 移动 startPos，跳过头部
+                    lastSuccessfulStartPos = startPos + nextStartPos
                     startPos += nextStartPos + s_streamStartUtf8.Length
 
                     ' 从数据的起始位置开始寻找一段数据的结束位置
@@ -125,8 +126,8 @@ Public Class Chat
 
                     ' 这是最后一段数据吗？
                     If rawBuffer.AsSpan(startPos, dataLength).StartsWith(s_streamDoneUtf8) Then
-                        ' 最后一段数据用来终止迭代，不应向外部报告
-                        Exit Do
+                        ' 最后一段数据用来终止迭代，不应向外部报告，也不用给下次调用清理空间。
+                        Return
                     End If
 
                     ' 报告一段数据
@@ -139,14 +140,14 @@ Public Class Chat
 
                     ' 移动 startPos 到上一段数据的末尾之后，下次就从这里开始查找
                     startPos += dataLength + s_streamEndUtf8.Length
-
+                    lastSuccessfulStartPos = startPos
                     ' 这个 chunk 处理完了就退出循环
                 Loop While startPos < rawBufferSize
 
                 ' 把处理过的数据删掉，给下个 chunk 腾空间
-                If startPos > 0 Then
-                    rawBufferSize -= startPos
-                    rawBuffer.AsSpan(startPos, rawBufferSize).CopyTo(rawBuffer.AsSpan(0, rawBufferSize))
+                If lastSuccessfulStartPos > 0 Then
+                    rawBufferSize -= lastSuccessfulStartPos
+                    rawBuffer.AsSpan(lastSuccessfulStartPos, rawBufferSize).CopyTo(rawBuffer.AsSpan(0, rawBufferSize))
                 End If
             End Function, cancellationToken)
 
