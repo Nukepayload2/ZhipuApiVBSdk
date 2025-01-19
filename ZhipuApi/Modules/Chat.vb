@@ -3,6 +3,7 @@ Imports System.Net.Http
 Imports System.Text
 Imports System.Threading
 Imports Nukepayload2.AI.Providers.Zhipu.Models
+Imports Nukepayload2.AI.Providers.Zhipu.Utils
 
 Public Class Chat
     Inherits ClientFeatureBase
@@ -20,7 +21,7 @@ Public Class Chat
         Const requestUrl = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 #If DEBUG Then
         Debug.WriteLine("Sending chat request: ")
-        Debug.WriteLine(Encoding.UTF8.GetString(json.ToArray()))
+        Debug.WriteLine(IoUtils.UTF8NoBOM.GetString(json.ToArray()))
 #End If
         Return Await PostAsync(requestUrl, json, cancellation)
     End Function
@@ -32,7 +33,7 @@ Public Class Chat
     End Function
 
     Private Async Function StreamUtf8Async(textRequestBody As TextRequestBase,
-                                           yieldCallback As Action(Of ReadOnlyMemory(Of Byte)),
+                                           yieldCallback As Func(Of ReadOnlyMemory(Of Byte), Task),
                                            cancellationToken As CancellationToken) As Task
         Dim json = textRequestBody?.ToJsonUtf8
         Const requestUrl = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
@@ -56,18 +57,35 @@ Public Class Chat
                 Exit While
             End If
             cancellationToken.ThrowIfCancellationRequested()
-            yieldCallback(buffer.AsMemory(0, bytesRead))
+            Await yieldCallback(buffer.AsMemory(0, bytesRead))
         End While
     End Function
 
     Public Async Function StreamAsync(textRequestBody As TextRequestBase,
                                       yieldCallback As Action(Of ResponseBase),
                                       Optional cancellationToken As CancellationToken = Nothing) As Task
+        Await StreamAsync(textRequestBody,
+                          Function(resp)
+                              yieldCallback(resp)
+                              Return Task.CompletedTask
+                          End Function, cancellationToken)
+    End Function
+
+    Private Shared ReadOnly s_streamStartUtf8 As Byte() = IoUtils.UTF8NoBOM.GetBytes("data: ")
+    Private Shared ReadOnly s_streamEndUtf8 As Byte() = IoUtils.UTF8NoBOM.GetBytes(vbLf & vbLf)
+
+    Public Async Function StreamAsync(textRequestBody As TextRequestBase,
+                                      yieldCallback As Func(Of ResponseBase, Task),
+                                      Optional cancellationToken As CancellationToken = Nothing) As Task
         If Not textRequestBody.Stream Then Throw New ArgumentException("You must set Stream to True.", NameOf(textRequestBody))
-        ' 原版 SDK 就写成这样了，字符串这样拼也是醉了
+        ' C# SDK 就写成这样了，字符串这样拼也是醉了
+        ' 原始代码的含义是，chunk 是滑动窗口的大小，要找出每一段数据来调用 yieldCallback。
+        ' 数据的起始是 `"data: "`，结束是 `vbLf & vbLf`。
+        ' 最后一段数据是 "data: [DONE]"。
+        ' C# SDK 的 bug 是，UTF8 字符会被 chunk 的边界截断，从而引发乱码。我们这里会修复这个乱码问题。
         Dim buffer As String = String.Empty
         Await StreamUtf8Async(textRequestBody,
-            Sub(chunk As ReadOnlyMemory(Of Byte))
+            Async Function(chunk As ReadOnlyMemory(Of Byte))
 #If NET6_0_OR_GREATER Then
                 buffer += Encoding.UTF8.GetString(chunk.Span)
 #Else
@@ -92,15 +110,15 @@ Public Class Chat
                     End If
                     Dim response = ResponseBase.FromJson(jsonString)
                     If response IsNot Nothing Then
-                        yieldCallback(response)
+                        Await yieldCallback(response)
                     End If
                     buffer = buffer.Substring(endPos + 2)
                 End While
-            End Sub, cancellationToken)
+            End Function, cancellationToken)
         If Not buffer.StartsWith("data: [DONE]") Then
             Dim finalResponse = ResponseBase.FromJson(buffer)
             If finalResponse IsNot Nothing Then
-                yieldCallback(finalResponse)
+                Await yieldCallback(finalResponse)
             End If
         End If
     End Function

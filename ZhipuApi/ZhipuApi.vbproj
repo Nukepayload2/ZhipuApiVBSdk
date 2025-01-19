@@ -16,7 +16,7 @@
     <Copyright>Copyright 2024 Nukepayload2</Copyright>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <Authors>Nukepayload2</Authors>
-    <PackageReleaseNotes>Support tool call in chat completion of Microsoft.Extensions.AI 9.0.0 preview</PackageReleaseNotes>
+    <PackageReleaseNotes>Support tool call and finish reason in streaming chat completion of Microsoft.Extensions.AI 9.0.0 preview</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net8.0'">
