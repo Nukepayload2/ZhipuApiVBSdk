@@ -35,7 +35,7 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] Text completion
 - [x] Text streaming
 - [x] Tool call in completion
-- [ ] Tool call in streaming
+- [x] Tool call in streaming
 - [ ] Image generation
 - [ ] Image recognition
 - [ ] Embedding
@@ -44,7 +44,7 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] Chat completion
 - [x] Chat streaming
 - [x] Tool call in completion
-- [ ] Tool call in streaming
+- [x] Tool call in streaming
 - [ ] Image generation
 - [ ] Image recognition
 - [ ] Embedding
@@ -53,7 +53,7 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] Text completion
 - [x] Text streaming
 - [x] Tool call in completion
-- [ ] Tool call in streaming
+- [x] Tool call in streaming
 - [ ] Image generation
 - [ ] Image recognition
 - [ ] Embedding
