@@ -127,6 +127,7 @@ Public Class Chat
                     ' 这是最后一段数据吗？
                     If rawBuffer.AsSpan(startPos, dataLength).StartsWith(s_streamDoneUtf8) Then
                         ' 最后一段数据用来终止迭代，不应向外部报告，也不用给下次调用清理空间。
+                        rawBufferSize = 0
                         Return
                     End If
 
