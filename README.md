@@ -40,7 +40,7 @@ Do not use it in production environment unless you've tested it carefully.
 - [ ] Image recognition
 - [ ] Embedding
 
-#### Microsoft.Extension.AI 9.0.0 Preview
+### Microsoft.Extension.AI 9.0.0 Preview
 - [x] Chat completion
 - [x] Chat streaming
 - [x] Tool call in completion
@@ -49,7 +49,7 @@ Do not use it in production environment unless you've tested it carefully.
 - [ ] Image recognition
 - [ ] Embedding
 
-### Tested Manually
+### Tested Manually with Microsoft.Extension.AI
 - [x] Text completion
 - [x] Text streaming
 - [x] Tool call in completion
