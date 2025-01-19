@@ -223,6 +223,44 @@ Public Class CodeExamples
     End Function
 
     <TestMethod>
+    Async Function TestMicrosoftAIToolCallStreamingAsync() As Task
+        Dim clientV4 As New ClientV4(ApiKey)
+        Dim tool As New AIGetWeather
+        Dim options As New ChatOptions With {
+            .Temperature = 0.7F, .TopP = 0.7F, .ToolMode = ChatToolMode.Auto,
+            .Tools = {tool}
+        }
+        ' 注意：工具调用情况下，聊天记录必须是可修改的，因为要插入工具调用返回的值。
+        Dim respAsyncEnumerate = clientV4.Chat.AsChatClient("glm-4-flash").CompleteStreamingAsync(
+            New List(Of ChatMessage) From {
+                New ChatMessage(ChatRole.System, "不要假设或猜测传入函数的参数值。如果用户的描述不明确，请要求用户提供必要信息"),
+                New ChatMessage(ChatRole.User, "能帮我查天气吗？"),
+                New ChatMessage(ChatRole.Assistant, "好的，请告诉我您所在的城市名称。"),
+                New ChatMessage(ChatRole.User, "北京"),
+                New ChatMessage(ChatRole.Assistant, "您需要查询未来几天的天气呢？"),
+                New ChatMessage(ChatRole.User, "就今天一天的")
+            }, options
+        )
+
+        ' 在 VB 支持简化的 IAsyncEnumerable 调用 (Await Each 语句) 之前可以用 System.Linq.Async 读取服务端回复的数据。
+        Dim respLog As New StringBuilder
+        Dim respText As New StringBuilder
+        Await respAsyncEnumerate.ForEachAsync(
+        Sub(update)
+            Dim resp = update.Text
+            If resp <> Nothing Then
+                respLog.AppendLine($"{Environment.TickCount}: {resp}")
+                respText.AppendLine(resp)
+            End If
+        End Sub)
+
+        Console.WriteLine(respLog.ToString)
+        Dim respMessage = respText.ToString
+        Assert.IsTrue(respMessage.Contains("晴天"))
+        Assert.IsTrue(respMessage.Contains("30"))
+    End Function
+
+    <TestMethod>
     Async Function TestToolCallStreamingAsync() As Task
         Dim clientV4 As New ClientV4(ApiKey)
         Dim sb As New StringBuilder
