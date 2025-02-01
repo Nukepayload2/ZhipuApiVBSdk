@@ -13,10 +13,11 @@ Namespace Models
 
         Public Property Model As String
 
-        Public Property Usage As Dictionary(Of String, Integer?)
+        Public Property Usage As UsageData
 
         Public Property Choices As IReadOnlyList(Of ResponseChoiceItem)
-
+        Public Property WebSearch As WebSearchResponse
+        Public Property ContentFilter As ContentFilter
         Public Property [Error] As Dictionary(Of String, String)
 
         Private Shared ReadOnly s_defaultErrorHandler As New JsonReadErrorHandler
