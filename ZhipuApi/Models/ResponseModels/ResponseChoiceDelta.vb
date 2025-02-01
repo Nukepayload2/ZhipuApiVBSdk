@@ -4,6 +4,6 @@
 
 		Public Property Content As String
 
-		Public Property ToolCalls As ToolCallItem()
+		Public Property ToolCalls As IReadOnlyList(Of ToolCallItem)
 	End Class
 End Namespace

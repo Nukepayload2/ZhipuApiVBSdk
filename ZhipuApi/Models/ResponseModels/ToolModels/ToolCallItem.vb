@@ -4,7 +4,7 @@
 
 		Public Property [Function] As FunctionDescriptor
 
-		Public Property Index As Integer
+		Public Property Index As Integer?
 
 		Public Property Type As String
 	End Class
