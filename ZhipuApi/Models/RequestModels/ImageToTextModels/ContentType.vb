@@ -5,6 +5,7 @@
 		Public Property Text As String
 
 		Public Property ImageUrl As ImageUrlType
+		Public Property VideoUrl As VideoUrlType
 
 	End Class
 End Namespace

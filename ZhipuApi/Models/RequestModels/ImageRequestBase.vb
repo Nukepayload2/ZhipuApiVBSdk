@@ -3,6 +3,9 @@ Imports Nukepayload2.AI.Providers.Zhipu.Utils
 Imports System.IO
 
 Namespace Models
+    ''' <summary>
+    ''' For cogview models.
+    ''' </summary>
     Public Class ImageRequestBase
         Public Property Model As String
 

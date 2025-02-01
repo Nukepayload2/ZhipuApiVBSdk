@@ -8,7 +8,7 @@
 
 		Public ReadOnly Property Properties As New Dictionary(Of String, FunctionParameterDescriptor)
 
-		Public Property Required As String()
+		Public Property Required As IReadOnlyList(Of String)
 
 		Public Function AddParameter(name As String, type As ParameterType, description As String) As FunctionParameters
 			Properties(name) = New FunctionParameterDescriptor(type, description)
