@@ -59,6 +59,40 @@ Do not use it in production environment unless you've tested it carefully.
 - [ ] Embedding
 
 ## Breaking changes of 1.0 Beta
+### All value type properties are nullable
+#### Reason for this change
+After this change, we can distinguish whether a `Double`/`Integer`/`Boolean` is absent in JSON.
+
+#### Breaking change type
+- Binary breaking change: some properties could not be found at runtime.
+- Source breaking change: some property types are changed at compile time.
+
+#### Suggested action
+Use nullable value types to fix compilation errors.
+
+#### Version introduced
+1.0.1-beta10
+
+### Dictionaries are only used when there're unknown property names
+#### Reason for this change
+After this change, the API design is more complaint with OOP.
+
+#### Breaking change type
+- Binary breaking change: some properties and types could not be found at runtime.
+- Source breaking change: some property types are changed at compile time.
+
+#### Suggested action
+Use specific classes instead of dictionaries to fix compilation errors.
+- `FunctionTool.Function` property
+
+#### Version introduced
+1.0.1-beta10
+
+### More places uses `IReadOnlyList(Of T)` instead of arrays
+See "`TextRequestBase` uses `IReadOnlyList(Of T)` instead of arrays" for more information.
+#### Version introduced
+1.0.1-beta10
+
 ### `TextRequestBase` uses `IReadOnlyList(Of T)` instead of arrays
 #### Reason for this change
 Enable the use of `List(Of T)` and `T()` at the same time. `List(Of T)` is very useful when handling tool calls. But in other cases (e.g. LINQ result or hard-coded parameters), arrays are enough.

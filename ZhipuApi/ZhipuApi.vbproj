@@ -17,9 +17,7 @@
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <Authors>Nukepayload2</Authors>
     <PackageReleaseNotes>
-1. Support tool call in streaming chat completion of `Microsoft.Extensions.AI 9.0.0 preview`.
-2. Support finish reason in chat completion of `Microsoft.Extensions.AI 9.0.0 preview`.
-3. Fixed garbled characters or UTF-8 decode errors in long streaming chat.
+Adjusted text request/response classes to fit the latest API design (2025-01-31) of GLM-4 series.
     </PackageReleaseNotes>
   </PropertyGroup>
 
