@@ -10,7 +10,7 @@
     <RepositoryUrl>https://github.com/Nukepayload2/ZhipuApiVBSdk.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageTags>zhipu ZhipuApi AI</PackageTags>
+    <PackageTags>zhipu ZhipuApi Chat AI LLM text generation GLM</PackageTags>
     <OptionStrict>On</OptionStrict>
     <Deterministic>True</Deterministic>
     <Copyright>Copyright 2024 Nukepayload2</Copyright>
@@ -32,7 +32,7 @@ Adjusted text request/response classes to fit the latest API design (2025-01-31)
   </ItemGroup>
   
   <ItemGroup>
-    <InternalsVisibleTo Include="Nukepayload2.AI.Providers.Zhipu.Serialization"/>
+    <InternalsVisibleTo Include="Nukepayload2.AI.Providers.Zhipu.Serialization" />
   </ItemGroup>
 
   <ItemGroup>
