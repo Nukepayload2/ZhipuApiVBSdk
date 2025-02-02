@@ -88,7 +88,7 @@ Use specific classes instead of dictionaries to fix compilation errors.
 #### Version introduced
 1.0.1-beta10
 
-### More places uses `IReadOnlyList(Of T)` instead of arrays
+### More places use `IReadOnlyList(Of T)` instead of arrays
 See "`TextRequestBase` uses `IReadOnlyList(Of T)` instead of arrays" for more information.
 #### Version introduced
 1.0.1-beta10
