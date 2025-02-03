@@ -3,7 +3,7 @@
     <RootNamespace>Nukepayload2.AI.Providers.Zhipu</RootNamespace>
     <AssemblyName>Nukepayload2.AI.Providers.Zhipu</AssemblyName>
     <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
-    <Version>1.0.1-beta10</Version>
+    <Version>1.0.1-beta11</Version>
     <PackageId>$(AssemblyName)</PackageId>
     <Description>VB-friendly .NET bindings for the ZhipuApi v4. It's part of the Nukepayload2 VB AI SDK as a model provider.</Description>
     <PackageProjectUrl>https://github.com/Nukepayload2/ZhipuApiVBSdk</PackageProjectUrl>
