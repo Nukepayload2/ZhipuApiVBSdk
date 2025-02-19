@@ -84,6 +84,36 @@ Public Class CodeExamples
     End Function
 
     <TestMethod>
+    Async Function TestStreamErrorHandlingAsync() As Task
+        Dim clientV4 As New ClientV4(ApiKey)
+        Dim sb As New StringBuilder
+        Await clientV4.Chat.StreamAsync(
+            New TextRequestBase With {
+                .Model = "glm-wrong-model-name",
+                .Messages = {New MessageItem("user", "1+1等于多少"),
+                              New MessageItem("assistant", "1+1等于2。"),
+                              New MessageItem("user", "再加2呢？")},
+                .Temperature = 0.7,
+                .TopP = 0.7,
+                .Stream = True
+            },
+            Sub(resp)
+                If resp.Error IsNot Nothing Then
+                    sb.Append(String.Join(vbCrLf, From err In resp.Error Select $"{err.Key}: {err.Value}"))
+                    Return
+                End If
+                Dim respMessage = resp.Choices?.FirstOrDefault?.Delta?.Content
+                If respMessage <> Nothing Then
+                    sb.AppendLine($"{Environment.TickCount}: {respMessage}")
+                End If
+            End Sub)
+
+        Dim errMsg = sb.ToString
+        Console.WriteLine(errMsg)
+        Assert.IsTrue(errMsg.Contains("模型不存在"))
+    End Function
+
+    <TestMethod>
     Async Function TestMicrosoftAIStreamAsync() As Task
         Dim clientV4 As New ClientV4(ApiKey)
         Dim messages = {New ChatMessage(ChatRole.User, "1+1等于多少"),
