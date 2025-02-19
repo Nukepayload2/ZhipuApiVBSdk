@@ -81,6 +81,13 @@ Public Class Chat
                 If response IsNot Nothing Then
                     Await yieldCallback(response)
                 End If
+            End Function,
+            Async Function(jsonStream) As Task
+                Dim response = ResponseBase.FromJson(jsonStream)
+                Debug.WriteLine("Server non-streaming error: " & IoUtils.UTF8NoBOM.GetString(jsonStream.ToArray))
+                If response IsNot Nothing Then
+                    Await yieldCallback(response)
+                End If
             End Function)
 
         Await StreamUtf8Async(textRequestBody, AddressOf reader.OnChunkAsync, cancellationToken)

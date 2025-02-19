@@ -5,18 +5,22 @@ Friend Class ServerSentEventReader
     Private _rawBuffer As Byte() = Array.Empty(Of Byte)
     Private _rawBufferSize As Integer = 0
     Private ReadOnly _onEventDataReceivedAsync As Func(Of MemoryStream, Task)
+    Private ReadOnly _onEventErrorReceivedAsync As Func(Of MemoryStream, Task)
 
     Private Shared ReadOnly s_streamStartUtf8 As Byte() = IoUtils.UTF8NoBOM.GetBytes("data: ")
     Private Shared ReadOnly s_streamEndUtf8 As Byte() = IoUtils.UTF8NoBOM.GetBytes(vbLf & vbLf)
     Private Shared ReadOnly s_streamDoneUtf8 As Byte() = IoUtils.UTF8NoBOM.GetBytes("[DONE]")
+    Private Shared ReadOnly s_streamErrorUtf8 As Byte() = IoUtils.UTF8NoBOM.GetBytes("{""error"":{")
 
-    Sub New(onEventDataReceivedAsync As Func(Of MemoryStream, Task))
+    Sub New(onEventDataReceivedAsync As Func(Of MemoryStream, Task), onEventErrorReceivedAsync As Func(Of MemoryStream, Task))
         _onEventDataReceivedAsync = onEventDataReceivedAsync
+        _onEventErrorReceivedAsync = onEventErrorReceivedAsync
     End Sub
 
     ' chunk 是滑动窗口的数据，要循环每一个窗口，找出每一段数据来调用 yieldCallback。
     ' 数据的起始是 "data: "，结束是 `vbLf & vbLf`。
     ' 最后一段数据是 "data: [DONE]"。
+    ' 错误信息不一定符合 SSE 格式
     ' C# SDK 的 bug 是，UTF-8 字符会被 chunk 的边界截断，从而引发乱码。我们这里会修复这个乱码问题，顺便通过减少解码的次数来改善性能。
     Async Function OnChunkAsync(chunk As ReadOnlyMemory(Of Byte)) As Task
         ' 小心：Async Function 的闭包里面不能有 Span。编译之前看清楚每个变量的类型。
@@ -42,6 +46,17 @@ Friend Class ServerSentEventReader
             ' 寻找一段数据起始位置
             Dim nextStartPos = _rawBuffer.AsSpan(startPos, _rawBufferSize - startPos).IndexOf(s_streamStartUtf8)
             If nextStartPos = -1 Then
+                If startPos = 0 Then
+                    Dim errMaxLength = _rawBufferSize - startPos
+                    Dim isErrorStart = _rawBuffer.AsSpan(startPos, errMaxLength).StartsWith(s_streamErrorUtf8)
+                    If isErrorStart Then
+                        ' 是错误消息，报告出去之后马上退出
+                        _rawBufferSize = 0
+                        Dim errStream As New MemoryStream(_rawBuffer, startPos, errMaxLength)
+                        Await _onEventErrorReceivedAsync(errStream)
+                        Return
+                    End If
+                End If
                 ' 没有起始位置，等下一个窗口
                 Exit Do
             End If
