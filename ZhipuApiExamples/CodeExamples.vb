@@ -105,6 +105,7 @@ Public Class CodeExamples
                 Dim respMessage = resp.Choices?.FirstOrDefault?.Delta?.Content
                 If respMessage <> Nothing Then
                     sb.AppendLine($"{Environment.TickCount}: {respMessage}")
+                    Assert.Fail("Exception expected")
                 End If
             End Sub)
 
@@ -133,6 +134,31 @@ Public Class CodeExamples
 
         Console.WriteLine(sb.ToString)
         Assert.AreNotEqual(0, sb.Length)
+    End Function
+
+    <TestMethod>
+    Async Function TestMicrosoftAIStreamErrorHandlingAsync() As Task
+        Dim clientV4 As New ClientV4(ApiKey)
+        Dim messages = {New ChatMessage(ChatRole.User, "1+1等于多少"),
+                        New ChatMessage(ChatRole.Assistant, "1+1等于2。"),
+                        New ChatMessage(ChatRole.User, "再加2呢？")}
+        Dim options As New ChatOptions With {.Temperature = 0.7F, .TopP = 0.7F}
+        Dim sb As New StringBuilder
+
+        Try
+            Dim respAsyncEnumerate = clientV4.Chat.AsChatClient("glm-wrong-model-name").CompleteStreamingAsync(messages, options)
+            ' 在 VB 支持简化的 IAsyncEnumerable 调用 (Await Each 语句) 之前可以用 System.Linq.Async 读取服务端回复的数据。
+            Await respAsyncEnumerate.ForEachAsync(
+            Sub(update)
+                Dim respMessage = update.Text
+                If respMessage <> Nothing Then
+                    sb.AppendLine($"{Environment.TickCount}: {respMessage}")
+                End If
+            End Sub)
+            Assert.Fail("Exception expected")
+        Catch ex As Exception
+            Assert.IsTrue(ex.Message.Contains("模型不存在"))
+        End Try
     End Function
 
     <TestMethod>
