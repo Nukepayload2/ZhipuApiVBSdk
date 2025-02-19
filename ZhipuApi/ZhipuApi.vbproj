@@ -17,7 +17,10 @@
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <Authors>Nukepayload2</Authors>
     <PackageReleaseNotes>
-Adjusted text request/response classes to fit the latest API design (2025-01-31) of GLM-4 series.
+Added support for error handling in streaming chat completion mode. 
+
+- The Web API wrapper uses the `Error` property. 
+- The Microsoft AI extension adapter throws exception.
     </PackageReleaseNotes>
   </PropertyGroup>
 
