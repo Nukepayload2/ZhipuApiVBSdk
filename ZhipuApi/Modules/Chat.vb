@@ -15,14 +15,15 @@ Public Class Chat
         MyBase.New(apiKey, client)
     End Sub
 
+    Protected Overridable ReadOnly Property ChatCompletionRequestUrl As String = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
+
     Private Async Function CompleteRawAsync(textRequestBody As TextRequestBase, cancellation As CancellationToken) As Task(Of MemoryStream)
         Dim json = textRequestBody?.ToJsonUtf8
-        Const requestUrl = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 #If DEBUG Then
         Debug.WriteLine("Sending chat request: ")
         Debug.WriteLine(IoUtils.UTF8NoBOM.GetString(json.ToArray()))
 #End If
-        Return Await PostAsync(requestUrl, json, cancellation)
+        Return Await PostAsync(ChatCompletionRequestUrl, json, cancellation)
     End Function
 
     Public Async Function CompleteAsync(textRequestBody As TextRequestBase,
@@ -35,9 +36,8 @@ Public Class Chat
                                            yieldCallback As Func(Of ReadOnlyMemory(Of Byte), Task),
                                            cancellationToken As CancellationToken) As Task
         Dim json = textRequestBody?.ToJsonUtf8
-        Const requestUrl = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 
-        Dim response = Await PostRawAsync(requestUrl, json, cancellationToken)
+        Dim response = Await PostRawAsync(ChatCompletionRequestUrl, json, cancellationToken)
 #If NET6_0_OR_GREATER Then
         Dim stream = Await response.Content.ReadAsStreamAsync(cancellationToken)
 #Else

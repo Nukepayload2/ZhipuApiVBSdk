@@ -42,6 +42,7 @@ Public MustInherit Class ClientFeatureBase
         }
         request.Headers.Add("Authorization", apiKey)
         Dim response = Await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellation)
+        response.EnsureSuccessStatusCode()
         Return response
     End Function
 End Class
