@@ -7,7 +7,7 @@ Namespace Global.Nukepayload2.IO.Json.Serialization.NewtonsoftJson
     ''' <summary>
     ''' Handles recoverable JSON errors and throws when the error is unrecoverable.
     ''' </summary>
-    Public Class JsonReadErrorHandler
+    Friend Class JsonReadErrorHandler
 
         ''' <summary>
         ''' Contains the positions that the JSON deserializer can be in when a conflicting token type is encountered.
