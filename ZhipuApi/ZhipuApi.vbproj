@@ -45,4 +45,8 @@ Added support for error handling in streaming chat completion mode.
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\BreakingChanges.md" Link="BreakingChanges.md" />
+  </ItemGroup>
+
 </Project>
