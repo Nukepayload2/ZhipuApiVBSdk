@@ -438,7 +438,7 @@ Namespace Serialization
         End Sub
 
         ''' <summary>
-        ''' Writes composite type <see cref="StringOrArrayOfContentType"/> with type-based discriminator to JsonWriter.
+        ''' Writes composite type <see cref="StringOrArray(Of ContentType)"/> with type-based discriminator to JsonWriter.
         ''' </summary>
         Private Shared Sub WriteStringOrArrayOfContentType(writer As Global.Newtonsoft.Json.JsonWriter, value As StringOrArray(Of ContentType))
             If value Is Nothing Then

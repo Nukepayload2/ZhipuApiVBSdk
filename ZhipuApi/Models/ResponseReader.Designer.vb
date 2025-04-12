@@ -8,6 +8,7 @@ Option Explicit On
 Option Compare Binary
 Imports Nukepayload2.AI.Providers.Zhipu.Models
 Imports System.IO
+Imports Newtonsoft.Json.Linq
 Imports Nukepayload2.IO.Json.Serialization.NewtonsoftJson
 
 Namespace Serialization
@@ -19,19 +20,19 @@ Namespace Serialization
             If reader.TokenType = Global.Newtonsoft.Json.JsonToken.None Then
                 reader.Read()
             End If
-
+        
             If reader.TokenType <> Global.Newtonsoft.Json.JsonToken.StartObject Then
                 readState.OnConflictingTokenType("ResponseBase", JsonReadErrorHandler.Positions.StartObject, reader)
                 Return Nothing
             End If
-
+        
             Dim entity As New ResponseBase
-
+        
             Dim startDepth As Integer = reader.Depth
             If Not reader.Read() Then
                 Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
             End If
-
+        
             Do
                 Select Case reader.TokenType
                     Case Global.Newtonsoft.Json.JsonToken.PropertyName
@@ -775,7 +776,7 @@ Namespace Serialization
             Return entityList
         End Function
         ''' <summary>
-        ''' Reads <see cref="DictionaryOfStringAndString"/> from JsonReader.
+        ''' Reads <see cref="Dictionary(Of String, String)"/> from JsonReader.
         ''' </summary>
         Private Shared Function ReadDictionaryOfStringAndString(reader As Global.Newtonsoft.Json.JsonReader, readState As JsonReadErrorHandler) As Dictionary(Of String, String)
             If reader.TokenType = Global.Newtonsoft.Json.JsonToken.None Then
