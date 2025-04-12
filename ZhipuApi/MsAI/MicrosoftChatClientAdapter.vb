@@ -3,6 +3,9 @@ Imports Microsoft.Extensions.AI
 Imports Newtonsoft.Json.Linq
 Imports Nukepayload2.AI.Providers.Zhipu.Models
 
+''' <summary>
+''' Adapter for Microsoft AI API. The design follows <see cref="IChatClient"/> and provides additional wrapping configurations.
+''' </summary>
 Public Class MicrosoftChatClientAdapter
     Implements IChatClient
 
@@ -22,13 +25,22 @@ Public Class MicrosoftChatClientAdapter
                     modelId)
     End Sub
 
+    ''' <summary>
+    ''' The client for the API.
+    ''' </summary>
     Public ReadOnly Property Client As Chat
 
+    ''' <summary>
+    ''' Metadata of the client.
+    ''' </summary>
     Public ReadOnly Property Metadata As ChatClientMetadata
 
+    ''' <summary>
+    ''' The maximum number of times to retry when the tool call is requested again.
+    ''' </summary>
     Public Property ToolCallMaxRetry As Integer = 10
 
-    Public Async Function CompleteAsync(chatMessages As IEnumerable(Of ChatMessage),
+    Public Async Function GetResponseAsync(chatMessages As IEnumerable(Of ChatMessage),
                                         Optional options As ChatOptions = Nothing,
                                         Optional cancellationToken As CancellationToken = Nothing) As Task(Of ChatResponse) Implements IChatClient.GetResponseAsync
         Dim request As New TextRequestBase With {
@@ -213,7 +225,7 @@ Public Class MicrosoftChatClientAdapter
         Return Nothing
     End Function
 
-    Public Function CompleteStreamingAsync(chatMessages As IEnumerable(Of ChatMessage),
+    Public Function GetStreamingResponseAsync(chatMessages As IEnumerable(Of ChatMessage),
                                            Optional options As ChatOptions = Nothing,
                                            Optional cancellationToken As CancellationToken = Nothing
                                            ) As IAsyncEnumerable(Of ChatResponseUpdate) Implements IChatClient.GetStreamingResponseAsync
@@ -264,11 +276,7 @@ Public Class MicrosoftChatClientAdapter
         Return builder.Build()
     End Function
 
-    Public Function GetService901(serviceType As Type, Optional serviceKey As Object = Nothing) As Object Implements IChatClient.GetService
-        Return Nothing
-    End Function
-
-    Public Function GetService900(Of TService As Class)(Optional key As Object = Nothing) As TService
+    Public Function GetService(serviceType As Type, Optional serviceKey As Object = Nothing) As Object Implements IChatClient.GetService
         Return Nothing
     End Function
 

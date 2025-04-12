@@ -22,6 +22,7 @@ Added support for error handling in streaming chat completion mode.
 - The Web API wrapper uses the `Error` property. 
 - The Microsoft AI extension adapter throws exception.
     </PackageReleaseNotes>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='net8.0'">

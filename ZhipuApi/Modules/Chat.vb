@@ -26,6 +26,18 @@ Public Class Chat
         Return Await PostAsync(ChatCompletionRequestUrl, json, cancellation)
     End Function
 
+    ''' <summary>
+    ''' Chat completion without streaming.
+    ''' </summary>
+    ''' <param name="textRequestBody">The request message.</param>
+    ''' <param name="cancellationToken">Use it to cancel the request.</param>
+    ''' <returns>The response message or error message.</returns>
+    ''' <exception cref="HttpRequestException">
+    ''' The request was not successful and the response stream is empty.
+    ''' </exception>
+    ''' <remarks>
+    ''' <see href="https://bigmodel.cn/dev/api/normal-model/glm-4">Online documentation</see>
+    ''' </remarks>
     Public Async Function CompleteAsync(textRequestBody As TextRequestBase,
                                         Optional cancellationToken As CancellationToken = Nothing) As Task(Of ResponseBase)
         If textRequestBody.Stream Then Throw New ArgumentException("You must set Stream to False.", NameOf(textRequestBody))
@@ -60,6 +72,19 @@ Public Class Chat
         End While
     End Function
 
+    ''' <summary>
+    ''' Chat completion with streaming.
+    ''' </summary>
+    ''' <param name="textRequestBody">The request message.</param>
+    ''' <param name="yieldCallback">The body of async for each loop.</param>
+    ''' <param name="cancellationToken">Use it to cancel the request.</param>
+    ''' <returns>The response message or error message.</returns>
+    ''' <exception cref="HttpRequestException">
+    ''' The request was not successful and the response stream is empty.
+    ''' </exception>
+    ''' <remarks>
+    ''' <see href="https://bigmodel.cn/dev/api/normal-model/glm-4">Online documentation</see>
+    ''' </remarks>
     Public Async Function StreamAsync(textRequestBody As TextRequestBase,
                                       yieldCallback As Action(Of ResponseBase),
                                       Optional cancellationToken As CancellationToken = Nothing) As Task
@@ -70,6 +95,19 @@ Public Class Chat
                           End Function, cancellationToken)
     End Function
 
+    ''' <summary>
+    ''' Chat completion with streaming.
+    ''' </summary>
+    ''' <param name="textRequestBody">The request message.</param>
+    ''' <param name="yieldCallback">The body of async for each loop.</param>
+    ''' <param name="cancellationToken">Use it to cancel the request.</param>
+    ''' <returns>The response message or error message.</returns>
+    ''' <exception cref="HttpRequestException">
+    ''' The request was not successful and the response stream is empty.
+    ''' </exception>
+    ''' <remarks>
+    ''' <see href="https://bigmodel.cn/dev/api/normal-model/glm-4">Online documentation</see>
+    ''' </remarks>
     Public Async Function StreamAsync(textRequestBody As TextRequestBase,
                                       yieldCallback As Func(Of ResponseBase, Task),
                                       Optional cancellationToken As CancellationToken = Nothing) As Task
