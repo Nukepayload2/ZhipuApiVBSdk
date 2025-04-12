@@ -24,11 +24,13 @@ Public Class MicrosoftChatClientAdapter
 
     Public ReadOnly Property Client As Chat
 
-    Public ReadOnly Property Metadata As ChatClientMetadata Implements IChatClient.Metadata
+    Public ReadOnly Property Metadata As ChatClientMetadata
 
     Public Property ToolCallMaxRetry As Integer = 10
 
-    Public Async Function CompleteAsync(chatMessages As IList(Of ChatMessage), Optional options As ChatOptions = Nothing, Optional cancellationToken As CancellationToken = Nothing) As Task(Of ChatCompletion) Implements IChatClient.CompleteAsync
+    Public Async Function CompleteAsync(chatMessages As IEnumerable(Of ChatMessage),
+                                        Optional options As ChatOptions = Nothing,
+                                        Optional cancellationToken As CancellationToken = Nothing) As Task(Of ChatResponse) Implements IChatClient.GetResponseAsync
         Dim request As New TextRequestBase With {
             .Model = Metadata.ModelId,
             .Messages = (From msg In chatMessages
@@ -41,24 +43,25 @@ Public Class MicrosoftChatClientAdapter
         Return Await CompleteInternalAsync(chatMessages, options, request, 1, cancellationToken)
     End Function
 
-    Private Async Function CompleteInternalAsync(chatMessages As IList(Of ChatMessage),
+    Private Async Function CompleteInternalAsync(chatMessages As IEnumerable(Of ChatMessage),
                                                  options As ChatOptions,
                                                  request As TextRequestBase, attemptCount As Integer,
-                                                 cancellationToken As CancellationToken) As Task(Of ChatCompletion)
+                                                 cancellationToken As CancellationToken) As Task(Of ChatResponse)
         Dim response = Await Client.CompleteAsync(request, cancellationToken)
         ThrowForNonSuccessResponse(response)
 
         If options?.Tools IsNot Nothing AndAlso options.Tools.Count > 0 Then
             Dim toolCalls = response.Choices?.FirstOrDefault?.Message?.ToolCalls
             If toolCalls IsNot Nothing AndAlso toolCalls.Count > 0 Then
-                Dim toolResponseAdded = Await TryAddToolCallMessages(chatMessages, DirectCast(request.Messages, List(Of MessageItem)), options, toolCalls, cancellationToken)
+                Dim msgList = chatMessages.ToList
+                Dim toolResponseAdded = Await TryAddToolCallMessages(msgList, DirectCast(request.Messages, List(Of MessageItem)), options, toolCalls, cancellationToken)
                 If toolResponseAdded AndAlso attemptCount < ToolCallMaxRetry Then
                     Return Await CompleteInternalAsync(chatMessages, options, request, attemptCount + 1, cancellationToken)
                 End If
             End If
         End If
 
-        Return New ChatCompletion(
+        Return New ChatResponse(
             (From choice In response.Choices
              Let msg = choice.Message
              Where msg IsNot Nothing
@@ -84,9 +87,15 @@ Public Class MicrosoftChatClientAdapter
         End If
     End Function
 
-    Private Shared Async Function TryAddToolCallMessages(chatMessages As IList(Of ChatMessage), messages As List(Of MessageItem), options As ChatOptions, toolCalls As IReadOnlyList(Of ToolCallItem), cancellationToken As CancellationToken) As Task(Of Boolean)
+    Private Shared Async Function TryAddToolCallMessages(chatMessages As IList(Of ChatMessage),
+                                                         messages As List(Of MessageItem),
+                                                         options As ChatOptions,
+                                                         toolCalls As IReadOnlyList(Of ToolCallItem),
+                                                         cancellationToken As CancellationToken) As Task(Of Boolean)
         Dim toolResponseAdded = False
-        Dim toolCache = options.Tools.OfType(Of AIFunction).ToDictionary(Function(it) it.Metadata.Name, Function(it) it)
+        Dim toolCache = options.Tools.OfType(Of AIFunction).ToDictionary(
+            Function(it) it.JsonSchema.GetNullableString("title"),
+            Function(it) it)
         For Each toolCall In toolCalls
             Dim func = toolCall?.Function
             If func Is Nothing Then Continue For
@@ -141,24 +150,47 @@ Public Class MicrosoftChatClientAdapter
         Return tools.OfType(Of AIFunction).Select(
             Function(tool)
                 Dim functionParams As New FunctionParameters
-                Dim metadata = tool.Metadata
+                Dim metadata = tool.JsonSchema
+                ' {
+                '   "title" : "addNumbers",
+                '   "description": "A simple function that adds two numbers together.",
+                '   "type": "object",
+                '   "properties": {
+                '     "a" : { "type": "number" },
+                '     "b" : { "type": "number", "default": 1 }
+                '   },
+                '   "required" : ["a"]
+                ' }
+                Dim type = metadata.GetNullableString("type")
+                Dim title = metadata.GetNullableString("title")
+                Dim description = metadata.GetNullableString("description")
+                Dim properties = metadata.GetNullableObject("properties")
+                Dim required = metadata.GetNullableArray("required")
 
-                If metadata.Parameters IsNot Nothing Then
-                    Dim reqParams As New List(Of String)
-                    For Each param In metadata.Parameters
-                        If param.IsRequired Then
-                            reqParams.Add(param.Name)
+                If properties IsNot Nothing Then
+                    For Each param In properties.Value.EnumerateObject
+                        Dim paraName = param.Name
+                        Dim paraVal = param.Value
+                        Dim paraType = paraVal.GetNullableString("type")
+                        Dim paraDesc = paraVal.GetNullableString("description")
+                        Dim paraDef = paraVal.GetNullableValue("default")
+                        Dim paramEnum = paraVal.GetNullableArray("enum")
+                        Dim paramSchema As New FunctionParameterDescriptor(paraType, paraDesc) With {
+                            .Default = paraDef
+                        }
+                        If paramEnum IsNot Nothing Then
+                            paramSchema.Enum = Aggregate v In paramEnum.Value.EnumerateArray
+                                               Let rawValue = v.GetNullableValue
+                                               Where rawValue IsNot Nothing
+                                               Select rawValue Into ToArray
                         End If
-                        Dim paramSchema As New FunctionParameterDescriptor(GetJsonSchemaTypeString(param.ParameterType), param.Description)
-                        If param.HasDefaultValue Then
-                            paramSchema.Default = param.DefaultValue
-                        End If
-                        ' enum 目前映射不了
                         functionParams.Properties(param.Name) = paramSchema
                     Next
 
-                    If reqParams.Count > 0 Then
-                        functionParams.Required = reqParams.ToArray
+                    If required IsNot Nothing Then
+                        functionParams.Required = Aggregate req In required.Value.EnumerateArray
+                                                  Where req.ValueKind = Text.Json.JsonValueKind.String
+                                                  Select req.GetString Into ToArray
                     End If
                 Else
                     ' 如果调用函数时不需要参数，则可以省略此参数。
@@ -168,36 +200,11 @@ Public Class MicrosoftChatClientAdapter
                 ' ReturnParameter 目前映射不了
 
                 Return New FunctionTool With {
-                    .Name = metadata.Name,
-                    .Description = metadata.Description,
+                    .Name = title,
+                    .Description = description,
                     .Parameters = functionParams
                 }
             End Function).ToArray()
-    End Function
-
-    Private Shared Function GetJsonSchemaTypeString(type As Type) As String
-        If type Is Nothing Then
-            Return "null"
-        End If
-
-        Select Case type
-            Case GetType(String), GetType(Char)
-                Return "string"
-            Case GetType(Integer), GetType(Long), GetType(Short), GetType(Byte), GetType(SByte),
-                 GetType(UInteger), GetType(ULong), GetType(UShort)
-                Return "integer"
-            Case GetType(Double), GetType(Single), GetType(Decimal)
-                Return "number"
-            Case GetType(Boolean)
-                Return "boolean"
-            Case Else
-                If type.IsArray Then
-                    Return "array"
-                End If
-
-                ' 对于不支持的类型，可以返回一个默认值或抛出异常
-                Throw New ArgumentException($"Unsupported type: {type.FullName}")
-        End Select
     End Function
 
     Private Shared Function ConvertToolChoice(tools As IList(Of AITool), toolMode As ChatToolMode) As String
@@ -206,10 +213,10 @@ Public Class MicrosoftChatClientAdapter
         Return Nothing
     End Function
 
-    Public Function CompleteStreamingAsync(chatMessages As IList(Of ChatMessage),
+    Public Function CompleteStreamingAsync(chatMessages As IEnumerable(Of ChatMessage),
                                            Optional options As ChatOptions = Nothing,
                                            Optional cancellationToken As CancellationToken = Nothing
-                                           ) As IAsyncEnumerable(Of StreamingChatCompletionUpdate) Implements IChatClient.CompleteStreamingAsync
+                                           ) As IAsyncEnumerable(Of ChatResponseUpdate) Implements IChatClient.GetStreamingResponseAsync
         Dim messages = (From msg In chatMessages
                         Select ConvertMessage(msg)).ToList
         Dim requestParams As New TextRequestBase With {
@@ -221,22 +228,22 @@ Public Class MicrosoftChatClientAdapter
             .Tools = ConvertTools(options?.Tools),
             .Stream = True
         }
-        Dim builder As New AsyncEnumerableAdapter(Of StreamingChatCompletionUpdate).Builder With {
+        Dim builder As New AsyncEnumerableAdapter(Of ChatResponseUpdate).Builder With {
             .ReturnAsync =
             Async Function(enumerator)
                 Dim lastToolCalls As IReadOnlyList(Of ToolCallItem) = Nothing
                 Dim onResponse =
                 Sub(resp As ResponseBase)
                     ThrowForNonSuccessResponse(resp)
-                    Dim toolCalls = resp.Choices?.FirstOrDefault?.Delta?.ToolCalls
+                    Dim delta = resp.Choices?.FirstOrDefault?.Delta
+                    Dim toolCalls = delta?.ToolCalls
                     If toolCalls IsNot Nothing Then
                         lastToolCalls = toolCalls
                         Return
                     End If
-                    Dim respMessage = resp.Choices?.FirstOrDefault?.Delta?.Content
+                    Dim respMessage = delta?.Content
                     If respMessage <> Nothing Then
-                        Dim converted As New StreamingChatCompletionUpdate With {
-                            .Text = respMessage,
+                        Dim converted As New ChatResponseUpdate(New ChatRole(delta.Role), respMessage) With {
                             .FinishReason = ConvertFinishReason(resp.Choices)
                         }
                         enumerator.YieldValue(converted)
@@ -245,8 +252,9 @@ Public Class MicrosoftChatClientAdapter
                 ' 这个模型有时候会需要多次工具调用才给你回答
                 Await Client.StreamAsync(requestParams, onResponse, cancellationToken)
                 Dim retry = 0
+                Dim msgList = chatMessages.ToList
                 Do While lastToolCalls IsNot Nothing AndAlso lastToolCalls.Count > 0 AndAlso Interlocked.Increment(retry) <= ToolCallMaxRetry
-                    Dim toolResponseAdded = Await TryAddToolCallMessages(chatMessages, messages, options, lastToolCalls, cancellationToken)
+                    Dim toolResponseAdded = Await TryAddToolCallMessages(msgList, messages, options, lastToolCalls, cancellationToken)
                     If Not toolResponseAdded Then Exit Do
                     lastToolCalls = Nothing
                     Await Client.StreamAsync(requestParams, onResponse, cancellationToken)
@@ -256,11 +264,11 @@ Public Class MicrosoftChatClientAdapter
         Return builder.Build()
     End Function
 
-    Public Function GetService901(serviceType As Type, Optional serviceKey As Object = Nothing) As Object
+    Public Function GetService901(serviceType As Type, Optional serviceKey As Object = Nothing) As Object Implements IChatClient.GetService
         Return Nothing
     End Function
 
-    Public Function GetService900(Of TService As Class)(Optional key As Object = Nothing) As TService Implements IChatClient.GetService
+    Public Function GetService900(Of TService As Class)(Optional key As Object = Nothing) As TService
         Return Nothing
     End Function
 
