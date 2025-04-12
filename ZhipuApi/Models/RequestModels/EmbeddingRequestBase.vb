@@ -8,6 +8,10 @@ Namespace Models
 
         Public Property Input As String
 
+        Public Property InputList As IReadOnlyList(Of String)
+
+        Public Property Dimensions As Integer?
+
         Public Function ToJsonUtf8() As MemoryStream
             Dim ms As New MemoryStream
             Using sw As New StreamWriter(ms, IoUtils.UTF8NoBOM, 8192, True), jsonWriter As New JsonTextWriter(sw)
@@ -33,6 +37,17 @@ Namespace Models
             If Input IsNot Nothing Then
                 jsonWriter.WritePropertyName("input")
                 jsonWriter.WriteValue(Input)
+            ElseIf InputList IsNot Nothing Then
+                jsonWriter.WritePropertyName("input")
+                jsonWriter.WriteStartArray()
+                For Each i In InputList
+                    jsonWriter.WriteValue(i)
+                Next
+                jsonWriter.WriteEndArray()
+            End If
+            If Dimensions IsNot Nothing Then
+                jsonWriter.WritePropertyName("dimensions")
+                jsonWriter.WriteValue(Dimensions)
             End If
             jsonWriter.WriteEndObject()
         End Sub
