@@ -8,13 +8,15 @@ It has the same capabilities as [zhipuai-sdk-csharp-v4](https://github.com/MetaG
 - [x] No reflection required. We support AOT compilation on .NET 8 or later.
 - [x] VB flavor of API design
 
-Code examples: [CodeExamples.vb](https://github.com/Nukepayload2/ZhipuApiVBSdk/blob/master/ZhipuApiExamples/CodeExamples.vb)
+Code examples: 
+- [CodeExamples.vb](https://github.com/Nukepayload2/ZhipuApiVBSdk/blob/master/ZhipuApiExamples/CodeExamples.vb)
+- [MsAICodeExamples.vb](https://github.com/Nukepayload2/ZhipuApiVBSdk/blob/master/ZhipuApiExamples/MsAICodeExamples.vb)
 
 Get on NuGet: [Nukepayload2.AI.Providers.Zhipu](https://www.nuget.org/packages/Nukepayload2.AI.Providers.Zhipu)
 
 ## Target Frameworks
 - .NET Standard 2.0
-- .NET 8 or later
+- .NET 8.0
 
 ## Progress
 It's currently in beta stage. 
