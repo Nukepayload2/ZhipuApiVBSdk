@@ -1,6 +1,12 @@
 ## Breaking changes of 1.1 Beta
 ### MicrosoftChatClientAdapter has changed the usage
-Migrated to Microsoft.Extension.AI 9.0.3 Preview
+
+#### Reason for this change
+Migrated to Microsoft.Extensions.AI.Abstractions 9.0.3 Preview, which is the version that LlamaSharp is using.
+
+#### Breaking change type
+- Binary breaking change: some interface implementations could not be found at runtime.
+- Source breaking change: some members are changed at compile time.
 
 #### Version introduced
 1.1.0-beta12
