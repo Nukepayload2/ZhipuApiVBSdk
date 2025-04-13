@@ -65,7 +65,7 @@ Public Class MicrosoftChatClientAdapter
         If options?.Tools IsNot Nothing AndAlso options.Tools.Count > 0 Then
             Dim toolCalls = response.Choices?.FirstOrDefault?.Message?.ToolCalls
             If toolCalls IsNot Nothing AndAlso toolCalls.Count > 0 Then
-                Dim msgList = chatMessages.ToList
+                Dim msgList = If(attemptCount > 1, DirectCast(chatMessages, List(Of ChatMessage)), chatMessages.ToList)
                 Dim toolResponseAdded = Await TryAddToolCallMessages(msgList, DirectCast(request.Messages, List(Of MessageItem)), options, toolCalls, cancellationToken)
                 If toolResponseAdded AndAlso attemptCount < ToolCallMaxRetry Then
                     Return Await CompleteInternalAsync(msgList, options, request, attemptCount + 1, cancellationToken)
