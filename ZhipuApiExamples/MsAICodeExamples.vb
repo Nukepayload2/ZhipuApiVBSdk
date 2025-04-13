@@ -153,9 +153,8 @@ Public Class MsAICodeExamples
             .Temperature = 0.7F, .TopP = 0.7F, .ToolMode = ChatToolMode.Auto,
             .Tools = {tool}
         }
-        ' 注意：工具调用情况下，聊天记录必须是可修改的，因为要插入工具调用返回的值。
         Dim response = Await clientV4.Chat.AsChatClient("glm-4-flash").GetResponseAsync(
-            New List(Of ChatMessage) From {
+            {
                 New ChatMessage(ChatRole.System, "不要假设或猜测传入函数的参数值。如果用户的描述不明确，请要求用户提供必要信息"),
                 New ChatMessage(ChatRole.User, "能帮我查天气吗？"),
                 New ChatMessage(ChatRole.Assistant, "好的，请告诉我您所在的城市名称。"),
@@ -187,9 +186,8 @@ Public Class MsAICodeExamples
             .Temperature = 0.7F, .TopP = 0.7F, .ToolMode = ChatToolMode.Auto,
             .Tools = {tool}
         }
-        ' 注意：工具调用情况下，聊天记录必须是可修改的，因为要插入工具调用返回的值。
         Dim respAsyncEnumerate = clientV4.Chat.AsChatClient("glm-4-flash").GetStreamingResponseAsync(
-            New List(Of ChatMessage) From {
+            {
                 New ChatMessage(ChatRole.System, "不要假设或猜测传入函数的参数值。如果用户的描述不明确，请要求用户提供必要信息"),
                 New ChatMessage(ChatRole.User, "能帮我查天气吗？"),
                 New ChatMessage(ChatRole.Assistant, "好的，请告诉我您所在的城市名称。"),
