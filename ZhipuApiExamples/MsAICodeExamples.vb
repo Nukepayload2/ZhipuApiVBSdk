@@ -112,6 +112,9 @@ Public Class MsAICodeExamples
     Private Class AIGetWeather
         Inherits AIFunction
 
+        ' 这里建议用 Anthony D. Green 的 ModVB Json 常量语法创建 JsonElement。原版的 VB 得从字符串创建。
+        ' https://anthonydgreen.net/2022/08/20/modvb-wave-1-json-literals-and-pattern-matching/
+
         Private Shared ReadOnly Schema As String =
             "{
   ""title"": ""get_weather"",
