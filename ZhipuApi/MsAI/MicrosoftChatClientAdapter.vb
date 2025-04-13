@@ -255,7 +255,8 @@ Public Class MicrosoftChatClientAdapter
                     End If
                     Dim respMessage = delta?.Content
                     If respMessage <> Nothing Then
-                        Dim converted As New ChatResponseUpdate(New ChatRole(delta.Role), respMessage) With {
+                        Dim role = If(delta.Role Is Nothing, ChatRole.Assistant, New ChatRole(delta.Role))
+                        Dim converted As New ChatResponseUpdate(role, respMessage) With {
                             .FinishReason = ConvertFinishReason(resp.Choices)
                         }
                         enumerator.YieldValue(converted)
