@@ -34,7 +34,7 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] [Embedding](https://bigmodel.cn/dev/api/vector/embedding)
 - [ ] [File management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile)
 - [ ] [Batch](https://bigmodel.cn/dev/api/batch-api/batch)
-- [ ] [Async completion](https://bigmodel.cn/dev/api/batch-api/batch)
+- [ ] [Async completion](https://bigmodel.cn/dev/api/normal-model/glm-4)
 - [ ] [Text extraction](https://bigmodel.cn/dev/api/knowlage-manage/queryextract)
 - [ ] [Rerank](https://bigmodel.cn/dev/api/knowlage-manage/rerank)
 - [ ] [Input audio in chat](https://bigmodel.cn/dev/api/rtav/GLM-4-Voice)
