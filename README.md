@@ -25,13 +25,33 @@ We reserve the rights of **making breaking changes**.
 Do not use it in production environment unless you've tested it carefully.
 
 ### Implementation
-- [x] Text completion
-- [x] Text streaming
-- [x] Tool call in completion
-- [x] Tool call in streaming
-- [x] Image generation
-- [x] Image recognition
-- [x] Embedding
+- [x] [Text completion](https://bigmodel.cn/dev/api/normal-model/glm-4)
+- [x] [Text streaming](https://bigmodel.cn/dev/api/normal-model/glm-4)
+- [x] [Tool call in completion](https://bigmodel.cn/dev/api/normal-model/glm-4)
+- [x] [Tool call in streaming](https://bigmodel.cn/dev/api/normal-model/glm-4)
+- [x] [Image generation](https://bigmodel.cn/dev/api/image-model/cogview)
+- [x] [Image recognition](https://bigmodel.cn/dev/api/normal-model/glm-4v)
+- [x] [Embedding](https://bigmodel.cn/dev/api/vector/embedding)
+- [ ] [File management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile)
+- [ ] [Batch](https://bigmodel.cn/dev/api/batch-api/batch)
+- [ ] [Async completion](https://bigmodel.cn/dev/api/batch-api/batch)
+- [ ] [Text extraction](https://bigmodel.cn/dev/api/knowlage-manage/queryextract)
+- [ ] [Rerank](https://bigmodel.cn/dev/api/knowlage-manage/rerank)
+- [ ] [Input audio in chat](https://bigmodel.cn/dev/api/rtav/GLM-4-Voice)
+- [ ] [Realtime video chat](https://bigmodel.cn/dev/api/rtav/GLM-Realtime)
+- [ ] [Voice recognition](https://bigmodel.cn/dev/api/rtav/glm-asr)
+- [ ] [Web search](https://bigmodel.cn/dev/api/search-tool/web-search)
+- [ ] [Web search in chat](https://bigmodel.cn/dev/api/search-tool/websearch-in-chat)
+- [ ] [Search agent](https://bigmodel.cn/dev/api/search-tool/agent-search)
+- [ ] [Video generation](https://bigmodel.cn/dev/api/videomodel/cogvideox)
+- [ ] [Agent: AllTools](https://bigmodel.cn/dev/api/intelligent-agent-model/glm-4-alltools)
+- [ ] [Agent: Assistant](https://bigmodel.cn/dev/api/intelligent-agent-model/assistantapi)
+- [ ] [Agent: Code completion](https://bigmodel.cn/dev/api/code-model/codegeex-4)
+- [ ] [Agent: Emohaa](https://bigmodel.cn/dev/api/super-humanoid/emohaa)
+- [ ] [Agent: Financial](https://bigmodel.cn/dev/api/Agent_Platform/FinAgent)
+- [ ] [Agent v2](https://bigmodel.cn/dev/api/Agent_Platform/newagent)
+- [ ] [Fine tuning](https://bigmodel.cn/dev/api/model-fine-tuning/fine-tuning)
+- [ ] [Tokenizer](https://bigmodel.cn/dev/api/tokenizer)
 
 ### Tested Manually
 - [x] Text completion
