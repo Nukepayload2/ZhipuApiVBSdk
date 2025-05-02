@@ -66,16 +66,16 @@ Do not use it in production environment unless you've tested it carefully.
 - [ ] [File management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile) <!-- 需要 JSON schema 生成 (files.json) -->
     - [ ] [Text extraction](https://bigmodel.cn/dev/api/knowlage-manage/queryextract) <!-- 增强 files 支持，purpose="file-extract" -->
 - [ ] [Batch](https://bigmodel.cn/dev/api/batch-api/batch) <!-- 需要 JSON schema 生成 (batch.json) -->
-- [ ] [Async completion](https://bigmodel.cn/dev/api/normal-model/glm-4) <!-- 需要 JSON schema 生成 (async-response.json) -->
-- [ ] [Voice recognition](https://bigmodel.cn/dev/api/rtav/glm-asr) <!-- 需要 JSON schema 生成 (asr.json) -->
 - [ ] [Web search](https://bigmodel.cn/dev/api/search-tool/web-search) <!-- 需要 JSON schema 生成，不做 MCP (websearch.json) -->
-- [ ] [Rerank](https://bigmodel.cn/dev/api/knowlage-manage/rerank) <!-- 需要 JSON schema 生成 (rerank.json) -->
+- [ ] [Video generation](https://bigmodel.cn/dev/api/videomodel/cogvideox) <!-- 需要 JSON schema 生成 (video-gen.json)-->
+- [ ] [Voice recognition](https://bigmodel.cn/dev/api/rtav/glm-asr) <!-- 需要 JSON schema 生成 (asr.json) -->
 
 #### P2
 - [ ] [Input audio in chat](https://bigmodel.cn/dev/api/rtav/GLM-4-Voice) <!-- 增强 chat/completions 支持，content "type": "input_audio" -->
 - [ ] [Web search in chat](https://bigmodel.cn/dev/api/search-tool/websearch-in-chat) <!-- 增强 chat/completions 支持，请求 type 是 web_search，响应有 web_search -->
-- [ ] [Video generation](https://bigmodel.cn/dev/api/videomodel/cogvideox) <!-- 需要 JSON schema 生成 (video-gen.json)-->
 - [ ] [Tokenizer](https://bigmodel.cn/dev/api/tokenizer) <!-- 需要 JSON schema 生成 (tokenizer.json) -->
+- [ ] [Rerank](https://bigmodel.cn/dev/api/knowlage-manage/rerank) <!-- 需要 JSON schema 生成 (rerank.json) -->
+- [ ] [Async completion](https://bigmodel.cn/dev/api/normal-model/glm-4) <!-- 需要 JSON schema 生成 (async-response.json) -->
 
 #### P3
 - [ ] [Realtime video chat](https://bigmodel.cn/dev/api/rtav/GLM-Realtime) <!-- 要使用 wss，并且需要 JSON schema 生成 (realtime.json)，由于它专注特定领域，低优先级。 -->
