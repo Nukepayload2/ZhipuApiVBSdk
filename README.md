@@ -32,26 +32,6 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] [Image generation](https://bigmodel.cn/dev/api/image-model/cogview)
 - [x] [Image recognition](https://bigmodel.cn/dev/api/normal-model/glm-4v)
 - [x] [Embedding](https://bigmodel.cn/dev/api/vector/embedding)
-- [ ] [File management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile) <!-- 需要 JSON schema 生成 (files.json) -->
-- [ ] [Batch](https://bigmodel.cn/dev/api/batch-api/batch) <!-- 需要 JSON schema 生成 (batch.json) -->
-- [ ] [Async completion](https://bigmodel.cn/dev/api/normal-model/glm-4) <!-- 需要 JSON schema 生成 (async-response.json) -->
-- [ ] [Text extraction](https://bigmodel.cn/dev/api/knowlage-manage/queryextract) <!-- 增强 files 支持，purpose="file-extract" -->
-- [ ] [Rerank](https://bigmodel.cn/dev/api/knowlage-manage/rerank) <!-- 需要 JSON schema 生成 -->
-- [ ] [Input audio in chat](https://bigmodel.cn/dev/api/rtav/GLM-4-Voice) <!-- 增强 chat/completions 支持，content "type": "input_audio" -->
-- [ ] [Realtime video chat](https://bigmodel.cn/dev/api/rtav/GLM-Realtime) <!-- 要使用 wss，并且需要 JSON schema 生成 -->
-- [ ] [Voice recognition](https://bigmodel.cn/dev/api/rtav/glm-asr) <!-- 需要 JSON schema 生成 -->
-- [ ] [Web search](https://bigmodel.cn/dev/api/search-tool/web-search) <!-- 需要 JSON schema 生成，不做 MCP -->
-- [ ] [Web search in chat](https://bigmodel.cn/dev/api/search-tool/websearch-in-chat) <!-- 增强 chat/completions 支持，请求 type 是 web_search，响应有 web_search -->
-- [ ] [Search agent](https://bigmodel.cn/dev/api/search-tool/agent-search) <!-- 需要 JSON schema 生成 -->
-- [ ] [Video generation](https://bigmodel.cn/dev/api/videomodel/cogvideox) <!-- 需要 JSON schema 生成 -->
-- [ ] [Agent: AllTools](https://bigmodel.cn/dev/api/intelligent-agent-model/glm-4-alltools) <!-- 增强 chat/completions 支持，tools 和 tool_calls 里面加上 code_interpreter, drawing_tool, web_browser  -->
-- [ ] [Agent: Assistant](https://bigmodel.cn/dev/api/intelligent-agent-model/assistantapi) <!-- 需要 JSON schema 生成 -->
-- [ ] [Agent: Code completion](https://bigmodel.cn/dev/api/code-model/codegeex-4) <!-- 增强 chat/completions 支持，extra 里面是代码补全相关的参数 -->
-- [ ] [Agent: Emohaa](https://bigmodel.cn/dev/api/super-humanoid/emohaa) <!-- 增强 chat/completions 支持，里面有个 meta -->
-- [ ] [Agent: Financial](https://bigmodel.cn/dev/api/Agent_Platform/FinAgent) <!-- 需要 JSON schema 生成，由于它专注特定领域，低优先级。 -->
-- [ ] [Agent: Application](https://bigmodel.cn/dev/api/Agent_Platform/newagent) <!-- 需要 JSON schema 生成 -->
-- [ ] [Fine tuning](https://bigmodel.cn/dev/api/model-fine-tuning/fine-tuning) <!-- 需要 JSON schema 生成 -->
-- [ ] [Tokenizer](https://bigmodel.cn/dev/api/tokenizer) <!-- 需要 JSON schema 生成 -->
 
 ### Tested Manually
 - [x] Text completion
@@ -79,3 +59,31 @@ Do not use it in production environment unless you've tested it carefully.
 - [ ] Image generation
 - [ ] Image recognition
 - [ ] Embedding
+
+### Planned
+#### P1
+- [ ] [Errors as HttpRequestException](https://bigmodel.cn/dev/api/error-code/service-error)
+- [ ] [File management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile) <!-- 需要 JSON schema 生成 (files.json) -->
+    - [ ] [Text extraction](https://bigmodel.cn/dev/api/knowlage-manage/queryextract) <!-- 增强 files 支持，purpose="file-extract" -->
+- [ ] [Batch](https://bigmodel.cn/dev/api/batch-api/batch) <!-- 需要 JSON schema 生成 (batch.json) -->
+- [ ] [Async completion](https://bigmodel.cn/dev/api/normal-model/glm-4) <!-- 需要 JSON schema 生成 (async-response.json) -->
+- [ ] [Voice recognition](https://bigmodel.cn/dev/api/rtav/glm-asr) <!-- 需要 JSON schema 生成 (asr.json) -->
+- [ ] [Web search](https://bigmodel.cn/dev/api/search-tool/web-search) <!-- 需要 JSON schema 生成，不做 MCP (websearch.json) -->
+- [ ] [Rerank](https://bigmodel.cn/dev/api/knowlage-manage/rerank) <!-- 需要 JSON schema 生成 (rerank.json) -->
+
+#### P2
+- [ ] [Input audio in chat](https://bigmodel.cn/dev/api/rtav/GLM-4-Voice) <!-- 增强 chat/completions 支持，content "type": "input_audio" -->
+- [ ] [Web search in chat](https://bigmodel.cn/dev/api/search-tool/websearch-in-chat) <!-- 增强 chat/completions 支持，请求 type 是 web_search，响应有 web_search -->
+- [ ] [Video generation](https://bigmodel.cn/dev/api/videomodel/cogvideox) <!-- 需要 JSON schema 生成 (video-gen.json)-->
+- [ ] [Tokenizer](https://bigmodel.cn/dev/api/tokenizer) <!-- 需要 JSON schema 生成 (tokenizer.json) -->
+
+#### P3
+- [ ] [Realtime video chat](https://bigmodel.cn/dev/api/rtav/GLM-Realtime) <!-- 要使用 wss，并且需要 JSON schema 生成 (realtime.json)，由于它专注特定领域，低优先级。 -->
+- [ ] [Agent: AllTools](https://bigmodel.cn/dev/api/intelligent-agent-model/glm-4-alltools) <!-- 增强 chat/completions 支持，tools 和 tool_calls 里面加上 code_interpreter, drawing_tool, web_browser  -->
+- [ ] [Agent: Application](https://bigmodel.cn/dev/api/Agent_Platform/newagent) <!-- 需要 JSON schema 生成，由于 MCP 能覆盖此用例，低优先级。 -->
+- [ ] [Agent: Assistant](https://bigmodel.cn/dev/api/intelligent-agent-model/assistantapi) <!-- 需要 JSON schema 生成 (assistant.other.json) -->
+- [ ] [Agent: Code completion](https://bigmodel.cn/dev/api/code-model/codegeex-4) <!-- 增强 chat/completions 支持，extra 里面是代码补全相关的参数 -->
+- [ ] [Agent: Emohaa](https://bigmodel.cn/dev/api/super-humanoid/emohaa) <!-- 增强 chat/completions 支持，里面有个 meta -->
+- [ ] [Agent: Financial](https://bigmodel.cn/dev/api/Agent_Platform/FinAgent) <!-- 需要 JSON schema 生成，由于它专注特定领域，低优先级。 -->
+- [ ] [Agent: Search](https://bigmodel.cn/dev/api/search-tool/agent-search) <!-- 需要 JSON schema 生成 (assistant.search.json) -->
+- [ ] [Fine tuning](https://bigmodel.cn/dev/api/model-fine-tuning/fine-tuning) <!-- 需要 JSON schema 生成，由于它专注特定领域，低优先级。 -->
