@@ -20,18 +20,8 @@ Public MustInherit Class ClientFeatureBase
 
     Protected Async Function PostAsync(requestUrl As String, json As Stream, cancellation As CancellationToken) As Task(Of MemoryStream)
         Dim response As HttpResponseMessage = Await PostRawAsync(requestUrl, json, cancellation)
-#If NET6_0_OR_GREATER Then
-        Dim stream = Await response.Content.ReadAsStreamAsync(cancellation)
-#Else
-        Dim stream = Await response.Content.ReadAsStreamAsync()
-#End If
-        Dim result As New MemoryStream
-        Await stream.CopyToAsync(result, 8192, cancellation)
-        result.Position = 0
-        If result.Length = 0 Then
-            ' 流里面没东西，请求又失败了，错误信息就从 HTTP 响应里面取
-            response.EnsureSuccessStatusCode()
-        End If
+        Dim result = Await IoUtils.CopyToMemoryStreamAsync(response, cancellation)
+        ErrorHandler.ThrowForNonSuccess(response, result)
         Return result
     End Function
 
@@ -47,5 +37,21 @@ Public MustInherit Class ClientFeatureBase
         request.Headers.Add("Authorization", apiKey)
         Dim response = Await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellation)
         Return response
+    End Function
+
+    Protected Async Function GetAsync(requestUrl As String, cancellation As CancellationToken) As Task(Of MemoryStream)
+        Dim request As New HttpRequestMessage With {
+            .Method = HttpMethod.Get,
+            .RequestUri = New Uri(requestUrl)
+        }
+        Dim apiKey = AuthenticationUtils.GenerateToken(_apiKey, ApiTokenTtlSeconds)
+        With request.Headers
+            .Accept.TryParseAdd("application/json")
+            .Add("Authorization", apiKey)
+        End With
+        Dim response = Await _client.SendAsync(request, cancellation)
+        Dim result = Await IoUtils.CopyToMemoryStreamAsync(response, cancellation)
+        ErrorHandler.ThrowForNonSuccess(response, result)
+        Return result
     End Function
 End Class

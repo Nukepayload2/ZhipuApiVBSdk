@@ -9,6 +9,8 @@ Namespace Global.Nukepayload2.IO.Json.Serialization.NewtonsoftJson
     ''' </summary>
     Friend Class JsonReadErrorHandler
 
+        Public Shared ReadOnly Property DefaultHandler As New JsonReadErrorHandler
+
         ''' <summary>
         ''' Contains the positions that the JSON deserializer can be in when a conflicting token type is encountered.
         ''' </summary>

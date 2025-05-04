@@ -32,15 +32,17 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] [Image generation](https://bigmodel.cn/dev/api/image-model/cogview)
 - [x] [Image recognition](https://bigmodel.cn/dev/api/normal-model/glm-4v)
 - [x] [Embedding](https://bigmodel.cn/dev/api/vector/embedding)
+- [x] [Errors as HttpRequestException](https://bigmodel.cn/dev/api/error-code/service-error)
 
 ### Tested Manually
 - [x] Text completion
 - [x] Text streaming
 - [x] Tool call in completion
 - [x] Tool call in streaming
-- [ ] Image generation
+- [x] Errors as HttpRequestException
+- [x] Image generation
 - [ ] Image recognition
-- [ ] Embedding
+- [x] Embedding
 
 ### Microsoft.Extension.AI 9.0.3 Preview
 - [x] Chat completion
@@ -62,7 +64,6 @@ Do not use it in production environment unless you've tested it carefully.
 
 ### Planned
 #### P1
-- [ ] [Errors as HttpRequestException](https://bigmodel.cn/dev/api/error-code/service-error)
 - [ ] [File management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile) <!-- 需要 JSON schema 生成 (files.json) -->
     - [ ] [Text extraction](https://bigmodel.cn/dev/api/knowlage-manage/queryextract) <!-- 增强 files 支持，purpose="file-extract" -->
 - [ ] [Batch](https://bigmodel.cn/dev/api/batch-api/batch) <!-- 需要 JSON schema 生成 (batch.json) -->

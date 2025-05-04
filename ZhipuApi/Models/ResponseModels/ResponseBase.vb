@@ -1,4 +1,5 @@
-﻿Imports System.IO
+﻿Imports System.ComponentModel
+Imports System.IO
 Imports Newtonsoft.Json
 Imports Nukepayload2.AI.Providers.Zhipu.Serialization
 Imports Nukepayload2.IO.Json.Serialization.NewtonsoftJson
@@ -18,6 +19,11 @@ Namespace Models
         Public Property Choices As IReadOnlyList(Of ResponseChoiceItem)
         Public Property WebSearch As WebSearchResponse
         Public Property ContentFilter As ContentFilter
+        ''' <summary>
+        ''' 包含错误码和异常描述。已迁移到 <see cref="ZhipuHttpRequestException"/>。此属性用作 Beta 版二进制兼容，在后续版本将被删除。
+        ''' </summary>
+        <EditorBrowsable(EditorBrowsableState.Never)>
+        <Obsolete("Catch ZhipuHttpRequestException instead", True)>
         Public Property [Error] As Dictionary(Of String, String)
 
         Private Shared ReadOnly s_defaultErrorHandler As New JsonReadErrorHandler

@@ -60,8 +60,8 @@ Public Class CodeExamples
     <TestMethod>
     Async Function TestStreamErrorHandlingAsync() As Task
         Dim clientV4 As New ClientV4(ApiKey)
-        Dim sb As New StringBuilder
-        Await clientV4.Chat.StreamAsync(
+        Try
+            Await clientV4.Chat.StreamAsync(
             New TextRequestBase With {
                 .Model = "glm-wrong-model-name",
                 .Messages = {New MessageItem("user", "1+1等于多少"),
@@ -72,20 +72,14 @@ Public Class CodeExamples
                 .Stream = True
             },
             Sub(resp)
-                If resp.Error IsNot Nothing Then
-                    sb.Append(String.Join(vbCrLf, From err In resp.Error Select $"{err.Key}: {err.Value}"))
-                    Return
-                End If
-                Dim respMessage = resp.Choices?.FirstOrDefault?.Delta?.Content
-                If respMessage <> Nothing Then
-                    sb.AppendLine($"{Environment.TickCount}: {respMessage}")
-                    Assert.Fail("Exception expected")
-                End If
+                Assert.Fail("抛异常了就不应该走这里了")
             End Sub)
-
-        Dim errMsg = sb.ToString
-        Console.WriteLine(errMsg)
-        Assert.IsTrue(errMsg.Contains("模型不存在"))
+            Assert.Fail("应该抛出异常才对")
+        Catch ex As ZhipuHttpRequestException
+            Dim errObj = ex.Details
+            Assert.AreEqual("1211", errObj.Code)
+            Assert.IsTrue(errObj.Message.Contains("模型不存在"))
+        End Try
     End Function
 
     <TestMethod>

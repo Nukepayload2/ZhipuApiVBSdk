@@ -56,6 +56,7 @@ Public Class Chat
         Dim stream = Await response.Content.ReadAsStreamAsync()
 #End If
 
+        Await ErrorHandler.ThrowForNonSuccessAsync(response, stream, cancellationToken)
         Dim buffer(8192) As Byte
         While True
 #If NET6_0_OR_GREATER Then

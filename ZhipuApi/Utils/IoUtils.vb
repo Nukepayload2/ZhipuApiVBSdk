@@ -1,4 +1,6 @@
-﻿Imports System.Text
+﻿Imports System.IO
+Imports System.Net.Http
+Imports System.Text
 Imports System.Threading
 
 Namespace Utils
@@ -16,5 +18,17 @@ Namespace Utils
                 Return Volatile.Read(_UTF8NoBOM)
             End Get
         End Property
+
+        Public Shared Async Function CopyToMemoryStreamAsync(response As HttpResponseMessage, cancellation As CancellationToken) As Task(Of MemoryStream)
+#If NET6_0_OR_GREATER Then
+            Dim stream = Await response.Content.ReadAsStreamAsync(cancellation)
+#Else
+            Dim stream = Await response.Content.ReadAsStreamAsync()
+#End If
+            Dim result As New MemoryStream
+            Await stream.CopyToAsync(result, 8192, cancellation)
+            result.Position = 0
+            Return result
+        End Function
     End Class
 End Namespace
