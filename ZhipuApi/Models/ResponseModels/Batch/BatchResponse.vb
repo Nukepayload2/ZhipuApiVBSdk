@@ -1,4 +1,9 @@
-﻿Imports Newtonsoft.Json.Linq
+﻿Imports Newtonsoft.Json
+Imports System.IO
+Imports Newtonsoft.Json.Linq
+Imports Nukepayload2.AI.Providers.Zhipu.Serialization
+Imports Nukepayload2.AI.Providers.Zhipu.Utils
+Imports Nukepayload2.IO.Json.Serialization.NewtonsoftJson
 
 Namespace Models
     ''' <summary>
@@ -203,12 +208,20 @@ Namespace Models
         ''' </remarks>
         Public Property InProgressAt As Long?
         ''' <summary>
-        ''' 用户自定义元数据（最大16个键值对，每个键不超过64字符）
+        ''' 用于存储与 Batch 相关的数据，如客户ID、描述或其他任务管理和跟踪所需的额外信息。每个键的长度最多为 64 个字符，值的长度最多为 512 个字符。
         ''' </summary>
         ''' <remarks>
         ''' Reads or writes <c>metadata</c> in json.
         ''' </remarks>
-        Friend Property Metadata As JObject
+        Friend Property Metadata As IReadOnlyDictionary(Of String, String)
+            Get
+                Return JsonReadOnlyStringDictionary.Wrap(MetadataInternal)
+            End Get
+            Set(value As IReadOnlyDictionary(Of String, String))
+                MetadataInternal = JsonReadOnlyStringDictionary.ToJsonObject(value)
+            End Set
+        End Property
+        Friend Property MetadataInternal As JObject
         ''' <summary>
         ''' 包含成功请求结果的输出文件ID
         ''' </summary>
@@ -220,6 +233,20 @@ Namespace Models
         ''' Reads or writes <c>request_counts</c> in json.
         ''' </summary>
         Public Property RequestCounts As BatchRequestCounts
+
+        Public Shared Function FromJson(json As Stream) As BatchStatus
+            Using jsonReader As New JsonTextReader(New StreamReader(json))
+                jsonReader.DateParseHandling = DateParseHandling.None
+                Return BatchResponseReader.ReadBatchStatus(jsonReader, JsonReadErrorHandler.DefaultHandler)
+            End Using
+        End Function
+
+        Public Shared Function FromJson(json As String) As BatchStatus
+            Using jsonReader As New JsonTextReader(New StringReader(json))
+                jsonReader.DateParseHandling = DateParseHandling.None
+                Return BatchResponseReader.ReadBatchStatus(jsonReader, JsonReadErrorHandler.DefaultHandler)
+            End Using
+        End Function
     End Class ' BatchStatus
 
     ''' <summary>
@@ -237,5 +264,19 @@ Namespace Models
         ''' Reads or writes <c>data</c> in json.
         ''' </summary>
         Public Property Data As IReadOnlyList(Of BatchStatus)
+
+        Public Shared Function FromJson(json As Stream) As BatchPage
+            Using jsonReader As New JsonTextReader(New StreamReader(json))
+                jsonReader.DateParseHandling = DateParseHandling.None
+                Return BatchResponseReader.ReadBatchPage(jsonReader, JsonReadErrorHandler.DefaultHandler)
+            End Using
+        End Function
+
+        Public Shared Function FromJson(json As String) As BatchPage
+            Using jsonReader As New JsonTextReader(New StringReader(json))
+                jsonReader.DateParseHandling = DateParseHandling.None
+                Return BatchResponseReader.ReadBatchPage(jsonReader, JsonReadErrorHandler.DefaultHandler)
+            End Using
+        End Function
     End Class ' BatchPage
 End Namespace

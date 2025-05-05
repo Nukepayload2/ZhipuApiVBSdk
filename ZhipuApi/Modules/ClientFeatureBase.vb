@@ -43,14 +43,14 @@ Public MustInherit Class ClientFeatureBase
         Return response
     End Function
 
-    Protected Async Function GetAsync(requestUrl As String, cancellation As CancellationToken) As Task(Of MemoryStream)
+    Protected Async Function GetAsync(requestUrl As String, cancellation As CancellationToken, Optional accept As String = "application/json") As Task(Of MemoryStream)
         Dim request As New HttpRequestMessage With {
             .Method = HttpMethod.Get,
             .RequestUri = New Uri(requestUrl)
         }
         Dim apiKey = AuthenticationUtils.GenerateToken(_apiKey, ApiTokenTtlSeconds)
         With request.Headers
-            .Accept.TryParseAdd("application/json")
+            .Accept.TryParseAdd(accept)
             .Add("Authorization", apiKey)
         End With
         Dim response = Await _client.SendAsync(request, cancellation)

@@ -228,9 +228,9 @@ Namespace Serialization
                                     Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
                                 End If
                                 If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
-                                    entity.Metadata = Nothing
+                                    entity.MetadataInternal = Nothing
                                 Else
-                                    entity.Metadata = Global.Newtonsoft.Json.JsonSerializer.CreateDefault().Deserialize(Of Global.Newtonsoft.Json.Linq.JObject)(reader)
+                                    entity.MetadataInternal = Global.Newtonsoft.Json.JsonSerializer.CreateDefault().Deserialize(Of Global.Newtonsoft.Json.Linq.JObject)(reader)
                                 End If
                             Case "output_file_id"
                                 If Not reader.Read() Then

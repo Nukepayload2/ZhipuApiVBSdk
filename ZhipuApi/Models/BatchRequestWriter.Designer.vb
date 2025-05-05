@@ -13,9 +13,9 @@ Namespace Serialization
     Partial Class BatchRequestWriter
 
         ''' <summary>
-        ''' Writes <see cref="BatchCreateParams"/> to JsonWriter.
+        ''' Writes <see cref="BatchCreateRequest"/> to JsonWriter.
         ''' </summary>
-        Public Shared Sub WriteBatchCreateParams(writer As Global.Newtonsoft.Json.JsonWriter, value As BatchCreateParams)
+        Public Shared Sub WriteBatchCreateParams(writer As Global.Newtonsoft.Json.JsonWriter, value As BatchCreateRequest)
             If value Is Nothing Then
                 writer.WriteNull()
                 Return
@@ -34,9 +34,9 @@ Namespace Serialization
                 writer.WritePropertyName("auto_delete_input_file")
                 writer.WriteValue(value.AutoDeleteInputFile)
             End If
-            If value.Metadata IsNot Nothing Then
+            If value.MetadataInternal IsNot Nothing Then
                 writer.WritePropertyName("metadata")
-                Global.Newtonsoft.Json.JsonSerializer.CreateDefault().Serialize(writer, value.Metadata)
+                Global.Newtonsoft.Json.JsonSerializer.CreateDefault().Serialize(writer, value.MetadataInternal)
             End If
 
             writer.WriteEndObject()

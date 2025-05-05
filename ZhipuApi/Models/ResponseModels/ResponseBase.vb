@@ -26,17 +26,15 @@ Namespace Models
         <Obsolete("Catch ZhipuHttpRequestException instead", True)>
         Public Property [Error] As Dictionary(Of String, String)
 
-        Private Shared ReadOnly s_defaultErrorHandler As New JsonReadErrorHandler
-
         Public Shared Function FromJson(json As Stream) As ResponseBase
             Using jsonReader As New JsonTextReader(New StreamReader(json))
-                Return ResponseReader.ReadResponseBase(jsonReader, s_defaultErrorHandler)
+                Return ResponseReader.ReadResponseBase(jsonReader, JsonReadErrorHandler.DefaultHandler)
             End Using
         End Function
 
         Public Shared Function FromJson(json As String) As ResponseBase
             Using jsonReader As New JsonTextReader(New StringReader(json))
-                Return ResponseReader.ReadResponseBase(jsonReader, s_defaultErrorHandler)
+                Return ResponseReader.ReadResponseBase(jsonReader, JsonReadErrorHandler.DefaultHandler)
             End Using
         End Function
 

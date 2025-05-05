@@ -1,7 +1,10 @@
-﻿Imports System.Net.Http
+﻿Imports System.IO
+Imports System.Net.Http
 Imports System.Net.Http.Headers
+Imports System.Text
 Imports System.Threading
 Imports Nukepayload2.AI.Providers.Zhipu.Models
+Imports Nukepayload2.AI.Providers.Zhipu.Utils
 
 Public Class Files
     Inherits ClientFeatureBase
@@ -86,47 +89,50 @@ Public Class Files
             Throw New ArgumentNullException(NameOf(request))
         End If
 
-        ' 参数集合用于构建查询字符串
-        Dim queryParams As New List(Of String)
-
-        ' 1. 验证 Purpose 为必填
+        ' 1. 验证 Purpose 是否必填且非空字符串
         If String.IsNullOrEmpty(request.Purpose) Then
             Throw New ArgumentException("Purpose is required.")
         End If
 
-        queryParams.Add($"purpose={Uri.EscapeDataString(request.Purpose)}")
+        ' 创建 QueryBuilder 实例，传入基础 URL（假设 RequestUrl 是类属性）
+        Dim queryBuilder As New QueryBuilder(RequestUrl)
 
-        ' 2. 知识库ID - 可选，非空才添加
-        If request.KnowledgeId <> Nothing Then
-            queryParams.Add($"knowledge_id={Uri.EscapeDataString(request.KnowledgeId)}")
-        End If
+        queryBuilder.Add("purpose", request.Purpose)
 
-        ' 3. Page（Long?），默认值为 1
-        If request.Page IsNot Nothing Then
-            queryParams.Add($"page={request.Page.Value}")
-        End If
+        ' 2. knowledge_id（可选，由 QueryBuilder 自动处理是否添加）
+        queryBuilder.Add("knowledge_id", request.KnowledgeId)
 
-        ' 4. Limit（Long?），默认值为 10
-        If request.Limit IsNot Nothing Then
-            queryParams.Add($"limit={request.Limit.Value}")
-        End If
+        ' 3. page - Long?
+        queryBuilder.Add("page", request.Page)
 
-        ' 5. After
-        If request.After <> Nothing Then
-            queryParams.Add($"after={Uri.EscapeDataString(request.After)}")
-        End If
+        ' 4. limit - Long?
+        queryBuilder.Add("limit", request.Limit)
 
-        ' 6. Order，默认为 "desc"
-        If request.Order <> Nothing Then
-            queryParams.Add($"order={Uri.EscapeDataString(request.Order)}")
-        End If
+        ' 5. after（假设是可空字符串）
+        queryBuilder.Add("after", request.After)
 
-        ' 构建完整的 URL（基础路径 + 查询参数）
-        Dim queryString As String = If(queryParams.Count > 0, "?" & String.Join("&", queryParams), "")
+        ' 6. order（默认为 "desc"，非必填）
+        queryBuilder.Add("order", request.Order)
 
-        Dim finalUrl As New Uri(RequestUrl + queryString)
-        Dim response = Await GetAsync(RequestUrl, cancellationToken)
+        ' 构建完整 URL 并调用 API
+        Dim url = queryBuilder.ToString()
+        Dim response = Await GetAsync(url, cancellationToken)
         Dim result = FilesListResponse.FromJson(response)
         Return result
+    End Function
+
+    ''' <summary>
+    ''' 完成批处理任务后，您可以通过使用 <see cref="BatchStatus.OutputFileId"/> 将输出文件下载到本地。
+    ''' </summary>
+    ''' <param name="fileId">要下载的文件</param>
+    ''' <param name="cancellationToken">用于取消请求</param>
+    ''' <returns>下载的文件流</returns>
+    ''' <exception cref="ArgumentException">参数不正确</exception>
+    ''' <exception cref="HttpRequestException">请求发生错误</exception>
+    ''' <exception cref="ZhipuHttpRequestException">请求发生错误，并且错误详情可解析</exception>
+    Public Async Function DownloadAsync(fileId As String, Optional cancellationToken As CancellationToken = Nothing) As Task(Of MemoryStream)
+        Dim url = $"{RequestUrl}/{fileId}/content"
+        Dim response = Await GetAsync(url, cancellationToken, "application/octet-stream")
+        Return response
     End Function
 End Class

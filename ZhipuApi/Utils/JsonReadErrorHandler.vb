@@ -21,6 +21,9 @@ Namespace Global.Nukepayload2.IO.Json.Serialization.NewtonsoftJson
             Public Shared ReadOnly JTokenDiscriminator As String = "#JTokenDiscriminator"
         End Class
 
+        Protected Sub New()
+        End Sub
+
         ''' <summary>
         ''' Called when the JSON deserializer encounters a conflicting token type.
         ''' </summary>
