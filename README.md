@@ -79,6 +79,8 @@ Do not use it in production environment unless you've tested it carefully.
 - [ ] [Async completion](https://bigmodel.cn/dev/api/normal-model/glm-4) <!-- 需要 JSON schema 生成 (async-response.json) -->
 
 #### P3
+- [ ] [Document management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile) <!-- 需要 JSON schema 生成 (files.json) -->
+- [ ] Knowledge management (undocumented)
 - [ ] [Realtime video chat](https://bigmodel.cn/dev/api/rtav/GLM-Realtime) <!-- 要使用 wss，并且需要 JSON schema 生成 (realtime.json)，由于它专注特定领域，低优先级。 -->
 - [ ] [Agent: AllTools](https://bigmodel.cn/dev/api/intelligent-agent-model/glm-4-alltools) <!-- 增强 chat/completions 支持，tools 和 tool_calls 里面加上 code_interpreter, drawing_tool, web_browser  -->
 - [ ] [Agent: Application](https://bigmodel.cn/dev/api/Agent_Platform/newagent) <!-- 需要 JSON schema 生成，由于 MCP 能覆盖此用例，低优先级。 -->

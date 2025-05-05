@@ -15,4 +15,9 @@ Public Class ZhipuHttpRequestException
 #End If
         Me.Details = details
     End Sub
+
+    Sub New(message As String, details As RequestError)
+        MyBase.New(message)
+        Me.Details = details
+    End Sub
 End Class

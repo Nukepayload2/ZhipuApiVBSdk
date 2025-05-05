@@ -15,7 +15,7 @@ Public Class Chat
         MyBase.New(apiKey, client)
     End Sub
 
-    Protected Overridable ReadOnly Property ChatCompletionRequestUrl As String = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
+    Protected Overridable ReadOnly Property RequestUrl As String = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 
     Private Async Function CompleteRawAsync(textRequestBody As TextRequestBase, cancellation As CancellationToken) As Task(Of MemoryStream)
         Dim json = textRequestBody?.ToJsonUtf8
@@ -23,7 +23,7 @@ Public Class Chat
         Debug.WriteLine("Sending chat request: ")
         Debug.WriteLine(IoUtils.UTF8NoBOM.GetString(json.ToArray()))
 #End If
-        Return Await PostAsync(ChatCompletionRequestUrl, json, cancellation)
+        Return Await PostAsync(RequestUrl, json, cancellation)
     End Function
 
     ''' <summary>
@@ -49,14 +49,8 @@ Public Class Chat
                                            cancellationToken As CancellationToken) As Task
         Dim json = textRequestBody?.ToJsonUtf8
 
-        Dim response = Await PostRawAsync(ChatCompletionRequestUrl, json, cancellationToken)
-#If NET6_0_OR_GREATER Then
-        Dim stream = Await response.Content.ReadAsStreamAsync(cancellationToken)
-#Else
-        Dim stream = Await response.Content.ReadAsStreamAsync()
-#End If
+        Dim stream = Await PostAsync(RequestUrl, json, cancellationToken)
 
-        Await ErrorHandler.ThrowForNonSuccessAsync(response, stream, cancellationToken)
         Dim buffer(8192) As Byte
         While True
 #If NET6_0_OR_GREATER Then
@@ -121,12 +115,9 @@ Public Class Chat
                     Await yieldCallback(response)
                 End If
             End Function,
-            Async Function(jsonStream) As Task
-                Dim response = ResponseBase.FromJson(jsonStream)
-                Debug.WriteLine("Server non-streaming error: " & IoUtils.UTF8NoBOM.GetString(jsonStream.ToArray))
-                If response IsNot Nothing Then
-                    Await yieldCallback(response)
-                End If
+            Function(jsonStream) As Task
+                ErrorHandler.ThrowErrorWithDetailedMessage(jsonStream)
+                Return Task.CompletedTask
             End Function)
 
         Await StreamUtf8Async(textRequestBody, AddressOf reader.OnChunkAsync, cancellationToken)
