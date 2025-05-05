@@ -59,8 +59,8 @@ Public Class Batches
                                     Optional cancellationToken As CancellationToken = Nothing) As Task(Of BatchPage)
         Dim queryBuilder As New QueryBuilder(RequestUrl)
 
-        queryBuilder.Add("page", listRequest.After)
-        queryBuilder.Add("page_size", listRequest.Limit)
+        queryBuilder.Add("after", listRequest.After)
+        queryBuilder.Add("limit", listRequest.Limit)
 
         Dim url = queryBuilder.ToString
         Dim response = Await GetAsync(url, cancellationToken)
