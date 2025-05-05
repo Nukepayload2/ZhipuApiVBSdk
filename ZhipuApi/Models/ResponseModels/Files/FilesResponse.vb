@@ -24,7 +24,7 @@ Namespace Models
         ''' <remarks>
         ''' Reads or writes <c>object</c> in json.
         ''' </remarks>
-        Public Property [Object] As String
+        Public Property TypeName As String
         ''' <summary>
         ''' 文件大小（字节为单位）。
         ''' </summary>
@@ -103,7 +103,7 @@ Namespace Models
         ''' <remarks>
         ''' Reads or writes <c>object</c> in json.
         ''' </remarks>
-        Public Property [Object] As String
+        Public Property TypeName As String
 
         Public Shared Function FromJson(json As Stream) As FileDeleteResponse
             Using jsonReader As New JsonTextReader(New StreamReader(json))
@@ -120,7 +120,7 @@ Namespace Models
         ''' <summary>
         ''' Reads or writes <c>object</c> in json.
         ''' </summary>
-        Public Property [Object] As String
+        Public Property TypeName As String
         ''' <summary>
         ''' Reads or writes <c>data</c> in json.
         ''' </summary>

@@ -54,11 +54,11 @@ Namespace Serialization
                                     Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
                                 End If
                                 If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
-                                    entity.Object = Nothing
+                                    entity.TypeName = Nothing
                                 ElseIf reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartObject Or reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartArray Then
                                     readState.OnConflictingTokenType("FileItem", name, reader)
                                 Else
-                                    entity.Object = Convert.ToString(reader.Value)
+                                    entity.TypeName = Convert.ToString(reader.Value)
                                 End If
                             Case "bytes"
                                 If Not reader.Read() Then
@@ -195,11 +195,11 @@ Namespace Serialization
                                     Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
                                 End If
                                 If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
-                                    entity.Object = Nothing
+                                    entity.TypeName = Nothing
                                 ElseIf reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartObject Or reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartArray Then
                                     readState.OnConflictingTokenType("FileDeleteResponse", name, reader)
                                 Else
-                                    entity.Object = Convert.ToString(reader.Value)
+                                    entity.TypeName = Convert.ToString(reader.Value)
                                 End If
                             Case Else
                                 readState.OnMissingProperty("FileDeleteResponse", name, reader)
@@ -248,11 +248,11 @@ Namespace Serialization
                                     Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
                                 End If
                                 If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
-                                    entity.Object = Nothing
+                                    entity.TypeName = Nothing
                                 ElseIf reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartObject Or reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartArray Then
                                     readState.OnConflictingTokenType("FilesListResponse", name, reader)
                                 Else
-                                    entity.Object = Convert.ToString(reader.Value)
+                                    entity.TypeName = Convert.ToString(reader.Value)
                                 End If
                             Case "data"
                                 If Not reader.Read() Then
