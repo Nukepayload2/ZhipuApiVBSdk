@@ -13,9 +13,9 @@ Namespace Serialization
     Partial Class BatchChatItemWriter
 
         ''' <summary>
-        ''' Writes <see cref="BatchChatItem"/> to JsonWriter.
+        ''' Writes <see cref="BatchChatRequestItem"/> to JsonWriter.
         ''' </summary>
-        Public Shared Sub WriteBatchChatItem(writer As Global.Newtonsoft.Json.JsonWriter, value As BatchChatItem)
+        Public Shared Sub WriteBatchChatItem(writer As Global.Newtonsoft.Json.JsonWriter, value As BatchChatRequestItem)
             If value Is Nothing Then
                 writer.WriteNull()
                 Return

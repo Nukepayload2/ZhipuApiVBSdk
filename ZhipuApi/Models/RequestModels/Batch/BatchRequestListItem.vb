@@ -32,7 +32,7 @@ Namespace Models
     ''' <summary>
     ''' Batch chat request JSON list item
     ''' </summary>
-    Public Class BatchChatItem
+    Public Class BatchChatRequestItem
         Inherits BatchRequestListItem(Of TextRequestBase)
 
         Public Sub WriteTo(target As Stream)
@@ -41,15 +41,15 @@ Namespace Models
             End Using
         End Sub
 
-        Public Sub WriteTo(target As StreamWriter)
+        Public Sub WriteTo(target As TextWriter)
             Using jsonWriter As New JsonTextWriter(target)
                 BatchChatItemWriter.WriteBatchChatItem(jsonWriter, Me)
             End Using
         End Sub
 
         Public Function ToJson() As String
-            Using stringWriter = New StringWriter, jsonWriter = New JsonTextWriter(stringWriter)
-                BatchChatItemWriter.WriteBatchChatItem(jsonWriter, Me)
+            Using stringWriter As New StringWriter
+                WriteTo(stringWriter)
                 Return stringWriter.ToString()
             End Using
         End Function
