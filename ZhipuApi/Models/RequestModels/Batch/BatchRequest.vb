@@ -87,4 +87,5 @@ Namespace Models
         ''' </summary>
         Public Property Limit As Long?
     End Class ' BatchListRequest
+
 End Namespace
