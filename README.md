@@ -1,12 +1,13 @@
 # ZhipuApiVBSdk
 VB-friendly .NET bindings for the ZhipuApi v4. It's part of the Nukepayload2 VB AI SDK as a model provider.
 
-It has the same capabilities as [zhipuai-sdk-csharp-v4](https://github.com/MetaGLM/zhipuai-sdk-csharp-v4), with additional VB-friendly benefits:
+It covers the capabilities of [zhipuai-sdk-csharp-v4](https://github.com/MetaGLM/zhipuai-sdk-csharp-v4), with additional VB-friendly benefits:
 
 - [x] No deadlock in synchronization context threads.
 - [x] Enumerate result asynchronously with the syntax introduced in VB 11.
-- [x] No reflection required. We support AOT compilation on .NET 8 or later.
+- [x] AOT compatible on .NET 8 or later.
 - [x] VB flavor of API design
+- [x] Microsoft.Extensions.AI integration
 
 Code examples: 
 - [CodeExamples.vb](https://github.com/Nukepayload2/ZhipuApiVBSdk/blob/master/ZhipuApiExamples/CodeExamples.vb)
@@ -29,10 +30,12 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] [Text streaming](https://bigmodel.cn/dev/api/normal-model/glm-4)
 - [x] [Tool call in completion](https://bigmodel.cn/dev/api/normal-model/glm-4)
 - [x] [Tool call in streaming](https://bigmodel.cn/dev/api/normal-model/glm-4)
+- [x] [Errors as HttpRequestException](https://bigmodel.cn/dev/api/error-code/service-error)
 - [x] [Image generation](https://bigmodel.cn/dev/api/image-model/cogview)
 - [x] [Image recognition](https://bigmodel.cn/dev/api/normal-model/glm-4v)
 - [x] [Embedding](https://bigmodel.cn/dev/api/vector/embedding)
-- [x] [Errors as HttpRequestException](https://bigmodel.cn/dev/api/error-code/service-error)
+- [ ] [File management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile)
+- [ ] [Batch](https://bigmodel.cn/dev/api/batch-api/batch)
 
 ### Tested Manually
 - [x] Text completion
@@ -43,8 +46,10 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] Image generation
 - [ ] Image recognition
 - [x] Embedding
+- [ ] File management
+- [ ] Batch
 
-### Microsoft.Extension.AI 9.0.3 Preview
+### Microsoft.Extensions.AI 9.0.5
 - [x] Chat completion
 - [x] Chat streaming
 - [x] Tool call in completion
@@ -53,7 +58,7 @@ Do not use it in production environment unless you've tested it carefully.
 - [ ] Image recognition
 - [ ] Embedding
 
-### Tested Manually with Microsoft.Extension.AI
+### Tested Manually with Microsoft.Extensions.AI
 - [x] Text completion
 - [x] Text streaming
 - [x] Tool call in completion
@@ -64,9 +69,6 @@ Do not use it in production environment unless you've tested it carefully.
 
 ### Planned
 #### P1
-- [ ] [File management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile) <!-- 需要 JSON schema 生成 (files.json) -->
-    - [ ] [Text extraction](https://bigmodel.cn/dev/api/knowlage-manage/queryextract) <!-- 增强 files 支持，purpose="file-extract" -->
-- [ ] [Batch](https://bigmodel.cn/dev/api/batch-api/batch) <!-- 需要 JSON schema 生成 (batch.json) -->
 - [ ] [Web search](https://bigmodel.cn/dev/api/search-tool/web-search) <!-- 需要 JSON schema 生成，不做 MCP (websearch.json) -->
 - [ ] [Video generation](https://bigmodel.cn/dev/api/videomodel/cogvideox) <!-- 需要 JSON schema 生成 (video-gen.json)-->
 - [ ] [Voice recognition](https://bigmodel.cn/dev/api/rtav/glm-asr) <!-- 需要 JSON schema 生成 (asr.json) -->
@@ -77,6 +79,7 @@ Do not use it in production environment unless you've tested it carefully.
 - [ ] [Tokenizer](https://bigmodel.cn/dev/api/tokenizer) <!-- 需要 JSON schema 生成 (tokenizer.json) -->
 - [ ] [Rerank](https://bigmodel.cn/dev/api/knowlage-manage/rerank) <!-- 需要 JSON schema 生成 (rerank.json) -->
 - [ ] [Async completion](https://bigmodel.cn/dev/api/normal-model/glm-4) <!-- 需要 JSON schema 生成 (async-response.json) -->
+- [ ] [Text extraction](https://bigmodel.cn/dev/api/knowlage-manage/queryextract) <!-- 增强 files 支持，purpose="file-extract" -->
 
 #### P3
 - [ ] [Document management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile) <!-- 需要 JSON schema 生成 (files.json) -->

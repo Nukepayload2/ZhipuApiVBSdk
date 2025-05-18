@@ -3,7 +3,7 @@
     <RootNamespace>Nukepayload2.AI.Providers.Zhipu</RootNamespace>
     <AssemblyName>Nukepayload2.AI.Providers.Zhipu</AssemblyName>
     <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
-    <Version>1.1.0-beta13</Version>
+    <Version>1.1.1-beta14</Version>
     <PackageId>$(AssemblyName)</PackageId>
     <Description>VB-friendly .NET bindings for the ZhipuApi v4. It's part of the Nukepayload2 VB AI SDK as a model provider.</Description>
     <PackageProjectUrl>https://github.com/Nukepayload2/ZhipuApiVBSdk</PackageProjectUrl>
@@ -17,7 +17,7 @@
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <Authors>Nukepayload2</Authors>
     <PackageReleaseNotes>
-Fix minor issues of the adapter of Microsoft.Extensions.AI.Abstractions to 9.3.0-preview.1.25161.3
+Upgraded to Microsoft.Extensions.AI.Abstractions 9.5.0
     </PackageReleaseNotes>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <InheritDocTrimLevel>internal</InheritDocTrimLevel>
@@ -28,7 +28,7 @@ Fix minor issues of the adapter of Microsoft.Extensions.AI.Abstractions to 9.3.0
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.3.0-preview.1.25161.3" />
+    <PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
     <PackageReference Include="SauceControl.InheritDoc" Version="2.0.2">

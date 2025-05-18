@@ -44,7 +44,7 @@ Public Class MicrosoftChatClientAdapter
                                         Optional options As ChatOptions = Nothing,
                                         Optional cancellationToken As CancellationToken = Nothing) As Task(Of ChatResponse) Implements IChatClient.GetResponseAsync
         Dim request As New TextRequestBase With {
-            .Model = Metadata.ModelId,
+            .Model = Metadata.DefaultModelId,
             .Messages = (From msg In chatMessages
                          Select ConvertMessage(msg)).ToList,
             .Temperature = ToDoubleWithRounding((options?.Temperature)),
@@ -135,11 +135,13 @@ Public Class MicrosoftChatClientAdapter
         }
     End Function
 
-    Private Shared Function TryParseJObjectArgs(arguments As String) As IEnumerable(Of KeyValuePair(Of String, Object))
+    Private Shared Function TryParseJObjectArgs(arguments As String) As AIFunctionArguments
         If arguments Is Nothing Then Return Nothing
         Dim argList = TryCast(JToken.Parse(arguments), JObject)
         If argList Is Nothing Then Return Nothing
-        Return From prop In argList.Properties Select New KeyValuePair(Of String, Object)(prop.Name, ConvertJTokenToObject(prop.Value))
+        Return New AIFunctionArguments(argList.Properties.ToDictionary(
+                                       Function(prop) prop.Name,
+                                       Function(prop) ConvertJTokenToObject(prop.Value)))
     End Function
 
     Private Function ToDoubleWithRounding(value As Single?) As Double?
@@ -225,7 +227,7 @@ Public Class MicrosoftChatClientAdapter
         Dim messages = (From msg In chatMessages
                         Select ConvertMessage(msg)).ToList
         Dim requestParams As New TextRequestBase With {
-            .Model = Metadata.ModelId,
+            .Model = Metadata.DefaultModelId,
             .Messages = messages,
             .Temperature = ToDoubleWithRounding(options?.Temperature),
             .TopP = ToDoubleWithRounding(options?.TopP),
