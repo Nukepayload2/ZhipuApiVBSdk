@@ -44,17 +44,19 @@ Namespace Models
 
         Public Shared Function FromJsonLines(jsonl As Stream) As IEnumerable(Of BatchChatResponseItem)
             Using streamReader As New StreamReader(jsonl)
-                Return FromJsonLines(streamReader)
+                Return FromJsonLines(streamReader).ToArray
             End Using
         End Function
 
         Public Shared Iterator Function FromJsonLines(jsonl As TextReader) As IEnumerable(Of BatchChatResponseItem)
-            Using jsonReader As New JsonTextReader(jsonl)
-                jsonReader.DateParseHandling = DateParseHandling.None
-                Do
+            Do
+                Dim line = jsonl.ReadLine
+                If line = Nothing Then Exit Do
+                Using jsonReader As New JsonTextReader(New StringReader(line))
+                    jsonReader.DateParseHandling = DateParseHandling.None
                     Yield BatchChatItemReader.ReadBatchChatResponseItem(jsonReader, JsonReadErrorHandler.DefaultHandler)
-                Loop While jsonReader.Read
-            End Using
+                End Using
+            Loop
         End Function
 
         Public Shared Function FromJsonLines(jsonl As String) As IEnumerable(Of BatchChatResponseItem)

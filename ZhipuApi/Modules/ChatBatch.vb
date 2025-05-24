@@ -80,16 +80,41 @@ Public Class ChatBatch
         _batchStatus = batchStatus
     End Sub
 
+    ''' <summary>
+    ''' 任务状态
+    ''' </summary>
     Public ReadOnly Property Status As TaskStatus
         Get
             Return Volatile.Read(_batchStatus).TaskStatus
         End Get
     End Property
 
-    Public Async Function UpdateStatusAsync(Optional cancellationToken As CancellationToken = Nothing) As Task(Of TaskStatus)
+    ''' <summary>
+    ''' 用于在释放此实例后，稍后再获取 BatchStatus
+    ''' </summary>
+    Public ReadOnly Property Id As String
+        Get
+            Return Volatile.Read(_batchStatus).Id
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' 任务是否已经结束执行，包括 <see cref="TaskStatus.Completed"/>, <see cref="TaskStatus.Cancelled"/>, <see cref="TaskStatus.Failed"/>, <see cref="TaskStatus.Expired"/>
+    ''' </summary>
+    Public ReadOnly Property IsCompleted As Boolean
+        Get
+            Select Case Volatile.Read(_batchStatus).TaskStatus
+                Case TaskStatus.Completed, TaskStatus.Expired, TaskStatus.Failed, TaskStatus.Cancelled
+                    Return True
+                Case Else
+                    Return False
+            End Select
+        End Get
+    End Property
+
+    Public Async Function UpdateStatusAsync(Optional cancellationToken As CancellationToken = Nothing) As Task
         Dim result = Await _client.Batches.GetStatusAsync(_batchStatus.Id, cancellationToken)
         Volatile.Write(_batchStatus, result)
-        Return result.TaskStatus
     End Function
 
     Public Async Function GetResultAsync(Optional cancellationToken As CancellationToken = Nothing) As Task(Of IEnumerable(Of BatchChatResponseItem))

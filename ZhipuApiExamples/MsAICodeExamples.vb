@@ -138,10 +138,14 @@ Public Class MsAICodeExamples
 
         Public ReadOnly Property CallLogForTest As New List(Of IEnumerable(Of KeyValuePair(Of String, Object)))
 
-        Protected Overrides Function InvokeCoreAsync(arguments As IEnumerable(Of KeyValuePair(Of String, Object)), cancellationToken As Threading.CancellationToken) As Task(Of Object)
+        Protected Overrides Function InvokeCoreAsync(arguments As AIFunctionArguments, cancellationToken As Threading.CancellationToken) As ValueTask(Of Object)
             ' 假的实现，用于测试
             CallLogForTest.Add(arguments)
-            Return Task.FromResult(CObj("晴天，30 摄氏度。"))
+#If NET6_0_OR_GREATER Then
+            Return ValueTask.FromResult(CObj("晴天，30 摄氏度。"))
+#Else
+            Return New ValueTask(Of Object)(Task.FromResult(CObj("晴天，30 摄氏度。")))
+#End If
         End Function
     End Class
 

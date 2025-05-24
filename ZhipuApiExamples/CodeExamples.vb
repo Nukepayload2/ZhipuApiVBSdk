@@ -205,7 +205,7 @@ Public Class CodeExamples
             .Messages = {
                 New ImageToTextMessageItem("user") With {
                     .Text = "这是什么",
-                    .ImageUrl = "<image_url>"
+                    .ImageUrl = "https://www.zhipuai.cn/assets/images/logo_icon.jpeg"
                 }
             },
             .Temperature = 0.7,
@@ -226,7 +226,7 @@ Public Class CodeExamples
                 .Messages = {
                     New ImageToTextMessageItem("user") With {
                         .Text = "这是什么",
-                        .ImageUrl = "<image_url>"
+                        .ImageUrl = "https://www.zhipuai.cn/assets/images/logo_icon.jpeg"
                     }
                 },
                 .Temperature = 0.7,
@@ -255,4 +255,71 @@ Public Class CodeExamples
         Dim firstEmbedding = response.Data?.FirstOrDefault?.Embedding
         Assert.IsNotNull(firstEmbedding)
     End Function
+
+    <TestMethod, Ignore("涉及到长任务，统一测试时不执行")>
+    Async Function TestCreateChatBatchAsync() As Task
+        ' 创建客户端
+        Dim clientV4 As New ClientV4(ApiKey)
+        ' 创建批量对话请求项
+        Dim requests As New List(Of BatchChatRequestItem) From {
+            New BatchChatRequestItem With {
+                .CustomId = "request1",
+                .Body = New TextRequestBase With {
+                    .Model = "glm-4-flash",
+                    .Messages = {New MessageItem("user", "你好，你是谁？")},
+                    .Temperature = 0.7,
+                    .TopP = 0.7
+                }
+            },
+            New BatchChatRequestItem With {
+                .CustomId = "request2",
+                .Body = New TextRequestBase With {
+                    .Model = "glm-4-flash",
+                    .Messages = {New MessageItem("user", "你能做什么？")},
+                    .Temperature = 0.7,
+                    .TopP = 0.7
+                }
+            }
+        }
+        ' 创建批量对话任务
+        Dim chatBatch As ChatBatch = Nothing
+        Try
+            chatBatch = Await clientV4.CreateChatBatchAsync(requests)
+        Catch ex As Exception
+            Assert.Fail($"创建批量对话任务失败: {ex.Message}")
+        End Try
+        ' 检查 batch 存在
+        Assert.AreNotEqual(TaskStatus.Uninitialized, chatBatch.Status)
+        Assert.IsTrue(chatBatch.Id.Length > 6)
+    End Function
+
+    <TestMethod, Ignore("涉及到长任务，统一测试时不执行")>
+    Async Function TestWaitChatBatchAsync() As Task
+        ' 创建客户端
+        Dim clientV4 As New ClientV4(ApiKey)
+        ' TODO: 请替换为实际 batch_id
+        Dim batchStatus = Await clientV4.Batches.GetStatusAsync("batch_1926150685276246016")
+        ' 创建批量对话任务
+        Dim chatBatch As New ChatBatch(clientV4, batchStatus)
+
+        ' 等待时间老长了
+        Do Until chatBatch.IsCompleted
+            Await Task.Delay(3000)
+            Await chatBatch.UpdateStatusAsync()
+        Loop
+
+        ' 必须是正常完成状态，否则数据没什么意义
+        Assert.AreEqual(TaskStatus.Completed, chatBatch.Status)
+
+        ' 获取批量任务结果
+        Dim results = Await chatBatch.GetResultAsync()
+
+        ' 验证结果
+        Assert.IsNotNull(results)
+        Assert.AreEqual(2, results.Count())
+        For Each result In results
+            Console.WriteLine($"CustomId: {result.CustomId}, Content: {result.Response.Body.Choices?.FirstOrDefault.Message.Content}")
+        Next
+    End Function
+
 End Class

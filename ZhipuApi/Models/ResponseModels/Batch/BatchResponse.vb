@@ -256,17 +256,21 @@ Namespace Models
             Get
 
                 Select Case Status
-                    Case "pending", "PENDING"
+                    Case Nothing
+                        Return TaskStatus.Uninitialized
+                    Case "pending"
                         Return TaskStatus.Pending
-                    Case "in_progress", "IN_PROGRESS"
+                    Case "validating"
+                        Return TaskStatus.Validating
+                    Case "in_progress"
                         Return TaskStatus.InProgress
-                    Case "completed", "COMPLETED"
+                    Case "completed"
                         Return TaskStatus.Completed
-                    Case "cancelled", "CANCELLED"
+                    Case "cancelled"
                         Return TaskStatus.Cancelled
-                    Case "failed", "FAILED"
+                    Case "failed"
                         Return TaskStatus.Failed
-                    Case "expired", "EXPIRED"
+                    Case "expired"
                         Return TaskStatus.Expired
                     Case Else
                         Return TaskStatus.Unknown
@@ -280,30 +284,37 @@ Namespace Models
     ''' </summary>
     Public Enum TaskStatus
         ''' <summary>
+        ''' 未初始化，说明 Status 没有值。
+        ''' </summary>
+        Uninitialized
+        ''' <summary>
         ''' 待处理
         ''' </summary>
-        Pending = 0
+        Pending
+        ''' <summary>
+        ''' 验证中
+        ''' </summary>
+        Validating
         ''' <summary>
         ''' 进行中
         ''' </summary>
-        InProgress = 1
+        InProgress
         ''' <summary>
         ''' 已完成
         ''' </summary>
-        Completed = 2
+        Completed
         ''' <summary>
         ''' 已取消
         ''' </summary>
-        Cancelled = 3
+        Cancelled
         ''' <summary>
         ''' 已失败
         ''' </summary>
-        Failed = 4
+        Failed
         ''' <summary>
         ''' 已过期
         ''' </summary>
-        Expired = 5
-
+        Expired
         ''' <summary>
         ''' 无法解析
         ''' </summary>
