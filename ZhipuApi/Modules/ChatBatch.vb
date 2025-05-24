@@ -71,10 +71,18 @@ Public Module ChatBatchFactory
 
 End Module
 
+''' <summary>
+''' 用于管理一次批量对话请求
+''' </summary>
 Public Class ChatBatch
     Private ReadOnly _client As ClientV4
     Private ReadOnly _batchStatus As BatchStatus
 
+    ''' <summary>
+    ''' 提供这些参数可继续追踪之前的对话
+    ''' </summary>
+    ''' <param name="client">客户端功能入口</param>
+    ''' <param name="batchStatus">批处理状态，可以用 <see cref="Batches.GetStatusAsync(String, CancellationToken)"/> 获取。</param>
     Sub New(client As ClientV4, batchStatus As BatchStatus)
         _client = client
         _batchStatus = batchStatus
@@ -90,7 +98,7 @@ Public Class ChatBatch
     End Property
 
     ''' <summary>
-    ''' 用于在释放此实例后，稍后再获取 BatchStatus
+    ''' 用于在释放此实例后，稍后再获取 <see cref="BatchStatus"/>
     ''' </summary>
     Public ReadOnly Property Id As String
         Get
@@ -112,11 +120,20 @@ Public Class ChatBatch
         End Get
     End Property
 
+    ''' <summary>
+    ''' 更新批处理的状态
+    ''' </summary>
+    ''' <param name="cancellationToken">可以取消任务</param>
     Public Async Function UpdateStatusAsync(Optional cancellationToken As CancellationToken = Nothing) As Task
         Dim result = Await _client.Batches.GetStatusAsync(_batchStatus.Id, cancellationToken)
         Volatile.Write(_batchStatus, result)
     End Function
 
+    ''' <summary>
+    ''' 获取批处理结果
+    ''' </summary>
+    ''' <param name="cancellationToken">可以取消任务</param>
+    ''' <returns>从批量对话任务里面获取的结果</returns>
     Public Async Function GetResultAsync(Optional cancellationToken As CancellationToken = Nothing) As Task(Of IEnumerable(Of BatchChatResponseItem))
         Dim status = _batchStatus
         If status.TaskStatus <> TaskStatus.Completed Then
