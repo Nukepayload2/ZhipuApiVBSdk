@@ -4,6 +4,7 @@ Imports Newtonsoft.Json.Linq
 Imports Nukepayload2.AI.Providers.Zhipu.Serialization
 Imports Nukepayload2.AI.Providers.Zhipu.Utils
 Imports Nukepayload2.IO.Json.Serialization.NewtonsoftJson
+Imports System.ComponentModel
 
 Namespace Models
     ''' <summary>
@@ -247,7 +248,67 @@ Namespace Models
                 Return BatchResponseReader.ReadBatchStatus(jsonReader, JsonReadErrorHandler.DefaultHandler)
             End Using
         End Function
+
+        ''' <summary>
+        ''' 尝试将 <see cref="Status"/> 转换为任务状态枚举
+        ''' </summary>
+        Public ReadOnly Property TaskStatus As TaskStatus
+            Get
+
+                Select Case Status
+                    Case "pending", "PENDING"
+                        Return TaskStatus.Pending
+                    Case "in_progress", "IN_PROGRESS"
+                        Return TaskStatus.InProgress
+                    Case "completed", "COMPLETED"
+                        Return TaskStatus.Completed
+                    Case "cancelled", "CANCELLED"
+                        Return TaskStatus.Cancelled
+                    Case "failed", "FAILED"
+                        Return TaskStatus.Failed
+                    Case "expired", "EXPIRED"
+                        Return TaskStatus.Expired
+                    Case Else
+                        Return TaskStatus.Unknown
+                End Select
+            End Get
+        End Property
     End Class ' BatchStatus
+
+    ''' <summary>
+    ''' 表示任务状态的枚举
+    ''' </summary>
+    Public Enum TaskStatus
+        ''' <summary>
+        ''' 待处理
+        ''' </summary>
+        Pending = 0
+        ''' <summary>
+        ''' 进行中
+        ''' </summary>
+        InProgress = 1
+        ''' <summary>
+        ''' 已完成
+        ''' </summary>
+        Completed = 2
+        ''' <summary>
+        ''' 已取消
+        ''' </summary>
+        Cancelled = 3
+        ''' <summary>
+        ''' 已失败
+        ''' </summary>
+        Failed = 4
+        ''' <summary>
+        ''' 已过期
+        ''' </summary>
+        Expired = 5
+
+        ''' <summary>
+        ''' 无法解析
+        ''' </summary>
+        Unknown = 65535
+    End Enum
 
     ''' <summary>
     ''' Represents <c>BatchPage</c> in JSON.

@@ -42,22 +42,22 @@ Namespace Models
     Public Class BatchChatResponseItem
         Inherits BatchResponseListItem(Of ResponseBase)
 
-        Public Shared Function FromJsonLines(jsonl As Stream) As IEnumerable(Of BatchPage)
+        Public Shared Function FromJsonLines(jsonl As Stream) As IEnumerable(Of BatchChatResponseItem)
             Using streamReader As New StreamReader(jsonl)
                 Return FromJsonLines(streamReader)
             End Using
         End Function
 
-        Public Shared Iterator Function FromJsonLines(jsonl As TextReader) As IEnumerable(Of BatchPage)
+        Public Shared Iterator Function FromJsonLines(jsonl As TextReader) As IEnumerable(Of BatchChatResponseItem)
             Using jsonReader As New JsonTextReader(jsonl)
                 jsonReader.DateParseHandling = DateParseHandling.None
                 Do
-                    Yield BatchResponseReader.ReadBatchPage(jsonReader, JsonReadErrorHandler.DefaultHandler)
+                    Yield BatchChatItemReader.ReadBatchChatResponseItem(jsonReader, JsonReadErrorHandler.DefaultHandler)
                 Loop While jsonReader.Read
             End Using
         End Function
 
-        Public Shared Function FromJsonLines(jsonl As String) As IEnumerable(Of BatchPage)
+        Public Shared Function FromJsonLines(jsonl As String) As IEnumerable(Of BatchChatResponseItem)
             Using streamReader As New StringReader(jsonl)
                 Return FromJsonLines(streamReader)
             End Using

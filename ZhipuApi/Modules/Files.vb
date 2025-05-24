@@ -130,7 +130,7 @@ Public Class Files
     ''' <exception cref="ArgumentException">参数不正确</exception>
     ''' <exception cref="HttpRequestException">请求发生错误</exception>
     ''' <exception cref="ZhipuHttpRequestException">请求发生错误，并且错误详情可解析</exception>
-    Public Async Function DownloadAsync(fileId As String, Optional cancellationToken As CancellationToken = Nothing) As Task(Of MemoryStream)
+    Public Async Function DownloadAsync(fileId As String, Optional cancellationToken As CancellationToken = Nothing) As Task(Of Stream)
         Dim url = $"{RequestUrl}/{fileId}/content"
         Dim response = Await GetAsync(url, cancellationToken, "application/octet-stream")
         Return response
