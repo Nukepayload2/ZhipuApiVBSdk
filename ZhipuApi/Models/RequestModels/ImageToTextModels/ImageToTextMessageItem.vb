@@ -30,7 +30,7 @@
                 Return Nothing
             End Get
             Set(imageUrl As String)
-                Content.ArrayValue = {Content.ArrayValue(0), New ContentType With {.Type = "Image_url", .ImageUrl = New ImageUrlType(imageUrl)}}
+                Content.ArrayValue = {Content.ArrayValue(0), New ContentType With {.Type = "image_url", .ImageUrl = New ImageUrlType(imageUrl)}}
             End Set
         End Property
     End Class
