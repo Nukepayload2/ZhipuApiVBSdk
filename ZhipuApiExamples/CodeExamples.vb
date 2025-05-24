@@ -316,7 +316,7 @@ Public Class CodeExamples
 
         ' 验证结果
         Assert.IsNotNull(results)
-        Assert.AreEqual(2, results.Count())
+        Assert.AreEqual(2, results.Count)
         For Each result In results
             Console.WriteLine($"CustomId: {result.CustomId}, Content: {result.Response.Body.Choices?.FirstOrDefault.Message.Content}")
         Next

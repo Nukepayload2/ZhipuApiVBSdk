@@ -42,7 +42,7 @@ Namespace Models
     Public Class BatchChatResponseItem
         Inherits BatchResponseListItem(Of ResponseBase)
 
-        Public Shared Function FromJsonLines(jsonl As Stream) As IEnumerable(Of BatchChatResponseItem)
+        Public Shared Function FromJsonLines(jsonl As Stream) As IReadOnlyList(Of BatchChatResponseItem)
             Using streamReader As New StreamReader(jsonl)
                 Return FromJsonLines(streamReader).ToArray
             End Using

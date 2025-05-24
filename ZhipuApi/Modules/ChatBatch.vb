@@ -134,7 +134,7 @@ Public Class ChatBatch
     ''' </summary>
     ''' <param name="cancellationToken">可以取消任务</param>
     ''' <returns>从批量对话任务里面获取的结果</returns>
-    Public Async Function GetResultAsync(Optional cancellationToken As CancellationToken = Nothing) As Task(Of IEnumerable(Of BatchChatResponseItem))
+    Public Async Function GetResultAsync(Optional cancellationToken As CancellationToken = Nothing) As Task(Of IReadOnlyList(Of BatchChatResponseItem))
         Dim status = _batchStatus
         If status.TaskStatus <> TaskStatus.Completed Then
             Throw New InvalidOperationException("Batch task is not completed.")
