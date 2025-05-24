@@ -17,7 +17,8 @@
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <Authors>Nukepayload2</Authors>
     <PackageReleaseNotes>
-Upgraded to Microsoft.Extensions.AI.Abstractions 9.5.0
+- Upgraded to Microsoft.Extensions.AI.Abstractions 9.5.0
+- Added chat batch and the underlying batches and file features. Chat request array in, chat response array out.
     </PackageReleaseNotes>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <InheritDocTrimLevel>internal</InheritDocTrimLevel>

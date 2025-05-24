@@ -294,10 +294,19 @@ Public Class CodeExamples
     End Function
 
     <TestMethod, Ignore("涉及到长任务，统一测试时不执行")>
+    Public Async Function TestListBatchAsync() As Task
+        ' 创建客户端
+        Dim clientV4 As New ClientV4(ApiKey)
+        ' 列出批处理任务
+        Dim listResult = Await clientV4.Batches.ListAsync(New BatchListRequest With {.Limit = 10})
+        Assert.AreNotEqual(0, listResult.Data.Count)
+    End Function
+
+    <TestMethod, Ignore("涉及到长任务，统一测试时不执行")>
     Async Function TestWaitChatBatchAsync() As Task
         ' 创建客户端
         Dim clientV4 As New ClientV4(ApiKey)
-        ' TODO: 请替换为实际 batch_id
+        ' TODO: 请替换为实际 batch_id。上面的 TestListBatchAsync 可以查询批量任务列表，获取 batch_id
         Dim batchStatus = Await clientV4.Batches.GetStatusAsync("batch_1926150685276246016")
         ' 创建批量对话任务
         Dim chatBatch As New ChatBatch(clientV4, batchStatus)

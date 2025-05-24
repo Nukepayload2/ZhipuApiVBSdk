@@ -34,8 +34,8 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] [Image generation](https://bigmodel.cn/dev/api/image-model/cogview)
 - [x] [Image recognition](https://bigmodel.cn/dev/api/normal-model/glm-4v)
 - [x] [Embedding](https://bigmodel.cn/dev/api/vector/embedding)
-- [ ] [File management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile)
-- [ ] [Batch](https://bigmodel.cn/dev/api/batch-api/batch)
+- [x] [File management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile)
+- [x] [Batch](https://bigmodel.cn/dev/api/batch-api/batch)
 
 ### Tested Manually
 - [x] Text completion
@@ -44,10 +44,10 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] Tool call in streaming
 - [x] Errors as HttpRequestException
 - [x] Image generation
-- [ ] Image recognition
+- [x] Image recognition
 - [x] Embedding
-- [ ] File management
-- [ ] Batch
+- [x] File management
+- [x] Batch
 
 ### Microsoft.Extensions.AI 9.0.5
 - [x] Chat completion
