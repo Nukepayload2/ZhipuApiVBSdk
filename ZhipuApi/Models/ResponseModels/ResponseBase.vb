@@ -17,10 +17,10 @@ Namespace Models
         Public Property Usage As UsageData
 
         Public Property Choices As IReadOnlyList(Of ResponseChoiceItem)
-        Public Property WebSearch As WebSearchResponse
+        Public Property WebSearch As SearchResult
         Public Property ContentFilter As ContentFilter
         ''' <summary>
-        ''' 包含错误码和异常描述。已迁移到 <see cref="ZhipuHttpRequestException"/>。此属性用作 Beta 版二进制兼容，在后续版本将被删除。
+        ''' 包含错误码和异常描述。已迁移到 <see cref="ZhipuHttpRequestException"/>。
         ''' </summary>
         <EditorBrowsable(EditorBrowsableState.Never)>
         <Obsolete("Catch ZhipuHttpRequestException instead", True)>

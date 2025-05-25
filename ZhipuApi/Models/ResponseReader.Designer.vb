@@ -107,7 +107,7 @@ Namespace Serialization
                                 If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
                                     entity.WebSearch = Nothing
                                 Else
-                                    entity.WebSearch = ReadWebSearchResponse(reader, readState)
+                                    entity.WebSearch = ReadSearchResult(reader, readState)
                                 End If
                             Case "content_filter"
                                 If Not reader.Read() Then
@@ -514,19 +514,19 @@ Namespace Serialization
             Return entity
         End Function ' ReadFunctionDescriptor
         ''' <summary>
-        ''' Reads <see cref="WebSearchResponse"/> from JsonReader.
+        ''' Reads <see cref="SearchResult"/> from JsonReader.
         ''' </summary>
-        Private Shared Function ReadWebSearchResponse(reader As Global.Newtonsoft.Json.JsonReader, readState As JsonReadErrorHandler) As WebSearchResponse
+        Private Shared Function ReadSearchResult(reader As Global.Newtonsoft.Json.JsonReader, readState As JsonReadErrorHandler) As SearchResult
             If reader.TokenType = Global.Newtonsoft.Json.JsonToken.None Then
                 reader.Read()
             End If
         
             If reader.TokenType <> Global.Newtonsoft.Json.JsonToken.StartObject Then
-                readState.OnConflictingTokenType("WebSearchResponse", JsonReadErrorHandler.Positions.StartObject, reader)
+                readState.OnConflictingTokenType("SearchResult", JsonReadErrorHandler.Positions.StartObject, reader)
                 Return Nothing
             End If
         
-            Dim entity As New WebSearchResponse
+            Dim entity As New SearchResult
         
             Dim startDepth As Integer = reader.Depth
             If Not reader.Read() Then
@@ -538,17 +538,6 @@ Namespace Serialization
                     Case Global.Newtonsoft.Json.JsonToken.PropertyName
                         Dim name As String = CType(reader.Value, String)
                         Select Case name
-                            Case "icon"
-                                If Not reader.Read() Then
-                                    Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
-                                End If
-                                If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
-                                    entity.Icon = Nothing
-                                ElseIf reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartObject Or reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartArray Then
-                                    readState.OnConflictingTokenType("WebSearchResponse", name, reader)
-                                Else
-                                    entity.Icon = Convert.ToString(reader.Value)
-                                End If
                             Case "title"
                                 If Not reader.Read() Then
                                     Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
@@ -556,9 +545,20 @@ Namespace Serialization
                                 If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
                                     entity.Title = Nothing
                                 ElseIf reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartObject Or reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartArray Then
-                                    readState.OnConflictingTokenType("WebSearchResponse", name, reader)
+                                    readState.OnConflictingTokenType("SearchResult", name, reader)
                                 Else
                                     entity.Title = Convert.ToString(reader.Value)
+                                End If
+                            Case "content"
+                                If Not reader.Read() Then
+                                    Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
+                                End If
+                                If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
+                                    entity.Content = Nothing
+                                ElseIf reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartObject Or reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartArray Then
+                                    readState.OnConflictingTokenType("SearchResult", name, reader)
+                                Else
+                                    entity.Content = Convert.ToString(reader.Value)
                                 End If
                             Case "link"
                                 If Not reader.Read() Then
@@ -567,7 +567,7 @@ Namespace Serialization
                                 If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
                                     entity.Link = Nothing
                                 ElseIf reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartObject Or reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartArray Then
-                                    readState.OnConflictingTokenType("WebSearchResponse", name, reader)
+                                    readState.OnConflictingTokenType("SearchResult", name, reader)
                                 Else
                                     entity.Link = Convert.ToString(reader.Value)
                                 End If
@@ -578,23 +578,34 @@ Namespace Serialization
                                 If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
                                     entity.Media = Nothing
                                 ElseIf reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartObject Or reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartArray Then
-                                    readState.OnConflictingTokenType("WebSearchResponse", name, reader)
+                                    readState.OnConflictingTokenType("SearchResult", name, reader)
                                 Else
                                     entity.Media = Convert.ToString(reader.Value)
                                 End If
-                            Case "content"
+                            Case "icon"
                                 If Not reader.Read() Then
                                     Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
                                 End If
                                 If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
-                                    entity.Content = Nothing
+                                    entity.Icon = Nothing
                                 ElseIf reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartObject Or reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartArray Then
-                                    readState.OnConflictingTokenType("WebSearchResponse", name, reader)
+                                    readState.OnConflictingTokenType("SearchResult", name, reader)
                                 Else
-                                    entity.Content = Convert.ToString(reader.Value)
+                                    entity.Icon = Convert.ToString(reader.Value)
+                                End If
+                            Case "refer"
+                                If Not reader.Read() Then
+                                    Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
+                                End If
+                                If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
+                                    entity.Refer = Nothing
+                                ElseIf reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartObject Or reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartArray Then
+                                    readState.OnConflictingTokenType("SearchResult", name, reader)
+                                Else
+                                    entity.Refer = Convert.ToString(reader.Value)
                                 End If
                             Case Else
-                                readState.OnMissingProperty("WebSearchResponse", name, reader)
+                                readState.OnMissingProperty("SearchResult", name, reader)
                         End Select
                     Case Global.Newtonsoft.Json.JsonToken.EndObject
                         Exit Do
@@ -609,7 +620,7 @@ Namespace Serialization
             End If
         
             Return entity
-        End Function ' ReadWebSearchResponse
+        End Function ' ReadSearchResult
         ''' <summary>
         ''' Reads <see cref="ContentFilter"/> from JsonReader.
         ''' </summary>

@@ -28,12 +28,18 @@ Public Class ClientV4
 	''' </summary>
 	Public ReadOnly Property Batches As Batches
 
+	''' <summary>
+	''' 专给大模型用的搜索引擎，在传统搜索引擎网页抓取、排序的能力基础上，增强了意图识别能力。
+	''' </summary>
+	Public ReadOnly Property WebSearch As WebSearch
+
 	Sub New(apiKey As String)
 		Chat = New Chat(apiKey)
 		Images = New Images(apiKey)
 		Embeddings = New Embeddings(apiKey)
 		Files = New Files(apiKey)
 		Batches = New Batches(apiKey)
+		WebSearch = New WebSearch(apiKey)
 	End Sub
 
 	Sub New(apiKey As String, client As HttpClient)
@@ -42,6 +48,7 @@ Public Class ClientV4
 		Embeddings = New Embeddings(apiKey, client)
 		Files = New Files(apiKey, client)
 		Batches = New Batches(apiKey, client)
+		WebSearch = New WebSearch(apiKey, client)
 	End Sub
 
 End Class

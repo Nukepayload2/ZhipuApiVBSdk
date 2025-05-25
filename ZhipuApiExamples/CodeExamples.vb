@@ -331,4 +331,21 @@ Public Class CodeExamples
         Next
     End Function
 
+    <TestMethod>
+    Public Async Function TestWebSearchAsync() As Task
+        Dim clientV4 As New ClientV4(ApiKey)
+
+        Dim request As New WebSearchRequest With {
+            .SearchEngine = "search_std",
+            .SearchQuery = $"红警HBK08在{Today}发布的视频"
+        }
+
+        Dim response = Await clientV4.WebSearch.SearchAsync(request)
+
+        ' 处理响应数据
+        Dim searchResults = response.SearchResult
+        Assert.IsNotNull(searchResults)
+
+    End Function
+
 End Class
