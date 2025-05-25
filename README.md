@@ -37,6 +37,7 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] [File management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile)
 - [x] [Batch](https://bigmodel.cn/dev/api/batch-api/batch)
 - [x] [Web search](https://bigmodel.cn/dev/api/search-tool/web-search)
+- [x] [Web search in chat](https://bigmodel.cn/dev/api/search-tool/websearch-in-chat)
 
 ### Tested Manually
 - [x] Text completion
@@ -50,6 +51,7 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] File management
 - [x] Batch
 - [x] Web search
+- [x] Web search in chat
 
 ### Microsoft.Extensions.AI 9.0.5
 - [x] Chat completion
@@ -76,13 +78,12 @@ Do not use it in production environment unless you've tested it carefully.
 
 #### P2
 - [ ] [Input audio in chat](https://bigmodel.cn/dev/api/rtav/GLM-4-Voice) <!-- 增强 chat/completions 支持，content "type": "input_audio" -->
-- [ ] [Web search in chat](https://bigmodel.cn/dev/api/search-tool/websearch-in-chat) <!-- 增强 chat/completions 支持，请求 type 是 web_search，响应有 web_search -->
 - [ ] [Tokenizer](https://bigmodel.cn/dev/api/tokenizer) <!-- 需要 JSON schema 生成 (tokenizer.json) -->
 - [ ] [Rerank](https://bigmodel.cn/dev/api/knowlage-manage/rerank) <!-- 需要 JSON schema 生成 (rerank.json) -->
-- [ ] [Async completion](https://bigmodel.cn/dev/api/normal-model/glm-4) <!-- 需要 JSON schema 生成 (async-response.json) -->
 - [ ] [Text extraction](https://bigmodel.cn/dev/api/knowlage-manage/queryextract) <!-- 增强 files 支持，purpose="file-extract" -->
 
 #### P3
+- [ ] [Async completion](https://bigmodel.cn/dev/api/normal-model/glm-4) <!-- 需要 JSON schema 生成 (async-response.json) -->
 - [ ] [Document management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile) <!-- 需要 JSON schema 生成 (files.json) -->
 - [ ] Knowledge management (undocumented)
 - [ ] [Realtime video chat](https://bigmodel.cn/dev/api/rtav/GLM-Realtime) <!-- 要使用 wss，并且需要 JSON schema 生成 (realtime.json)，由于它专注特定领域，低优先级。 -->
