@@ -337,7 +337,7 @@ Public Class CodeExamples
 
         Dim request As New WebSearchRequest With {
             .SearchEngine = "search_std",
-            .SearchQuery = $"红警HBK08在{Today}发布的视频"
+            .SearchQuery = "GLM-4-Flash 上下文 工具调用"
         }
 
         Dim response = Await clientV4.WebSearch.SearchAsync(request)
@@ -345,7 +345,15 @@ Public Class CodeExamples
         ' 处理响应数据
         Dim searchResults = response.SearchResult
         Assert.IsNotNull(searchResults)
-
+        Assert.IsTrue(searchResults.Count > 0)
+        For Each result In searchResults
+            Console.WriteLine($"Title: {result.Title}")
+            Console.WriteLine($"Content: {result.Content}")
+            Console.WriteLine($"Link: {result.Link}")
+            Console.WriteLine($"Media: {result.Media}")
+            Console.WriteLine($"Icon: {result.Icon}")
+            Console.WriteLine($"Refer: {result.Refer}")
+        Next
     End Function
 
 End Class
