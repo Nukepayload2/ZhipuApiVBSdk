@@ -77,6 +77,13 @@ Namespace Models
         ''' Reads or writes <c>refer</c> in json.
         ''' </remarks>
         Public Property Refer As String
+        ''' <summary>
+        ''' 发布日期
+        ''' </summary>
+        ''' <remarks>
+        ''' Reads or writes <c>publish_date</c> in json.
+        ''' </remarks>
+        Public Property PublishDate As String
     End Class ' SearchResult
 
     ''' <summary>
@@ -111,6 +118,13 @@ Namespace Models
         ''' Reads or writes <c>search_result</c> in json.
         ''' </remarks>
         Public Property SearchResult As IReadOnlyList(Of SearchResult)
+        ''' <summary>
+        ''' 请求ID
+        ''' </summary>
+        ''' <remarks>
+        ''' Reads or writes <c>request_id</c> in json.
+        ''' </remarks>
+        Public Property RequestId As String
 
         Public Shared Function FromJson(json As Stream) As WebSearchResponse
             Using jsonReader As New JsonTextReader(New StreamReader(json))

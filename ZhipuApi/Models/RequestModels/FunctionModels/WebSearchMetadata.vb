@@ -39,7 +39,7 @@
         ''' 获取或设置搜索引擎类型。
         ''' </summary>
         ''' <value>
-        ''' 搜索引擎类型。
+        ''' 搜索引擎类型。默认为：search_std。支持 search_std、search_pro、search_pro_sogou、search_pro_quark、search_pro_jina 、search_pro_bing。
         ''' </value>
         Public Property SearchEngine As String
 

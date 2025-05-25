@@ -60,6 +60,17 @@ Namespace Serialization
                                 Else
                                     entity.Created = Convert.ToInt64(reader.Value)
                                 End If
+                            Case "request_id"
+                                If Not reader.Read() Then
+                                    Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
+                                End If
+                                If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
+                                    entity.RequestId = Nothing
+                                ElseIf reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartObject Or reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartArray Then
+                                    readState.OnConflictingTokenType("WebSearchResponse", name, reader)
+                                Else
+                                    entity.RequestId = Convert.ToString(reader.Value)
+                                End If
                             Case "search_intent"
                                 If Not reader.Read() Then
                                     Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
@@ -87,12 +98,12 @@ Namespace Serialization
                         Throw readState.OnUnrecoverableError("Unexpected token while loading JObject. The reader is at unexpected position.")
                 End Select
             Loop While reader.Read()
-
+        
             Dim endDepth As Integer = reader.Depth
             If endDepth <> startDepth Then
                 Throw readState.OnUnrecoverableError("Error reading from JsonReader. The reader is at unexpected position.")
             End If
-
+        
             Return entity
         End Function ' ReadWebSearchResponse
         ''' <summary>
@@ -102,19 +113,19 @@ Namespace Serialization
             If reader.TokenType = Global.Newtonsoft.Json.JsonToken.None Then
                 reader.Read()
             End If
-
+        
             If reader.TokenType <> Global.Newtonsoft.Json.JsonToken.StartObject Then
                 readState.OnConflictingTokenType("SearchIntent", JsonReadErrorHandler.Positions.StartObject, reader)
                 Return Nothing
             End If
-
+        
             Dim entity As New SearchIntent
-
+        
             Dim startDepth As Integer = reader.Depth
             If Not reader.Read() Then
                 Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
             End If
-
+        
             Do
                 Select Case reader.TokenType
                     Case Global.Newtonsoft.Json.JsonToken.PropertyName
@@ -162,12 +173,12 @@ Namespace Serialization
                         Throw readState.OnUnrecoverableError("Unexpected token while loading JObject. The reader is at unexpected position.")
                 End Select
             Loop While reader.Read()
-
+        
             Dim endDepth As Integer = reader.Depth
             If endDepth <> startDepth Then
                 Throw readState.OnUnrecoverableError("Error reading from JsonReader. The reader is at unexpected position.")
             End If
-
+        
             Return entity
         End Function ' ReadSearchIntent
         ''' <summary>
@@ -177,19 +188,19 @@ Namespace Serialization
             If reader.TokenType = Global.Newtonsoft.Json.JsonToken.None Then
                 reader.Read()
             End If
-
+        
             If reader.TokenType <> Global.Newtonsoft.Json.JsonToken.StartObject Then
                 readState.OnConflictingTokenType("SearchResult", JsonReadErrorHandler.Positions.StartObject, reader)
                 Return Nothing
             End If
-
+        
             Dim entity As New SearchResult
-
+        
             Dim startDepth As Integer = reader.Depth
             If Not reader.Read() Then
                 Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
             End If
-
+        
             Do
                 Select Case reader.TokenType
                     Case Global.Newtonsoft.Json.JsonToken.PropertyName
@@ -261,6 +272,17 @@ Namespace Serialization
                                 Else
                                     entity.Refer = Convert.ToString(reader.Value)
                                 End If
+                            Case "publish_date"
+                                If Not reader.Read() Then
+                                    Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
+                                End If
+                                If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
+                                    entity.PublishDate = Nothing
+                                ElseIf reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartObject Or reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartArray Then
+                                    readState.OnConflictingTokenType("SearchResult", name, reader)
+                                Else
+                                    entity.PublishDate = Convert.ToString(reader.Value)
+                                End If
                             Case Else
                                 readState.OnMissingProperty("SearchResult", name, reader)
                         End Select
@@ -270,12 +292,12 @@ Namespace Serialization
                         Throw readState.OnUnrecoverableError("Unexpected token while loading JObject. The reader is at unexpected position.")
                 End Select
             Loop While reader.Read()
-
+        
             Dim endDepth As Integer = reader.Depth
             If endDepth <> startDepth Then
                 Throw readState.OnUnrecoverableError("Error reading from JsonReader. The reader is at unexpected position.")
             End If
-
+        
             Return entity
         End Function ' ReadSearchResult
         ''' <summary>
@@ -287,19 +309,19 @@ Namespace Serialization
                     Throw readState.OnUnrecoverableError("Error reading JArray from JsonReader.")
                 End If
             End If
-
+        
             If reader.TokenType <> Global.Newtonsoft.Json.JsonToken.StartArray Then
                 readState.OnConflictingTokenType("IReadOnlyListOfSearchIntent", JsonReadErrorHandler.Positions.StartArray, reader)
                 Return Nothing
             End If
-
+        
             Dim entityList As New List(Of SearchIntent)
             Dim startDepth As Integer = reader.Depth
-
+        
             If Not reader.Read() Then
                 Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
             End If
-
+        
             Do
                 Dim item As SearchIntent
                 Select Case reader.TokenType
@@ -315,13 +337,13 @@ Namespace Serialization
                 End Select
                 entityList.Add(item)
             Loop While reader.Read()
-
+        
             Dim endDepth As Integer = reader.Depth
-
+        
             If endDepth <> startDepth Then
                 Throw readState.OnUnrecoverableError("Error reading from JsonReader. The reader is at unexpected position.")
             End If
-
+        
             Return entityList
         End Function
         ''' <summary>
@@ -333,19 +355,19 @@ Namespace Serialization
                     Throw readState.OnUnrecoverableError("Error reading JArray from JsonReader.")
                 End If
             End If
-
+        
             If reader.TokenType <> Global.Newtonsoft.Json.JsonToken.StartArray Then
                 readState.OnConflictingTokenType("IReadOnlyListOfSearchResult", JsonReadErrorHandler.Positions.StartArray, reader)
                 Return Nothing
             End If
-
+        
             Dim entityList As New List(Of SearchResult)
             Dim startDepth As Integer = reader.Depth
-
+        
             If Not reader.Read() Then
                 Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
             End If
-
+        
             Do
                 Dim item As SearchResult
                 Select Case reader.TokenType
@@ -361,13 +383,13 @@ Namespace Serialization
                 End Select
                 entityList.Add(item)
             Loop While reader.Read()
-
+        
             Dim endDepth As Integer = reader.Depth
-
+        
             If endDepth <> startDepth Then
                 Throw readState.OnUnrecoverableError("Error reading from JsonReader. The reader is at unexpected position.")
             End If
-
+        
             Return entityList
         End Function
 

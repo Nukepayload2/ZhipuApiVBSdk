@@ -357,7 +357,7 @@ Public Class CodeExamples
     End Function
 
     <TestMethod>
-    Async Function TestCompletionAsync() As Task
+    Async Function TestSearchCompletionAsync() As Task
         Dim clientV4 As New ClientV4(ApiKey)
         Dim request As New TextRequestBase With {
             .Model = "glm-4-flash",
@@ -369,7 +369,7 @@ Public Class CodeExamples
                     .Type = "web_search",
                     .WebSearch = New WebSearchMetadata With {
                         .IsEnabled = True,
-                        .SearchPrompt = $"北京 {Today.ToShortDateString} 天气"
+                        .SearchEngine = "search_std"
                     }
                 }
             }

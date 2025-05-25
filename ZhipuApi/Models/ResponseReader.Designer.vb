@@ -604,6 +604,17 @@ Namespace Serialization
                                 Else
                                     entity.Refer = Convert.ToString(reader.Value)
                                 End If
+                            Case "publish_date"
+                                If Not reader.Read() Then
+                                    Throw readState.OnUnrecoverableError("Error reading from JsonReader. File was truncated.")
+                                End If
+                                If reader.TokenType = Global.Newtonsoft.Json.JsonToken.Null Then
+                                    entity.PublishDate = Nothing
+                                ElseIf reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartObject Or reader.TokenType = Global.Newtonsoft.Json.JsonToken.StartArray Then
+                                    readState.OnConflictingTokenType("SearchResult", name, reader)
+                                Else
+                                    entity.PublishDate = Convert.ToString(reader.Value)
+                                End If
                             Case Else
                                 readState.OnMissingProperty("SearchResult", name, reader)
                         End Select
