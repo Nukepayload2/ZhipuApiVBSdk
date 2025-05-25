@@ -356,4 +356,29 @@ Public Class CodeExamples
         Next
     End Function
 
+    <TestMethod>
+    Async Function TestCompletionAsync() As Task
+        Dim clientV4 As New ClientV4(ApiKey)
+        Dim request As New TextRequestBase With {
+            .Model = "glm-4-flash",
+            .Messages = {New MessageItem("user", "今天北京的天气如何")},
+            .Temperature = 0.7,
+            .TopP = 0.7,
+            .Tools = {
+                New FunctionTool With {
+                    .Type = "web_search",
+                    .WebSearch = New WebSearchMetadata With {
+                        .IsEnabled = True,
+                        .SearchPrompt = $"北京 {Today.ToShortDateString} 天气"
+                    }
+                }
+            }
+        }
+        Dim response = Await clientV4.Chat.CompleteAsync(request)
+
+        Dim respMessage = response.Choices?.FirstOrDefault?.Message?.Content
+        Console.WriteLine(respMessage)
+        Assert.IsNotNull(respMessage)
+    End Function
+
 End Class

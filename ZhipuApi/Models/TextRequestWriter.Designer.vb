@@ -305,6 +305,18 @@ Namespace Serialization
                 writer.WritePropertyName("search_result")
                 writer.WriteValue(value.SearchResult)
             End If
+            If value.SearchEngine IsNot Nothing Then
+                writer.WritePropertyName("search_engine")
+                writer.WriteValue(value.SearchEngine)
+            End If
+            If value.ResultSequence IsNot Nothing Then
+                writer.WritePropertyName("result_sequence")
+                writer.WriteValue(value.ResultSequence)
+            End If
+            If value.RequireSearch IsNot Nothing Then
+                writer.WritePropertyName("require_search")
+                writer.WriteValue(value.RequireSearch)
+            End If
 
             writer.WriteEndObject()
         End Sub ' WriteWebSearchMetadata

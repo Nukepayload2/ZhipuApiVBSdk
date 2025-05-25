@@ -36,6 +36,7 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] [Embedding](https://bigmodel.cn/dev/api/vector/embedding)
 - [x] [File management](https://bigmodel.cn/dev/api/knowlage-manage/queryfile)
 - [x] [Batch](https://bigmodel.cn/dev/api/batch-api/batch)
+- [x] [Web search](https://bigmodel.cn/dev/api/search-tool/web-search)
 
 ### Tested Manually
 - [x] Text completion
@@ -48,6 +49,7 @@ Do not use it in production environment unless you've tested it carefully.
 - [x] Embedding
 - [x] File management
 - [x] Batch
+- [x] Web search
 
 ### Microsoft.Extensions.AI 9.0.5
 - [x] Chat completion
@@ -69,7 +71,6 @@ Do not use it in production environment unless you've tested it carefully.
 
 ### Planned
 #### P1
-- [ ] [Web search](https://bigmodel.cn/dev/api/search-tool/web-search) <!-- 需要 JSON schema 生成，不做 MCP (websearch.json) -->
 - [ ] [Video generation](https://bigmodel.cn/dev/api/videomodel/cogvideox) <!-- 需要 JSON schema 生成 (video-gen.json)-->
 - [ ] [Voice recognition](https://bigmodel.cn/dev/api/rtav/glm-asr) <!-- 需要 JSON schema 生成 (asr.json) -->
 
