@@ -2,6 +2,7 @@
 Imports System.Net.Http
 Imports System.Threading
 Imports Nukepayload2.AI.Providers.Zhipu.Models
+Imports Nukepayload2.AI.Providers.Zhipu.Utils
 
 Public Class Embeddings
     Inherits ClientFeatureBase
@@ -17,7 +18,8 @@ Public Class Embeddings
     Private Async Function ProcessRawAsync(requestBody As EmbeddingRequestBase, cancellation As CancellationToken) As Task(Of MemoryStream)
         Dim json = requestBody?.ToJsonUtf8
         Const requestUrl = "https://open.bigmodel.cn/api/paas/v4/embeddings"
-        Return Await PostAsync(requestUrl, json, cancellation)
+        Dim strm = Await PostAsync(requestUrl, json, cancellation)
+        Return Await IoUtils.ToMemoryStreamAsync(strm, cancellation)
     End Function
 
     Public Async Function ProcessAsync(requestBody As EmbeddingRequestBase, Optional cancellation As CancellationToken = Nothing) As Task(Of EmbeddingResponseBase)

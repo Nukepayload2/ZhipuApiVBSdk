@@ -23,7 +23,8 @@ Public Class Chat
         Debug.WriteLine("Sending chat request: ")
         Debug.WriteLine(IoUtils.UTF8NoBOM.GetString(json.ToArray()))
 #End If
-        Return Await PostAsync(RequestUrl, json, cancellation)
+        Dim strm = Await PostAsync(RequestUrl, json, cancellation)
+        Return Await IoUtils.ToMemoryStreamAsync(strm, cancellation)
     End Function
 
     ''' <summary>

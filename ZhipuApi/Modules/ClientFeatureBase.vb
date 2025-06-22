@@ -18,14 +18,21 @@ Public MustInherit Class ClientFeatureBase
         _client = client
     End Sub
 
-    Protected Async Function PostAsync(requestUrl As String, json As Stream, cancellation As CancellationToken) As Task(Of MemoryStream)
+    Protected Async Function PostAsync(requestUrl As String, json As Stream, cancellation As CancellationToken) As Task(Of Stream)
         Dim data As New StreamContent(json)
         data.Headers.ContentType = New Headers.MediaTypeHeaderValue("application/json")
         Dim response As HttpResponseMessage = Await PostRawAsync(requestUrl, data, cancellation)
         Return Await ReadAndCheckErrorAsync(response, cancellation)
     End Function
 
-    Protected Async Function ReadAndCheckErrorAsync(response As HttpResponseMessage, cancellation As CancellationToken) As Task(Of MemoryStream)
+    Protected Async Function ReadAndCheckErrorAsync(response As HttpResponseMessage, cancellation As CancellationToken) As Task(Of Stream)
+        If response.StatusCode = Net.HttpStatusCode.OK Then
+#If NET5_0_OR_GREATER Then
+            Return Await response.Content.ReadAsStreamAsync(cancellation)
+#Else
+            Return Await response.Content.ReadAsStreamAsync()
+#End If
+        End If
         Dim result = Await IoUtils.CopyToMemoryStreamAsync(response, cancellation)
         ErrorHandler.ThrowForNonSuccess(response, result)
         Return result
@@ -43,7 +50,7 @@ Public MustInherit Class ClientFeatureBase
         Return response
     End Function
 
-    Protected Async Function GetAsync(requestUrl As String, cancellation As CancellationToken, Optional accept As String = "application/json") As Task(Of MemoryStream)
+    Protected Async Function GetAsync(requestUrl As String, cancellation As CancellationToken, Optional accept As String = "application/json") As Task(Of Stream)
         Dim request As New HttpRequestMessage With {
             .Method = HttpMethod.Get,
             .RequestUri = New Uri(requestUrl)
@@ -57,7 +64,7 @@ Public MustInherit Class ClientFeatureBase
         Return Await ReadAndCheckErrorAsync(response, cancellation)
     End Function
 
-    Protected Async Function DeleteAsync(requestUrl As String, cancellation As CancellationToken) As Task(Of MemoryStream)
+    Protected Async Function DeleteAsync(requestUrl As String, cancellation As CancellationToken) As Task(Of Stream)
         Dim request As New HttpRequestMessage(HttpMethod.Delete, New Uri(requestUrl))
         Dim apiKey = AuthenticationUtils.GenerateToken(_apiKey, ApiTokenTtlSeconds)
         With request.Headers

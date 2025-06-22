@@ -30,5 +30,15 @@ Namespace Utils
             result.Position = 0
             Return result
         End Function
+
+        Public Shared Async Function ToMemoryStreamAsync(stream As Stream, cancellation As CancellationToken) As Task(Of MemoryStream)
+            If TypeOf stream Is MemoryStream Then
+                Return DirectCast(stream, MemoryStream)
+            End If
+            Dim result As New MemoryStream
+            Await stream.CopyToAsync(result, 8192, cancellation)
+            result.Position = 0
+            Return result
+        End Function
     End Class
 End Namespace

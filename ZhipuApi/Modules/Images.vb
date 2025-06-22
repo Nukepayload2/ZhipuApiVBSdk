@@ -2,6 +2,7 @@
 Imports System.Net.Http
 Imports System.Threading
 Imports Nukepayload2.AI.Providers.Zhipu.Models
+Imports Nukepayload2.AI.Providers.Zhipu.Utils
 
 Public Class Images
     Inherits ClientFeatureBase
@@ -17,7 +18,8 @@ Public Class Images
     Private Async Function GenerateInternalAsync(requestBody As ImageRequestBase, cancellation As CancellationToken) As Task(Of MemoryStream)
         Const RequestUrl = "https://open.bigmodel.cn/api/paas/v4/images/generations"
         Dim json = requestBody.ToJsonUtf8()
-        Return Await PostAsync(RequestUrl, json, cancellation)
+        Dim strm = Await PostAsync(RequestUrl, json, cancellation)
+        Return Await IoUtils.ToMemoryStreamAsync(strm, cancellation)
     End Function
 
     Public Async Function GenerateAsync(requestBody As ImageRequestBase,
